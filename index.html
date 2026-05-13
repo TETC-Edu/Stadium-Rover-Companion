@@ -203,6 +203,67 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 }
 .side-section.open .side-body { display: block; }
 
+.side-link {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--border);
+}
+.side-link:hover { background: var(--panel); }
+.side-link.active { background: var(--panel); color: var(--teal-800); }
+.side-link .arrow { color: var(--muted); font-size: 12px; }
+
+.ref-frame {
+  color: var(--body);
+  font-size: 15.5px;
+  line-height: 1.55;
+  max-width: 720px;
+  margin-bottom: 22px;
+}
+.ref-figure {
+  width: 100%;
+  max-width: 720px;
+}
+.ref-figure svg {
+  width: 100%;
+  height: auto;
+  max-width: 720px;
+  display: block;
+}
+.svg-placeholder {
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 680 / 720;
+  background: var(--panel);
+  border: 2px dashed var(--border);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+.svg-placeholder code {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  font-size: 12px;
+  display: inline-block;
+  margin-top: 8px;
+}
+
 .cheat-group { margin-bottom: 14px; }
 .cheat-group:last-child { margin-bottom: 0; }
 .cheat-group h5 {
@@ -1124,6 +1185,11 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       </div>
     </section>
 
+    <button class="side-link" id="refLink" data-action="goto" data-target="reference">
+      Field reference
+      <span class="arrow" aria-hidden="true">&rsaquo;</span>
+    </button>
+
     <section class="side-section" id="errorsSection">
       <button class="side-toggle" data-toggle="errorsSection" aria-expanded="false">
         Common errors
@@ -1883,6 +1949,188 @@ deliveries = [
       </div>
     </section>
 
+    <!-- ====== FIELD REFERENCE ====== -->
+    <section class="screen" id="screen-reference" data-screen-label="Field Reference" hidden>
+      <div class="screen-header">
+        <h1>Field Reference</h1>
+      </div>
+
+      <p class="ref-frame">
+        The field is 100&times;100 cm. Three locations live inside it. Distance is measured
+        from the rover's center to each zone in millimeters. Angle is measured from the
+        rover's current heading &mdash; 0&deg; is straight forward, positive turns right,
+        negative turns left. The example below shows ONE possible layout &mdash; yours will
+        look different.
+      </p>
+
+      <figure class="ref-figure">
+        <svg viewBox="0 0 680 720" xmlns="http://www.w3.org/2000/svg"
+             font-family="Calibri, 'Segoe UI', Helvetica, Arial, sans-serif"
+             role="img" aria-label="Stadium reference: field layout, heading rules, and how to measure each delivery">
+          <defs>
+            <pattern id="bufferHatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="7" stroke="#BD2F7F" stroke-width="1" opacity="0.35"/>
+            </pattern>
+          </defs>
+
+          <!-- ============================== HEADER ============================== -->
+          <rect x="0" y="0" width="680" height="58" fill="#186172"/>
+          <text x="22" y="36" fill="white" font-size="18" font-weight="700" letter-spacing="1.4">STADIUM REFERENCE</text>
+          <text x="658" y="36" fill="white" font-size="12.5" font-style="italic" text-anchor="end" opacity="0.95">how to read and measure your field</text>
+
+          <!-- ============================== SECTION TITLES ============================== -->
+          <text x="22" y="92" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">THE FIELD · 100 × 100 CM</text>
+          <text x="22" y="110" fill="#777" font-size="11.5" font-style="italic">a sample layout — yours will look different</text>
+
+          <text x="358" y="92" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">HEADING · FROM THE ROVER'S VIEW</text>
+          <text x="358" y="110" fill="#777" font-size="11.5" font-style="italic">0° is forward · + turns right · − turns left</text>
+
+          <!-- ============================== LEFT: FIELD BOX (300×300) ============================== -->
+          <!-- Outer field with magenta-tinted buffer hatch -->
+          <rect x="22" y="128" width="300" height="300" fill="#FAEFF4" stroke="#222" stroke-width="2"/>
+          <rect x="22" y="128" width="300" height="300" fill="url(#bufferHatch)" stroke="none"/>
+
+          <!-- "15 cm buffer" label inside buffer (top-left) -->
+          <text x="36" y="150" fill="#BD2F7F" font-size="11" font-weight="700">15 cm buffer</text>
+
+          <!-- Inner play area (white, dashed magenta border) - 210×210 centered -->
+          <rect x="67" y="173" width="210" height="210" fill="white" stroke="#BD2F7F" stroke-width="1" stroke-dasharray="4 3"/>
+
+          <!-- Referee (R) circle near top center of play area -->
+          <circle cx="172" cy="212" r="14" fill="white" stroke="#222" stroke-width="1.5"/>
+          <text x="172" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#222">R</text>
+
+          <!-- Diagonal dashed magenta line from rover to R, with "~470 mm" pill -->
+          <line x1="172" y1="365" x2="172" y2="226" stroke="#BD2F7F" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <rect x="148" y="285" width="48" height="18" rx="9" fill="#FBE3EE" stroke="#BD2F7F" stroke-width="1"/>
+          <text x="172" y="298" text-anchor="middle" font-size="10.5" fill="#BD2F7F" font-weight="700">~470 mm</text>
+
+          <!-- A (Blue barrel) -->
+          <rect x="100" y="266" width="22" height="22" fill="#3C87E3"/>
+          <text x="111" y="282" text-anchor="middle" font-size="12" font-weight="700" fill="white">A</text>
+
+          <!-- B (Orange barrel) -->
+          <rect x="222" y="266" width="22" height="22" fill="#F18E21"/>
+          <text x="233" y="282" text-anchor="middle" font-size="12" font-weight="700" fill="white">B</text>
+
+          <!-- "30+ cm apart" line + pill between A and B -->
+          <line x1="122" y1="320" x2="222" y2="320" stroke="#186172" stroke-width="1"/>
+          <line x1="122" y1="316" x2="122" y2="324" stroke="#186172" stroke-width="1"/>
+          <line x1="222" y1="316" x2="222" y2="324" stroke="#186172" stroke-width="1"/>
+          <rect x="139" y="328" width="66" height="17" rx="8.5" fill="white" stroke="#186172" stroke-width="1"/>
+          <text x="172" y="340" text-anchor="middle" font-size="10.5" fill="#186172" font-weight="600">30+ cm apart</text>
+
+          <!-- Rover circle (dark) + forward triangle + "7" indicator -->
+          <circle cx="172" cy="365" r="10" fill="#1a2a2e"/>
+          <polygon points="172,353 168,360 176,360" fill="white"/>
+          <text x="172" y="369" text-anchor="middle" font-size="9" font-weight="700" fill="white">7</text>
+
+          <!-- START tag below rover -->
+          <rect x="156" y="378" width="32" height="14" fill="#186172"/>
+          <text x="172" y="389" text-anchor="middle" font-size="9" font-weight="700" fill="white" letter-spacing="0.5">START</text>
+
+          <!-- cm labels under field -->
+          <text x="22" y="446" fill="#777" font-size="11" font-style="italic">0 cm</text>
+          <text x="322" y="446" fill="#777" font-size="11" font-style="italic" text-anchor="end">100 cm</text>
+
+          <!-- ============================== LEGEND ============================== -->
+          <text x="22" y="476" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">LEGEND</text>
+
+          <rect x="22" y="488" width="20" height="14" fill="white" stroke="#BD2F7F" stroke-width="0.8"/>
+          <rect x="22" y="488" width="20" height="14" fill="url(#bufferHatch)" stroke="none"/>
+          <text x="52" y="500" font-size="12" fill="#333">15 cm edge buffer — no zones here</text>
+
+          <rect x="22" y="510" width="20" height="14" fill="#186172"/>
+          <text x="52" y="522" font-size="12" fill="#333">Supply Room — rover starts here</text>
+
+          <circle cx="32" cy="539" r="7.5" fill="white" stroke="#333" stroke-width="1"/>
+          <text x="52" y="544" font-size="12" fill="#333">Soccer ball → Referee (R)</text>
+
+          <rect x="22" y="554" width="20" height="14" fill="#3C87E3"/>
+          <text x="52" y="566" font-size="12" fill="#333">Blue barrel → Team A bench</text>
+
+          <rect x="22" y="576" width="20" height="14" fill="#F18E21"/>
+          <text x="52" y="588" font-size="12" fill="#333">Orange barrel → Team B bench</text>
+
+          <!-- ============================== RIGHT: HEADING DIAGRAM ============================== -->
+          <!-- "0° forward" label above circle -->
+          <text x="520" y="148" text-anchor="middle" font-size="12" font-weight="700" fill="#222">0° forward</text>
+
+          <!-- Compass circle -->
+          <circle cx="520" cy="238" r="78" fill="white" stroke="#999" stroke-width="0.8"/>
+
+          <!-- Horizontal dashed reference line -->
+          <line x1="442" y1="238" x2="598" y2="238" stroke="#bbb" stroke-width="0.8" stroke-dasharray="3 3"/>
+
+          <!-- Forward arrow from center going up -->
+          <line x1="520" y1="238" x2="520" y2="168" stroke="#222" stroke-width="2"/>
+          <polygon points="520,158 514,172 526,172" fill="#222"/>
+
+          <!-- -90° curve and label (left, magenta) -->
+          <path d="M 470 238 A 50 50 0 0 1 485 203" fill="none" stroke="#BD2F7F" stroke-width="1.6"/>
+          <polygon points="485,203 477,205 483,211" fill="#BD2F7F"/>
+          <text x="450" y="218" text-anchor="middle" fill="#BD2F7F" font-size="13" font-weight="700">−90°</text>
+
+          <!-- +90° curve and label (right, teal) -->
+          <path d="M 570 238 A 50 50 0 0 0 555 203" fill="none" stroke="#186172" stroke-width="1.6"/>
+          <polygon points="555,203 563,205 557,211" fill="#186172"/>
+          <text x="590" y="218" text-anchor="middle" fill="#186172" font-size="13" font-weight="700">+90°</text>
+
+          <!-- Rover at center -->
+          <circle cx="520" cy="238" r="8" fill="#1a2a2e"/>
+          <polygon points="520,229 515,235 525,235" fill="white"/>
+
+          <!-- "180° = backward" caption -->
+          <text x="520" y="340" text-anchor="middle" font-size="11" fill="#999">180° = backward</text>
+
+          <!-- ============================== TRANSLATION CARD ============================== -->
+          <rect x="358" y="368" width="300" height="120" fill="#F4F8F9" stroke="#cdd9dc" stroke-width="1" rx="2"/>
+          <text x="374" y="390" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">THE TRANSLATION</text>
+
+          <text x="374" y="416" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#222">robot.move_for(450, 30)</text>
+          <text x="374" y="432" font-size="11.5" font-style="italic" fill="#666">drive 450 mm at 30° to the right</text>
+
+          <text x="374" y="458" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#222">robot.move_for(600, −45)</text>
+          <text x="374" y="474" font-size="11.5" font-style="italic" fill="#666">drive 600 mm at 45° to the left</text>
+
+          <!-- ============================== HOW TO MEASURE BAND ============================== -->
+          <rect x="22" y="612" width="636" height="92" fill="#F5F5F5" stroke="#E4E4E4" stroke-width="1" rx="2"/>
+          <text x="42" y="634" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">HOW TO MEASURE EACH DELIVERY</text>
+
+          <!-- Step 1 (teal) -->
+          <circle cx="58" cy="666" r="13" fill="#186172"/>
+          <text x="58" y="671" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">1</text>
+          <text x="80" y="660" font-size="11.5" font-weight="700" fill="#222">Place ruler</text>
+          <text x="80" y="674" font-size="11" fill="#444">from rover's center</text>
+          <text x="80" y="687" font-size="11" fill="#444">to the zone marker.</text>
+
+          <!-- Step 2 (magenta) -->
+          <circle cx="218" cy="666" r="13" fill="#BD2F7F"/>
+          <text x="218" y="671" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">2</text>
+          <text x="240" y="660" font-size="11.5" font-weight="700" fill="#222">Read distance</text>
+          <text x="240" y="674" font-size="11" fill="#444">in cm. Multiply by 10</text>
+          <text x="240" y="687" font-size="11" fill="#444">to get millimeters.</text>
+
+          <!-- Step 3 (teal) -->
+          <circle cx="378" cy="666" r="13" fill="#186172"/>
+          <text x="378" y="671" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">3</text>
+          <text x="400" y="660" font-size="11.5" font-weight="700" fill="#222">Protractor on rover</text>
+          <text x="400" y="674" font-size="11" fill="#444">aligned to its forward</text>
+          <text x="400" y="687" font-size="11" fill="#444">direction (0°).</text>
+
+          <!-- Step 4 (magenta) -->
+          <circle cx="538" cy="666" r="13" fill="#BD2F7F"/>
+          <text x="538" y="671" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">4</text>
+          <text x="560" y="660" font-size="11.5" font-weight="700" fill="#222">Read angle</text>
+          <text x="560" y="674" font-size="11" fill="#444">right = +, left = −.</text>
+          <text x="560" y="687" font-size="11" fill="#444">That's your turn.</text>
+
+          <!-- Bottom italic caption -->
+          <text x="340" y="717" text-anchor="middle" font-size="11" font-style="italic" fill="#888">remember: distance is in mm, angle is in degrees from forward</text>
+        </svg>
+      </figure>
+    </section>
+
   </main>
 </div>
 
@@ -1942,7 +2190,7 @@ deliveries = [
   let timerInterval = null;
 
   // ===================== SCREENS / NAV =====================
-  const screens = ['landing','level1','level2','level3','bonus','express'];
+  const screens = ['landing','level1','level2','level3','bonus','express','reference'];
 
   function gotoScreen(name) {
     if (name === 'bonus' && !state.completed.level3 && state.path !== 'express') {
@@ -1980,9 +2228,12 @@ deliveries = [
       level2: '<strong>Level 2</strong> &mdash; Switch',
       level3: '<strong>Level 3</strong> &mdash; Text Python',
       bonus:  '<strong>Bonus</strong> &mdash; Vision',
-      express:'<strong>Express Lane</strong>'
+      express:'<strong>Express Lane</strong>',
+      reference:'<strong>Field Reference</strong>'
     };
     document.getElementById('crumbs').innerHTML = titles[state.screen] || titles.landing;
+    const refLink = document.getElementById('refLink');
+    if (refLink) refLink.classList.toggle('active', state.screen === 'reference');
   }
 
   // ===================== PATH PICKER =====================
