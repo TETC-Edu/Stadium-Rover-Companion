@@ -1,0 +1,2503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Stadium Logistics Rover · Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* ===== TETC tokens ===== */
+:root {
+  --teal:        #00ACA8;
+  --teal-700:    #008884;
+  --teal-800:    #006C68;
+  --teal-dark:   #007096;
+  --teal-050:    #E6F7F6;
+  --magenta:     #B01E78;
+  --magenta-700: #8E1862;
+  --magenta-050: #FBE8F1;
+  --amber:       #F18E21;
+  --amber-700:   #C9711A;
+  --amber-050:   #FDEFD9;
+  --blue:        #3C87E3;
+  --ink:         #1F2A2B;
+  --body:        #333333;
+  --muted:       #5A5A5A;
+  --border:      #E4E4E4;
+  --border-2:    #D5D5D5;
+  --bg:          #FAFAF9;
+  --panel:       #F5F5F5;
+  --white:       #FFFFFF;
+  --shadow:      0 1px 0 rgba(0,0,0,0.04);
+
+  --font-body: Calibri, "Segoe UI", "Helvetica Neue", -apple-system, system-ui, Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+/* ===== base ===== */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  color: var(--body);
+  background: var(--bg);
+  font-size: 17px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 { font-family: var(--font-body); color: var(--ink); margin: 0; line-height: 1.15; font-weight: 700; }
+h1 { font-size: 32px; letter-spacing: -0.01em; }
+h2 { font-size: 24px; letter-spacing: -0.005em; }
+h3 { font-size: 19px; }
+h4 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+p  { margin: 0 0 12px; }
+p:last-child { margin-bottom: 0; }
+a  { color: var(--teal-800); text-decoration: underline; text-underline-offset: 2px; }
+button { font-family: inherit; }
+code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
+
+/* ===== layout ===== */
+.app {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+/* ===== sidebar ===== */
+.sidebar {
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 0;
+  position: sticky; top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.brand-mark {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  background: var(--teal);
+  color: white;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-align: center;
+}
+.brand-mark span { display: block; }
+.brand-mark .b1 { font-size: 13px; }
+.brand-mark .b2 { font-size: 9px; margin-top: 2px; opacity: 0.9; }
+.brand-name {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.brand-sub {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-top: 1px;
+}
+
+.progress {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.progress h4 { margin-bottom: 10px; }
+.progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: var(--body);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 120ms ease;
+  width: 100%;
+}
+.progress-row:hover { background: var(--panel); }
+.progress-row.current { background: var(--teal-050); color: var(--teal-800); font-weight: 600; }
+.progress-row[disabled] { color: var(--muted); cursor: not-allowed; opacity: 0.7; }
+.progress-row[disabled]:hover { background: transparent; }
+.dot {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border-2);
+  background: var(--white);
+  flex: none;
+  position: relative;
+}
+.dot.done {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+.dot.done::after {
+  content: "";
+  position: absolute;
+  left: 4px; top: 1px;
+  width: 5px; height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.dot.current {
+  border-color: var(--teal);
+  box-shadow: inset 0 0 0 3px var(--white), inset 0 0 0 5px var(--teal);
+}
+.dot.locked { opacity: 0.5; }
+.progress-label { font-size: 14px; }
+.progress-sub  { font-size: 11px; color: var(--muted); margin-top: 1px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.side-section {
+  border-bottom: 1px solid var(--border);
+}
+.side-toggle {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+.side-toggle:hover { background: var(--panel); }
+.side-toggle .chev {
+  width: 10px; height: 10px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform 150ms ease;
+}
+.side-section.open .side-toggle .chev { transform: rotate(45deg); }
+.side-body {
+  display: none;
+  padding: 4px 20px 18px;
+  font-size: 13.5px;
+  color: var(--body);
+}
+.side-section.open .side-body { display: block; }
+
+.cheat-group { margin-bottom: 14px; }
+.cheat-group:last-child { margin-bottom: 0; }
+.cheat-group h5 {
+  margin: 0 0 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--teal-800);
+  font-weight: 700;
+}
+.cheat-line {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink);
+  padding: 3px 0;
+  line-height: 1.35;
+  word-break: break-word;
+}
+.cheat-line .cmt { color: var(--muted); }
+
+.errors-list .err {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.errors-list .err:last-child { border-bottom: 0; }
+.errors-list .err-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--magenta-700);
+  font-weight: 600;
+}
+.errors-list .err-fix {
+  font-size: 13px;
+  color: var(--body);
+  margin-top: 2px;
+}
+
+.sidebar-foot {
+  margin-top: auto;
+  padding: 14px 20px 18px;
+  border-top: 1px solid var(--border);
+}
+.linklike {
+  background: none; border: 0; padding: 0;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.linklike:hover { color: var(--magenta-700); }
+
+/* ===== main ===== */
+.main {
+  padding: 0;
+  min-width: 0; /* allow flex/grid children to shrink */
+}
+.topstrip {
+  position: sticky; top: 0;
+  z-index: 5;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.crumbs { font-size: 13px; color: var(--muted); }
+.crumbs strong { color: var(--ink); font-weight: 600; }
+.pathchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--panel);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+}
+.pathchip .pdot { width: 8px; height: 8px; border-radius: 50%; }
+.pathchip .pdot.beg { background: #2EB47A; }
+.pathchip .pdot.int { background: #E5AB17; }
+.pathchip .pdot.exp { background: #D03030; }
+.pathchip .linklike { margin-left: 6px; }
+
+.screen { padding: 36px 48px 96px; max-width: 920px; }
+.screen-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.screen-header h1 { font-size: 36px; }
+.screen-header .lead { color: var(--muted); font-size: 16px; margin-top: 6px; max-width: 580px; }
+
+/* phase chip */
+.phase {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex: none;
+}
+.phase.blocks  { background: var(--teal); }
+.phase.switch  { background: var(--amber); }
+.phase.python  { background: var(--magenta); }
+.phase.vision  { background: var(--teal-dark); }
+.phase.express { background: #444; }
+
+/* cards & sections */
+.section {
+  background: white;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--teal);
+  padding: 22px 26px;
+  margin-bottom: 22px;
+}
+.section.amber  { border-top-color: var(--amber); }
+.section.magenta{ border-top-color: var(--magenta); }
+.section.dark   { border-top-color: var(--teal-dark); }
+.section h2 { margin-bottom: 8px; }
+.section h3 { margin: 0 0 10px; }
+.section .lead {
+  font-size: 16px;
+  color: var(--body);
+  margin-bottom: 0;
+}
+
+/* objective row */
+.objective {
+  display: flex;
+  gap: 18px;
+  background: var(--teal-050);
+  border-left: 4px solid var(--teal);
+  padding: 16px 20px;
+  margin-bottom: 22px;
+}
+.objective.amber  { background: var(--amber-050);   border-left-color: var(--amber); }
+.objective.magenta{ background: var(--magenta-050); border-left-color: var(--magenta); }
+.objective .label {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 700; color: var(--teal-800);
+  flex: none;
+  padding-top: 2px;
+}
+.objective.amber   .label { color: var(--amber-700); }
+.objective.magenta .label { color: var(--magenta-700); }
+.objective p { font-size: 17px; color: var(--ink); font-weight: 500; }
+
+/* pull-quote */
+.pull {
+  border-left: 4px solid var(--magenta);
+  padding: 6px 0 6px 18px;
+  margin: 18px 0;
+  font-size: 19px;
+  color: var(--magenta-700);
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* expandable */
+details.expandable {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 0;
+  margin-top: 14px;
+}
+details.expandable[open] { background: white; }
+details.expandable > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+details.expandable > summary::-webkit-details-marker { display: none; }
+details.expandable > summary::after {
+  content: "";
+  width: 10px; height: 10px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 150ms ease;
+}
+details.expandable[open] > summary::after { transform: rotate(225deg); }
+details.expandable > .ex-body { padding: 4px 18px 18px; }
+
+.commands-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.commands-grid .cheat-group { margin: 0; }
+
+/* hint cards */
+.hints { display: grid; gap: 14px; }
+.hint-card {
+  border: 1px solid var(--border);
+  background: white;
+}
+.hint-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  gap: 16px;
+  border-bottom: 1px solid transparent;
+}
+.hint-card.opened .hint-head { border-bottom-color: var(--border); }
+.hint-q {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--ink);
+}
+.hint-q .qmark {
+  display: inline-block;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--panel);
+  color: var(--muted);
+  text-align: center;
+  line-height: 22px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-right: 10px;
+  vertical-align: -3px;
+}
+.hint-body { display: none; padding: 0 18px 18px; }
+.hint-card.opened .hint-body { display: block; }
+.hint-step {
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--border);
+  display: none;
+}
+.hint-step:last-child { border-bottom: 0; }
+.hint-step.shown { display: block; }
+.hint-step .h-label {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--teal-800);
+  margin-right: 10px;
+  vertical-align: 1px;
+}
+.hint-step.h2 .h-label { color: var(--amber-700); }
+.hint-step.h3 .h-label { color: var(--magenta-700); }
+.hint-step .h-text { display: inline; color: var(--body); font-size: 15.5px; }
+.hint-actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--teal);
+  color: white;
+  border: 0;
+  padding: 10px 18px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 120ms ease, transform 80ms ease;
+}
+.btn:hover { background: var(--teal-700); }
+.btn:active { transform: translateY(1px); }
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border-2);
+}
+.btn.ghost:hover { background: var(--panel); border-color: var(--muted); }
+.btn.magenta { background: var(--magenta); }
+.btn.magenta:hover { background: var(--magenta-700); }
+.btn.amber { background: var(--amber); }
+.btn.amber:hover { background: var(--amber-700); }
+.btn.sm { padding: 6px 12px; font-size: 13px; }
+.btn[disabled] { background: var(--border-2); color: var(--muted); cursor: not-allowed; transform: none; }
+
+/* path picker */
+.paths {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 28px;
+}
+.path-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--teal);
+  padding: 22px 22px 20px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: var(--body);
+  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+  position: relative;
+}
+.path-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+.path-card.beginner   { border-top-color: #2EB47A; }
+.path-card.intermediate { border-top-color: var(--amber); }
+.path-card.express    { border-top-color: var(--magenta); }
+.path-card .p-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.path-card .p-tag::before {
+  content: "";
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.path-card.beginner     .p-tag::before { background: #2EB47A; }
+.path-card.intermediate .p-tag::before { background: var(--amber); }
+.path-card.express      .p-tag::before { background: var(--magenta); }
+.path-card h3 { font-size: 22px; line-height: 1.2; margin-bottom: 10px; color: var(--ink); }
+.path-card p  { font-size: 15px; color: var(--body); }
+.path-card .p-cta {
+  display: block;
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--teal-800);
+  font-weight: 600;
+}
+.path-card:hover .p-cta { color: var(--magenta-700); }
+
+/* hero */
+.hero {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 38px 40px 34px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  right: -80px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle at 35% 50%, var(--teal-050) 0%, var(--teal-050) 38%, transparent 70%);
+  pointer-events: none;
+}
+.hero h1 { font-size: 40px; max-width: 620px; position: relative; }
+.hero h1 .accent { color: var(--magenta); }
+.hero .hero-lead {
+  font-size: 18px;
+  color: var(--body);
+  max-width: 640px;
+  margin-top: 14px;
+  position: relative;
+}
+.hero .hero-meta {
+  display: flex; gap: 24px;
+  margin-top: 22px;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  position: relative;
+}
+.hero .hero-meta span { display: inline-flex; gap: 6px; align-items: center; }
+.hero .hero-meta b { color: var(--ink); font-weight: 700; }
+
+/* block→python decoder */
+.decoder {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 18px;
+  margin-top: 8px;
+}
+.decoder-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dec-btn {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  text-align: left;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 100ms ease, border-color 100ms ease;
+}
+.dec-btn:hover { background: var(--panel); }
+.dec-btn.active {
+  background: var(--teal-050);
+  border-color: var(--teal);
+  color: var(--teal-800);
+  font-weight: 600;
+}
+.dec-btn .blk {
+  display: inline-block;
+  width: 12px; height: 12px;
+  flex: none;
+}
+.dec-btn .blk.motion { background: var(--blue); }
+.dec-btn .blk.kick   { background: var(--magenta); }
+.dec-btn .blk.wait   { background: var(--amber); }
+
+.decoder-panel {
+  background: #1B2526;
+  color: #E8EBEB;
+  padding: 18px 20px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.55;
+  min-height: 220px;
+  position: relative;
+}
+.decoder-panel .label {
+  color: #6B8C8B;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.decoder-panel code .cmt { color: #6B8C8B; }
+.decoder-panel code .kw  { color: #F09E55; }
+.decoder-panel code .str { color: #8FCC8F; }
+.decoder-panel code .num { color: #E89AC7; }
+.decoder-panel code .fn  { color: #6FD0CC; }
+.decoder-panel .reads {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #2B3839;
+  color: #C7CECE;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+/* code blocks */
+.codeblock {
+  background: #1B2526;
+  color: #E8EBEB;
+  padding: 20px 22px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.55;
+  position: relative;
+  overflow-x: auto;
+}
+.codeblock pre { margin: 0; white-space: pre; }
+.codeblock .cmt { color: #6B8C8B; }
+.codeblock .kw  { color: #F09E55; }
+.codeblock .str { color: #8FCC8F; }
+.codeblock .num { color: #E89AC7; }
+.codeblock .fn  { color: #6FD0CC; }
+.codeblock .blank { color: var(--amber); font-weight: 700; }
+.code-actions {
+  position: absolute;
+  top: 12px; right: 12px;
+  display: flex; gap: 8px;
+}
+.code-copy {
+  background: rgba(255,255,255,0.08);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+.code-copy:hover { background: rgba(255,255,255,0.15); }
+.code-copy.ok { background: var(--teal); border-color: var(--teal); }
+
+/* delivery run */
+.run {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+.timer-card {
+  background: var(--ink);
+  color: white;
+  padding: 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+}
+.timer-label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  font-weight: 700;
+}
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 56px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: white;
+  font-variant-numeric: tabular-nums;
+}
+.timer-display.warn { color: var(--amber); }
+.timer-display.crit { color: var(--magenta); }
+.timer-display.done { color: #FF6E6E; }
+.timer-actions { display: flex; gap: 8px; justify-content: center; }
+.timer-actions .btn { padding: 7px 14px; font-size: 13px; }
+.timer-actions .btn.ghost { color: white; border-color: rgba(255,255,255,0.25); }
+.timer-actions .btn.ghost:hover { background: rgba(255,255,255,0.08); }
+
+.scoreboard {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.score-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.score-cargo {
+  display: flex; align-items: center; gap: 12px;
+}
+.cargo-icon {
+  width: 28px; height: 28px;
+  border: 2px solid var(--ink);
+  flex: none;
+  position: relative;
+}
+.cargo-icon.ball   { border-radius: 50%; background: white; }
+.cargo-icon.ball::before, .cargo-icon.ball::after {
+  content: ""; position: absolute; background: var(--ink);
+}
+.cargo-icon.ball::before { left: 50%; top: 3px; bottom: 3px; width: 2px; transform: translateX(-50%); }
+.cargo-icon.ball::after  { top: 50%; left: 3px; right: 3px; height: 2px; transform: translateY(-50%); }
+.cargo-icon.blue   { background: var(--blue); border-color: var(--blue); }
+.cargo-icon.orange { background: var(--amber); border-color: var(--amber); }
+.score-name { font-weight: 600; color: var(--ink); }
+.score-zone { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.score-btn {
+  background: white;
+  border: 1px solid var(--border-2);
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 130px;
+  justify-content: center;
+  transition: all 120ms ease;
+}
+.score-btn:hover { background: var(--panel); }
+.score-btn .pts { color: var(--muted); font-size: 12px; font-weight: 700; }
+.score-btn.delivered {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+.score-btn.delivered .pts { color: rgba(255,255,255,0.9); }
+.score-total {
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.score-total .lbl { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.score-total .val { font-size: 32px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* failure log */
+.failure {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+}
+.failure h4 { color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.failure .sub { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.failure textarea {
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  background: white;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.45;
+  font-family: var(--font-body);
+  color: var(--body);
+}
+.failure textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(0,172,168,0.22);
+}
+.save-hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.save-hint::before {
+  content: "";
+  width: 6px; height: 6px;
+  background: var(--teal);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* completion footer */
+.complete-bar {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 26px;
+  background: white;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--teal);
+}
+.complete-bar.done {
+  border-top-color: var(--teal);
+  background: var(--teal-050);
+}
+.complete-bar h3 { font-size: 17px; margin: 0; color: var(--ink); }
+.complete-bar p  { color: var(--muted); font-size: 13.5px; margin: 4px 0 0; }
+.complete-bar .check {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 600; color: var(--teal-800); font-size: 15px;
+}
+.complete-bar .check::before {
+  content: ""; width: 18px; height: 18px;
+  background: var(--teal); border-radius: 50%;
+  position: relative;
+  display: inline-block;
+}
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.complete-bar.just-completed .check::before { animation: pop 320ms ease-out; }
+
+/* express editor */
+.editor {
+  background: #1B2526;
+  border: 1px solid #0F1717;
+}
+.editor-bar {
+  background: #243031;
+  padding: 8px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+.editor-bar .savestate { display: inline-flex; align-items: center; gap: 6px; }
+.editor-bar .savestate::before {
+  content: ""; width: 6px; height: 6px; background: var(--teal); border-radius: 50%;
+}
+.editor textarea {
+  width: 100%;
+  min-height: 360px;
+  background: #1B2526;
+  color: #E8EBEB;
+  border: 0;
+  padding: 16px 20px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  display: block;
+  tab-size: 4;
+}
+.editor textarea:focus { outline: none; }
+
+/* constraints list */
+.criteria { display: grid; gap: 8px; margin-top: 8px; }
+.criteria li {
+  list-style: none;
+  padding-left: 28px;
+  position: relative;
+  font-size: 15px;
+  color: var(--body);
+}
+.criteria li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 6px;
+  width: 14px; height: 14px;
+  border: 2px solid var(--magenta);
+  background: white;
+}
+
+/* tiny callout */
+.callout {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--amber-050);
+  border-left: 4px solid var(--amber);
+  font-size: 15px;
+  color: var(--ink);
+  margin: 16px 0;
+}
+.callout .ctitle { font-weight: 700; color: var(--amber-700); flex: none; }
+.callout.teal    { background: var(--teal-050); border-left-color: var(--teal); }
+.callout.teal .ctitle { color: var(--teal-800); }
+.callout.magenta { background: var(--magenta-050); border-left-color: var(--magenta); }
+.callout.magenta .ctitle { color: var(--magenta-700); }
+
+/* locked screen */
+.locked-card {
+  background: var(--panel);
+  border: 1px dashed var(--border-2);
+  padding: 40px;
+  text-align: center;
+  color: var(--muted);
+}
+.locked-card h2 { color: var(--muted); margin-bottom: 8px; }
+.locked-card p  { color: var(--muted); max-width: 380px; margin: 0 auto; }
+
+/* modal */
+.modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.42);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: white;
+  max-width: 440px;
+  width: 100%;
+  border-top: 4px solid var(--magenta);
+  padding: 26px 28px;
+}
+.modal h3 { margin-bottom: 8px; }
+.modal p  { color: var(--body); margin-bottom: 18px; }
+.modal .modal-acts { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* toast */
+.toast {
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: var(--ink);
+  color: white;
+  padding: 12px 20px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+  z-index: 200;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* responsive */
+@media (max-width: 980px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; }
+  .screen { padding: 24px 22px 80px; }
+  .topstrip { padding: 12px 22px; }
+  .paths { grid-template-columns: 1fr; }
+  .run { grid-template-columns: 1fr; }
+  .decoder { grid-template-columns: 1fr; }
+  .commands-grid { grid-template-columns: 1fr; }
+  .hero { padding: 28px 24px; }
+  .hero h1 { font-size: 30px; }
+  .screen-header h1 { font-size: 28px; }
+}
+@media (max-width: 540px) {
+  body { font-size: 16px; }
+  .screen-header { flex-direction: column-reverse; align-items: flex-start; }
+}
+
+/* print niceties (in case someone hits Cmd+P) */
+@media print {
+  .sidebar, .topstrip, .complete-bar, .modal-bg { display: none !important; }
+  .screen { padding: 0; max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" aria-label="Lesson navigation">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <span class="b1">TE+TC</span>
+      </div>
+      <div>
+        <div class="brand-name">TETC</div>
+        <div class="brand-sub">Rover Companion</div>
+      </div>
+    </div>
+
+    <nav class="progress" aria-label="Progress">
+      <h4>Your route</h4>
+      <div class="progress-list" id="progressList"></div>
+    </nav>
+
+    <section class="side-section" id="cheatSection">
+      <button class="side-toggle" data-toggle="cheatSection" aria-expanded="false">
+        Command cheat sheet
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="side-body">
+        <div class="cheat-group">
+          <h5>Motion</h5>
+          <div class="cheat-line">robot.move_for(<span class="cmt">dist_mm, angle, vel</span>)</div>
+          <div class="cheat-line">robot.turn_for(<span class="cmt">dir, deg, vel</span>)</div>
+          <div class="cheat-line">robot.turn_to(<span class="cmt">heading</span>)</div>
+          <div class="cheat-line">robot.set_move_velocity(<span class="cmt">pct</span>)</div>
+          <div class="cheat-line">robot.stop_all_movement()</div>
+        </div>
+        <div class="cheat-group">
+          <h5>Kicker</h5>
+          <div class="cheat-line">robot.kicker.kick(MEDIUM)</div>
+          <div class="cheat-line">robot.kicker.place()</div>
+          <div class="cheat-line"><span class="cmt"># also WEAK, STRONG</span></div>
+        </div>
+        <div class="cheat-group">
+          <h5>LEDs &amp; screen</h5>
+          <div class="cheat-line">robot.led.on(ALL_LEDS, RED)</div>
+          <div class="cheat-line">robot.led.off(ALL_LEDS)</div>
+          <div class="cheat-line">robot.screen.print(<span class="str">"Delivering..."</span>)</div>
+          <div class="cheat-line">robot.screen.clear_screen()</div>
+        </div>
+        <div class="cheat-group">
+          <h5>Wait</h5>
+          <div class="cheat-line">wait(0.5, SECONDS)</div>
+        </div>
+        <div class="cheat-group">
+          <h5>Vision (Bonus)</h5>
+          <div class="cheat-line">robot.vision.get_data(BLUE_BARREL)</div>
+          <div class="cheat-line"><span class="cmt"># .bearing  .width  .centerX</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="side-section" id="errorsSection">
+      <button class="side-toggle" data-toggle="errorsSection" aria-expanded="false">
+        Common errors
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="side-body">
+        <div class="errors-list">
+          <div class="err">
+            <div class="err-name">IndentationError</div>
+            <div class="err-fix">Python reads spacing. Everything inside a <code>for</code> loop must be indented the same amount (4 spaces).</div>
+          </div>
+          <div class="err">
+            <div class="err-name">SyntaxError</div>
+            <div class="err-fix">Usually a missing colon at the end of <code>for ... :</code> or a missing parenthesis.</div>
+          </div>
+          <div class="err">
+            <div class="err-name">NameError</div>
+            <div class="err-fix">A name you used doesn't exist. Check spelling and capitalization &mdash; <code>Robot</code> and <code>robot</code> are different.</div>
+          </div>
+          <div class="err">
+            <div class="err-name">TypeError</div>
+            <div class="err-fix">Wrong kind of value. <code>"450"</code> is a string. <code>450</code> is a number. Distance wants a number.</div>
+          </div>
+          <div class="err">
+            <div class="err-name">Robot doesn't move</div>
+            <div class="err-fix">Powered on? Paired? Did you download the code, or just save it?</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sidebar-foot">
+      <button class="linklike" id="resetBtn">Reset my progress</button>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+    <div class="topstrip">
+      <div class="crumbs" id="crumbs">Stadium Logistics Rover</div>
+      <div id="pathHolder"></div>
+    </div>
+
+    <!-- ====== LANDING ====== -->
+    <section class="screen" id="screen-landing" data-screen-label="00 Landing">
+      <div class="hero">
+        <h1>Match day at <span class="accent">NRG Stadium.</span></h1>
+        <p class="hero-lead">The 2026 World Cup is hours from kickoff. Three stations need supplies. Your autonomous rover is the only thing fast enough to make all three deliveries before the whistle.</p>
+        <div class="hero-meta">
+          <span><b>3</b> cargo</span>
+          <span><b>3</b> zones</span>
+          <span><b>90</b> minutes</span>
+          <span>1 rover</span>
+        </div>
+      </div>
+
+      <h2 style="margin: 36px 0 6px;">Where do you start?</h2>
+      <p style="color: var(--muted); margin-bottom: 4px;">Pick the lane that matches you. You can change it at any time.</p>
+
+      <div class="paths">
+        <button class="path-card beginner"     data-path="beginner">
+          <div class="p-tag">Never coded</div>
+          <h3>Start at Level 1.</h3>
+          <p>Take your time. We're going to drive the rover before we code it.</p>
+          <span class="p-cta">Begin →</span>
+        </button>
+        <button class="path-card intermediate" data-path="intermediate">
+          <div class="p-tag">I've used blocks</div>
+          <h3>Start at Level 1.<br>Move fast.</h3>
+          <p>Skim the hints; we'll hit text Python in Level 3.</p>
+          <span class="p-cta">Begin →</span>
+        </button>
+        <button class="path-card express"      data-path="express">
+          <div class="p-tag">I've typed code</div>
+          <h3>Take the Express Lane.</h3>
+          <p>Different work, not harder work. You're writing the version future students will read.</p>
+          <span class="p-cta">Begin →</span>
+        </button>
+      </div>
+
+      <div class="callout teal" style="margin-top: 36px;">
+        <span class="ctitle">Before you code &mdash;</span>
+        <span>Drive the rover with the controller through one delivery first. Your hands need to know the field before your code does.</span>
+      </div>
+    </section>
+
+    <!-- ====== LEVEL 1 ====== -->
+    <section class="screen" id="screen-level1" data-screen-label="01 Level 1 Blocks" hidden>
+      <div class="screen-header">
+        <div>
+          <h1>Level 1 &mdash; Blocks</h1>
+          <p class="lead">One delivery. One cargo, one zone, one stack of blocks. Make it work.</p>
+        </div>
+        <span class="phase blocks">Blocks</span>
+      </div>
+
+      <div class="objective">
+        <span class="label">Objective</span>
+        <p>Make the rover deliver one cargo to its zone using VEXcode Blocks.</p>
+      </div>
+
+      <section class="section">
+        <h3>What you're doing</h3>
+        <p>Pick one delivery from your stadium &mdash; just one. Measure the distance from the supply room to the zone with the ruler. Measure the turn angle with the protractor. Translate those numbers into a stack of blocks. Run it. Watch what happens.</p>
+        <p>You're not trying to be perfect. You're trying to get the rover to <em>do a thing</em>.</p>
+
+        <details class="expandable">
+          <summary>Show me the commands I'll need</summary>
+          <div class="ex-body">
+            <div class="commands-grid">
+              <div class="cheat-group">
+                <h5>Drive</h5>
+                <div class="cheat-line">Drive forward <span class="cmt">[mm]</span></div>
+                <div class="cheat-line">Drive backward <span class="cmt">[mm]</span></div>
+              </div>
+              <div class="cheat-group">
+                <h5>Turn</h5>
+                <div class="cheat-line">Turn left/right <span class="cmt">[degrees]</span></div>
+                <div class="cheat-line">Turn to heading <span class="cmt">[degrees]</span></div>
+              </div>
+              <div class="cheat-group">
+                <h5>Kicker</h5>
+                <div class="cheat-line">Kick (medium / weak / strong)</div>
+                <div class="cheat-line">Place (gentle drop)</div>
+              </div>
+              <div class="cheat-group">
+                <h5>Wait</h5>
+                <div class="cheat-line">Wait <span class="cmt">[sec]</span> seconds</div>
+              </div>
+            </div>
+            <p style="font-size: 14px; color: var(--muted); margin-top: 14px;">This is the inventory, not a recipe. The order and the numbers are yours.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="section amber">
+        <h3>Stuck? Ask a partner. Then ask me.</h3>
+        <p style="color: var(--muted); margin-bottom: 14px; font-size: 14px;">Open one card at a time. Each card has three hints. We give you the next one when you ask.</p>
+        <div class="hints" data-hints="level1">
+
+          <!-- HINT CARD 1 -->
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>The rover isn't moving the right distance.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text">Stop. Measure again. Make sure your ruler and your block agree on units. VEX moves in <b>millimeters</b>. 1 cm = 10 mm.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">Run it once and watch where it actually stops. Is it short, long, or in the right place but pointed wrong? That tells you which number to change.</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">Distance and angle are two separate problems. Fix one at a time. Try a clean drive forward (angle = 0) first, then come back and adjust the heading.</span>
+              </div>
+              <div class="hint-actions">
+                <button class="btn ghost sm" data-action="next-hint">Still stuck</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- HINT CARD 2 -->
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>The rover is turning the wrong way.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text">Look at the protractor on the field. Which direction is 0°? Which way is positive? Sketch it before you change anything.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">VEX measures heading like a compass: 0 is forward, positive turns right, negative turns left. The <em>sign</em> of your number matters as much as the size.</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">Where is the rover pointed now? Where does it need to point? Say it out loud with your partner. The turn is the difference between those two &mdash; speak it before you type it.</span>
+              </div>
+              <div class="hint-actions">
+                <button class="btn ghost sm" data-action="next-hint">Still stuck</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- HINT CARD 3 -->
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>The kicker isn't firing.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text">Is the Kicker block actually in your stack? It's easy to drop a Drive block where you meant a Kicker. Look closely.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">The kicker has two modes: <b>kick</b> and <b>place</b>. Soccer ball gets kicked. Barrels get placed gently. Are you using the right one?</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">Order matters. The rover has to be <em>at</em> the zone before the kicker fires. If it fires mid-drive, the cargo lands wherever the rover happens to be. Walk through your stack, one block at a time.</span>
+              </div>
+              <div class="hint-actions">
+                <button class="btn ghost sm" data-action="next-hint">Still stuck</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="failure">
+        <h4>What happened?</h4>
+        <div class="sub">Did the rover do something you didn't expect? Write it down. That's your data.</div>
+        <textarea data-failure="level1" placeholder="Run 1: drove too far and missed the zone. Run 2: turned right when I wanted left&mdash;maybe my angle is negative?"></textarea>
+        <div class="save-hint">Saves as you type.</div>
+      </section>
+
+      <div class="complete-bar" data-complete="level1">
+        <div>
+          <h3>Got the rover to deliver?</h3>
+          <p>One delivery counts. Mark this level complete to unlock Level 2.</p>
+        </div>
+        <button class="btn" data-action="complete" data-level="level1">Mark Level 1 complete</button>
+      </div>
+    </section>
+
+    <!-- ====== LEVEL 2 ====== -->
+    <section class="screen" id="screen-level2" data-screen-label="02 Level 2 Switch" hidden>
+      <div class="screen-header">
+        <div>
+          <h1>Level 2 &mdash; Switch</h1>
+          <p class="lead">Same delivery, new layout. Convert your blocks to Switch, then edit the Python values.</p>
+        </div>
+        <span class="phase switch">Switch</span>
+      </div>
+
+      <div class="objective amber">
+        <span class="label">Objective</span>
+        <p>Convert your Level 1 stack to a Switch block. Read the Python it generates. Edit the numbers to match your new stadium.</p>
+      </div>
+
+      <section class="section amber">
+        <h3>What you're doing</h3>
+        <p>Match 2 is in a different city. The stadium moves. The supply room, the zones, the distances &mdash; at least two of them are in a new place. Your job is to keep the same delivery working in the new world.</p>
+        <p>In VEXcode, right-click your block stack &rarr; <b>Convert stack to Switch block</b>. Your blocks become Python inside a single Switch container. You don't have to write Python yet. You just have to find the numbers and change them.</p>
+
+        <div class="pull">You're not writing Python yet &mdash; you're a translator.</div>
+      </section>
+
+      <section class="section">
+        <h3>Block &rarr; Python decoder</h3>
+        <p style="font-size: 15px; color: var(--muted); margin-bottom: 14px;">Click a block on the left to see the Python it becomes.</p>
+        <div class="decoder">
+          <div class="decoder-list" id="decoderList">
+            <button class="dec-btn active" data-decode="drive">
+              <span class="blk motion"></span> Drive forward
+            </button>
+            <button class="dec-btn" data-decode="turn">
+              <span class="blk motion"></span> Turn (left / right)
+            </button>
+            <button class="dec-btn" data-decode="turnto">
+              <span class="blk motion"></span> Turn to heading
+            </button>
+            <button class="dec-btn" data-decode="kick">
+              <span class="blk kick"></span> Kick (soccer ball)
+            </button>
+            <button class="dec-btn" data-decode="place">
+              <span class="blk kick"></span> Place (barrel)
+            </button>
+            <button class="dec-btn" data-decode="wait">
+              <span class="blk wait"></span> Wait
+            </button>
+          </div>
+          <div class="decoder-panel" id="decoderPanel">
+            <div class="label">Python</div>
+            <pre id="decoderCode"></pre>
+            <div class="reads" id="decoderReads"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section amber">
+        <h3>Stuck?</h3>
+        <div class="hints" data-hints="level2">
+
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>I can't find the Switch option.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text"><b>Right-click</b> &mdash; not left-click &mdash; on the first block of your stack. On a Chromebook, that's two-finger tap on the trackpad.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">You have to right-click the <em>start</em> of the stack, not somewhere in the middle. The menu only appears on a clean stack origin.</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">If the menu opens but "Convert stack to Switch block" is grayed out, your stack contains a block Switch can't translate. Remove any custom or pictographic blocks and try again.</span>
+              </div>
+              <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+            </div>
+          </div>
+
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>I edited the number but nothing changed.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text">Did you save and re-download to the robot? VEXcode does not push your changes to the rover live.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">Numbers live in more than one place. If you changed the distance going to the zone, is there a "return to base" line that still has the old number?</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">You're editing four numbers in four different lines, and every one has to be exact. This is tedious. Notice the tedium &mdash; we'll come back to it in Level 3.</span>
+              </div>
+              <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+            </div>
+          </div>
+
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>The Python looks scary.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text">Don't read it like a book. Find the <b>numbers</b> first. They're the parts you came here to change.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">Each line is a sentence: verb, then ingredients in parentheses. <code>robot.move_for(450, 30)</code> reads as "rover, move 450 millimeters, turning 30 degrees."</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">Cover the words with your finger. Look at only the numbers. Find your distance, find your angle, change them. The words are doing the same job your blocks did &mdash; they just look different.</span>
+              </div>
+              <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="failure">
+        <h4>What happened?</h4>
+        <div class="sub">Where did the tedium show up? Which edit caught you?</div>
+        <textarea data-failure="level2" placeholder="I changed the first distance but forgot the return distance. Also, I had to edit the same angle in two places&mdash;feels like it should be in one."></textarea>
+        <div class="save-hint">Saves as you type.</div>
+      </section>
+
+      <div class="complete-bar" data-complete="level2">
+        <div>
+          <h3>Same delivery, new field?</h3>
+          <p>If your rover makes the new run, you're done with Level 2.</p>
+        </div>
+        <button class="btn amber" data-action="complete" data-level="level2">Mark Level 2 complete</button>
+      </div>
+    </section>
+
+    <!-- ====== LEVEL 3 ====== -->
+    <section class="screen" id="screen-level3" data-screen-label="03 Level 3 Python" hidden>
+      <div class="screen-header">
+        <div>
+          <h1>Level 3 &mdash; Text Python</h1>
+          <p class="lead">Knockout round. Three matches, three days, no time to rewrite the code.</p>
+        </div>
+        <span class="phase python">Python</span>
+      </div>
+
+      <div class="objective magenta">
+        <span class="label">Objective</span>
+        <p>All three deliveries. One list. One loop. Numbers at the top &mdash; the loop does the rest.</p>
+      </div>
+
+      <section class="section magenta">
+        <h3>What you're doing</h3>
+        <p>The stadium moves every match. Your code can't. So instead of typing the same drive-place-return sequence three times, you write it <em>once</em> and feed it three deliveries.</p>
+        <p>Start a new text Python project in VEXcode AIM. You can drag and drop Python blocks, or type from scratch &mdash; typing is encouraged. The starter below shows the shape.</p>
+
+        <div class="callout magenta">
+          <span class="ctitle">Why this matters &mdash;</span>
+          <span>In Level 2 you edited four numbers in four places. In Level 3, you change the numbers in <em>one</em> place. The loop does the rest. That's the whole reason Python exists.</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <h3>Starter scaffold</h3>
+        <p style="font-size: 15px; color: var(--muted); margin-bottom: 14px;">Copy this into your project. Fill in the blanks with your measurements.</p>
+        <div class="codeblock">
+          <div class="code-actions">
+            <button class="code-copy" data-action="copy-starter">Copy</button>
+          </div>
+<pre id="starterCode"><span class="cmt"># My deliveries: (distance_mm, angle_deg, cargo)</span>
+deliveries = [
+    (<span class="blank">___</span>, <span class="blank">___</span>, <span class="str">"soccer_ball"</span>),
+    (<span class="blank">___</span>, <span class="blank">___</span>, <span class="str">"blue_barrel"</span>),
+    (<span class="blank">___</span>, <span class="blank">___</span>, <span class="str">"orange_barrel"</span>),
+]
+
+<span class="kw">for</span> distance, angle, cargo <span class="kw">in</span> deliveries:
+    robot.<span class="fn">screen</span>.print(cargo)
+    robot.<span class="fn">move_for</span>(distance, angle)
+    <span class="cmt"># drop off the right way for this cargo</span>
+    robot.<span class="fn">kicker</span>.place()
+    <span class="cmt"># come back to the supply room</span>
+    robot.<span class="fn">move_for</span>(distance, angle + <span class="num">180</span>)</pre>
+        </div>
+        <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">The soccer ball wants <code>kick(MEDIUM)</code>, not <code>place()</code>. Decide where that goes.</p>
+      </section>
+
+      <section class="section magenta">
+        <h3>Delivery run &mdash; timer &amp; score</h3>
+        <p style="font-size: 14px; color: var(--muted); margin-bottom: 14px;">Press Start when you're ready to run. Click each cargo button as the rover successfully delivers it.</p>
+        <div class="run">
+          <div class="timer-card">
+            <div class="timer-label">Time remaining</div>
+            <div class="timer-display" id="timerDisplay">1:00</div>
+            <div class="timer-actions">
+              <button class="btn" id="timerStart">Start</button>
+              <button class="btn ghost" id="timerReset">Reset</button>
+            </div>
+          </div>
+          <div class="scoreboard">
+            <div class="score-row">
+              <div class="score-cargo">
+                <div class="cargo-icon ball"></div>
+                <div>
+                  <div class="score-name">Soccer ball</div>
+                  <div class="score-zone">Referee Station</div>
+                </div>
+              </div>
+              <button class="score-btn" data-score="ball" data-pts="3">
+                <span>Delivered</span><span class="pts">+3</span>
+              </button>
+            </div>
+            <div class="score-row">
+              <div class="score-cargo">
+                <div class="cargo-icon blue"></div>
+                <div>
+                  <div class="score-name">Blue barrel</div>
+                  <div class="score-zone">Team A Bench</div>
+                </div>
+              </div>
+              <button class="score-btn" data-score="blue" data-pts="2">
+                <span>Delivered</span><span class="pts">+2</span>
+              </button>
+            </div>
+            <div class="score-row">
+              <div class="score-cargo">
+                <div class="cargo-icon orange"></div>
+                <div>
+                  <div class="score-name">Orange barrel</div>
+                  <div class="score-zone">Team B Bench</div>
+                </div>
+              </div>
+              <button class="score-btn" data-score="orange" data-pts="1">
+                <span>Delivered</span><span class="pts">+1</span>
+              </button>
+            </div>
+            <div class="score-total">
+              <span class="lbl">Total</span>
+              <span class="val" id="scoreTotal">0</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section magenta">
+        <h3>Stuck?</h3>
+        <div class="hints" data-hints="level3">
+
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>I don't know how to start a text project.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text">Open VEXcode AIM. New project &rarr; <b>Python</b> (not Blocks). Save it before you write anything.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">Type the line that wakes the robot up first. Run it. If the robot responds, you're ready. If it doesn't, fix that before writing more code.</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">Copy the starter scaffold above. Fill in <em>one</em> delivery's numbers. Get that one delivery working before you fill in the other two.</span>
+              </div>
+              <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+            </div>
+          </div>
+
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>My loop only runs once.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text">Look at indentation. Everything inside the <code>for</code> must be indented the same. Lines that aren't indented are outside the loop.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">Count your delivery entries. A loop runs exactly as many times as there are items in the list. If your list has one item, you get one run.</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">Print something inside the loop &mdash; <code>robot.screen.print(cargo)</code> &mdash; so you can <em>see</em> how many times it runs. The screen is your debugger.</span>
+              </div>
+              <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+            </div>
+          </div>
+
+          <div class="hint-card" data-card>
+            <div class="hint-head">
+              <div class="hint-q"><span class="qmark">?</span>The variables aren't doing what I expected.</div>
+              <button class="btn ghost sm" data-action="open-card">Open</button>
+            </div>
+            <div class="hint-body">
+              <div class="hint-step h1 shown">
+                <span class="h-label">Try first</span>
+                <span class="h-text">Say out loud what you <em>expect</em> the variables to do. Then say what they're <em>actually</em> doing. The gap is where the bug lives.</span>
+              </div>
+              <div class="hint-step h2">
+                <span class="h-label">Then this</span>
+                <span class="h-text">Variables in the list are unpacked in order: <code>distance, angle, cargo</code>. If you wrote them in a different order, the rover is using your distance as an angle.</span>
+              </div>
+              <div class="hint-step h3">
+                <span class="h-label">Approach</span>
+                <span class="h-text">Pick one delivery. Print all three of its values to the screen before the rover moves. If the numbers on the screen are wrong, your list is wrong. If they're right, the bug is somewhere else.</span>
+              </div>
+              <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="failure">
+        <h4>What happened?</h4>
+        <div class="sub">Which delivery worked? Which didn't? What did you see on the screen?</div>
+        <textarea data-failure="level3" placeholder="First two ran fine, third one drove past the zone. I think the orange barrel's angle is wrong&mdash;rover ends up facing the field edge."></textarea>
+        <div class="save-hint">Saves as you type.</div>
+      </section>
+
+      <div class="complete-bar" data-complete="level3">
+        <div>
+          <h3>All three deliveries running from one loop?</h3>
+          <p>Even partial counts. Mark complete to unlock the Bonus.</p>
+        </div>
+        <button class="btn magenta" data-action="complete" data-level="level3">Mark Level 3 complete</button>
+      </div>
+    </section>
+
+    <!-- ====== BONUS ====== -->
+    <section class="screen" id="screen-bonus" data-screen-label="04 Bonus Vision" hidden>
+      <div class="screen-header">
+        <div>
+          <h1>Bonus &mdash; Vision Final Approach</h1>
+          <p class="lead">The stadium just got rearranged five minutes before kickoff. Your code doesn't know the new layout. Your rover does have eyes.</p>
+        </div>
+        <span class="phase vision">Vision</span>
+      </div>
+
+      <div id="bonusLocked" class="locked-card" hidden>
+        <h2>Locked</h2>
+        <p>Finish Level 3 first. The Bonus opens when you mark it complete.</p>
+      </div>
+
+      <div id="bonusContent">
+        <div class="objective" style="background: rgba(0,112,150,0.08); border-left-color: var(--teal-dark);">
+          <span class="label" style="color: var(--teal-dark);">Objective</span>
+          <p>Use the AI Vision Sensor to find at least one zone instead of hardcoding its position.</p>
+        </div>
+
+        <section class="section dark">
+          <h3>The scenario</h3>
+          <p>A partner team rebuilt your stadium without telling you what changed. Your delivery list is wrong. Hardcoded distances will miss every time.</p>
+          <p>But the rover can <em>see</em>. The camera reports what color blobs it's looking at right now &mdash; their bearing, their width, where they are in the frame. Stop driving by memory. Start driving by what's in front of you.</p>
+        </section>
+
+        <section class="section">
+          <h3>Vision commands</h3>
+          <div class="codeblock">
+<pre><span class="cmt"># Look for a specific color</span>
+data = robot.<span class="fn">vision</span>.get_data(<span class="kw">BLUE_BARREL</span>)
+
+<span class="cmt"># Each item in `data` has:</span>
+<span class="cmt">#   .bearing   how far off-center, in degrees</span>
+<span class="cmt">#   .width     bigger = closer</span>
+<span class="cmt">#   .centerX   horizontal pixel position</span>
+
+<span class="kw">if</span> <span class="fn">len</span>(data) &gt; <span class="num">0</span>:
+    target = data[<span class="num">0</span>]
+    robot.<span class="fn">turn_for</span>(RIGHT, target.bearing)
+    robot.<span class="fn">move_for</span>(<span class="num">100</span>, <span class="num">0</span>)</pre>
+          </div>
+        </section>
+
+        <section class="section dark">
+          <h3>Stuck?</h3>
+          <div class="hints" data-hints="bonus">
+
+            <div class="hint-card" data-card>
+              <div class="hint-head">
+                <div class="hint-q"><span class="qmark">?</span>How do I know what the camera sees?</div>
+                <button class="btn ghost sm" data-action="open-card">Open</button>
+              </div>
+              <div class="hint-body">
+                <div class="hint-step h1 shown">
+                  <span class="h-label">Try first</span>
+                  <span class="h-text">Open the camera view on the rover. It shows you which color blobs it's detecting <em>right now</em>.</span>
+                </div>
+                <div class="hint-step h2">
+                  <span class="h-label">Then this</span>
+                  <span class="h-text">In code, <code>robot.vision.get_data(BLUE_BARREL)</code> returns information about every blue barrel in view &mdash; bearing, width, and position.</span>
+                </div>
+                <div class="hint-step h3">
+                  <span class="h-label">Approach</span>
+                  <span class="h-text">Don't drive by vision yet. Stand still and print what the camera sees first. Once you trust the report, then drive.</span>
+                </div>
+                <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+              </div>
+            </div>
+
+            <div class="hint-card" data-card>
+              <div class="hint-head">
+                <div class="hint-q"><span class="qmark">?</span>I see the object but the rover misses it.</div>
+                <button class="btn ghost sm" data-action="open-card">Open</button>
+              </div>
+              <div class="hint-body">
+                <div class="hint-step h1 shown">
+                  <span class="h-label">Try first</span>
+                  <span class="h-text">Bearing tells you which way to turn. Width tells you how close you are. You need both.</span>
+                </div>
+                <div class="hint-step h2">
+                  <span class="h-label">Then this</span>
+                  <span class="h-text">Width grows as you approach. Decide what width counts as "close enough," then drive until width is bigger than that.</span>
+                </div>
+                <div class="hint-step h3">
+                  <span class="h-label">Approach</span>
+                  <span class="h-text">Vision is a feedback loop, not a one-shot calculation. Look, turn, look again, drive, look again. That's the structure.</span>
+                </div>
+                <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <div class="complete-bar" data-complete="bonus">
+          <div>
+            <h3>Vision-guided run working?</h3>
+            <p>Mark the bonus complete when at least one delivery is using <code>get_data</code> to find its zone.</p>
+          </div>
+          <button class="btn" style="background: var(--teal-dark);" data-action="complete" data-level="bonus">Mark Bonus complete</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== EXPRESS LANE ====== -->
+    <section class="screen" id="screen-express" data-screen-label="05 Express Lane" hidden>
+      <div class="screen-header">
+        <div>
+          <h1>Express Lane</h1>
+          <p class="lead">You've typed code before. You're not here to learn what a <code>for</code> loop is. You're here to write the version future students will read to learn from.</p>
+        </div>
+        <span class="phase express">Reference</span>
+      </div>
+
+      <div class="objective" style="background: #f3f3f3; border-left-color: #444;">
+        <span class="label" style="color: #444;">The job</span>
+        <p>Write the reference implementation of the three-delivery loop. Future Level-3 students will read your code to learn how this lesson is meant to look in real Python.</p>
+      </div>
+
+      <section class="section dark">
+        <h3>Different work, not harder work</h3>
+        <p>You're not skipping the lesson. You're building the artifact the lesson points at. Your code is the thing a classmate at Level 3 will open when they're stuck. That's a real responsibility &mdash; lean into it.</p>
+
+        <h3 style="margin-top: 18px;">Constraints</h3>
+        <ul class="criteria">
+          <li>Works flawlessly. Three deliveries, correct cargo, returns to base each time.</li>
+          <li>Uses variables and a single <code>for</code> loop the way the lesson teaches. No list comprehensions. No lambdas. No clever tricks.</li>
+          <li>Comments explain <b>why</b>, not <b>what</b>. (<code># return to base</code> is good. <code># add 180 to angle</code> is not &mdash; the code already says that.)</li>
+          <li>A classmate sitting at Level 3 right now should be able to read your code top to bottom and not get lost.</li>
+        </ul>
+
+        <div class="callout">
+          <span class="ctitle">Voice check &mdash;</span>
+          <span>Imagine the person reading this never wrote a line of code before this morning. Would your comments help them or show off?</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <h3>Your draft</h3>
+        <p style="font-size: 15px; color: var(--muted); margin-bottom: 14px;">Type here. It autosaves. When you're happy, paste it into VEXcode.</p>
+        <div class="editor">
+          <div class="editor-bar">
+            <span>reference_delivery.py</span>
+            <span class="savestate" id="exSaveState">Saved</span>
+          </div>
+          <textarea id="expressCode" spellcheck="false" placeholder="# Stadium Logistics Rover &mdash; reference implementation
+# Author: your name
+# Read me top-to-bottom.
+
+# Each delivery is (distance, angle, cargo).
+# Distance is millimeters. Angle is degrees from the supply room's
+# forward direction. Positive turns right.
+deliveries = [
+    (450,  30, 'soccer_ball'),
+    (600, -45, 'blue_barrel'),
+    (300,  90, 'orange_barrel'),
+]
+
+# ..."></textarea>
+        </div>
+      </section>
+
+      <section class="section dark">
+        <h3>Extension &mdash; AI Vision</h3>
+        <p>Once your reference is solid, switch one of the deliveries from hardcoded distance/angle to vision-guided. Same loop structure, different way of knowing where the zone is. The vision commands are in the Bonus section &mdash; jump there when you're ready.</p>
+        <button class="btn" style="background: var(--teal-dark);" data-action="goto" data-target="bonus">Open Bonus &rarr;</button>
+      </section>
+
+      <div class="complete-bar" data-complete="express">
+        <div>
+          <h3>Reference implementation done?</h3>
+          <p>Mark complete when your draft is something a Level 3 student could actually learn from.</p>
+        </div>
+        <button class="btn" data-action="complete" data-level="express">Mark Express complete</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Reset confirm modal -->
+<div class="modal-bg" id="resetModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>Reset everything?</h3>
+    <p>This clears your path, your completed levels, your failure notes, and your reference code. There's no undo. (Use this when a new student is starting on this Chromebook.)</p>
+    <div class="modal-acts">
+      <button class="btn ghost" data-action="cancel-reset">Cancel</button>
+      <button class="btn magenta" data-action="confirm-reset">Reset everything</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===================== STATE =====================
+  const STORAGE_KEY = 'tetc_rover_companion_v1';
+  const defaultState = {
+    path: null,           // 'beginner' | 'intermediate' | 'express'
+    screen: 'landing',    // 'landing' | 'level1' | 'level2' | 'level3' | 'bonus' | 'express'
+    completed: { level1: false, level2: false, level3: false, bonus: false, express: false },
+    failure: { level1: '', level2: '', level3: '' },
+    hints: { level1: {}, level2: {}, level3: {}, bonus: {}, express: {} },
+    scores: { ball: false, blue: false, orange: false },
+    timer: { remaining: 60, running: false }, // remaining seconds
+    expressCode: ''
+  };
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return clone(defaultState);
+      const parsed = JSON.parse(raw);
+      // Shallow-merge so new defaults appear after updates
+      return Object.assign(clone(defaultState), parsed, {
+        completed: Object.assign({}, defaultState.completed, parsed.completed || {}),
+        failure:   Object.assign({}, defaultState.failure,   parsed.failure   || {}),
+        hints:     Object.assign({}, defaultState.hints,     parsed.hints     || {}),
+        scores:    Object.assign({}, defaultState.scores,    parsed.scores    || {}),
+        timer:     Object.assign({}, defaultState.timer,     parsed.timer     || {})
+      });
+    } catch (e) { return clone(defaultState); }
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    catch (e) { /* quota or private mode — silently continue */ }
+  }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  let state = loadState();
+  let timerInterval = null;
+
+  // ===================== SCREENS / NAV =====================
+  const screens = ['landing','level1','level2','level3','bonus','express'];
+
+  function gotoScreen(name) {
+    if (name === 'bonus' && !state.completed.level3 && state.path !== 'express') {
+      showToast('Finish Level 3 first to unlock the Bonus.');
+      return;
+    }
+    state.screen = name;
+    saveState();
+    renderScreens();
+    renderProgress();
+    renderCrumbs();
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }
+
+  function renderScreens() {
+    screens.forEach(s => {
+      const el = document.getElementById('screen-' + s);
+      if (!el) return;
+      el.hidden = (s !== state.screen);
+    });
+    // Bonus lock state
+    const bonusLocked  = document.getElementById('bonusLocked');
+    const bonusContent = document.getElementById('bonusContent');
+    if (bonusLocked && bonusContent) {
+      const locked = !state.completed.level3 && state.path !== 'express';
+      bonusLocked.hidden  = !locked;
+      bonusContent.hidden = locked;
+    }
+  }
+
+  function renderCrumbs() {
+    const titles = {
+      landing: 'Stadium Logistics Rover',
+      level1: '<strong>Level 1</strong> &mdash; Blocks',
+      level2: '<strong>Level 2</strong> &mdash; Switch',
+      level3: '<strong>Level 3</strong> &mdash; Text Python',
+      bonus:  '<strong>Bonus</strong> &mdash; Vision',
+      express:'<strong>Express Lane</strong>'
+    };
+    document.getElementById('crumbs').innerHTML = titles[state.screen] || titles.landing;
+  }
+
+  // ===================== PATH PICKER =====================
+  function setPath(path) {
+    state.path = path;
+    // Where does this path land?
+    if (path === 'express') state.screen = 'express';
+    else state.screen = 'level1';
+    saveState();
+    renderAll();
+  }
+  function renderPathChip() {
+    const holder = document.getElementById('pathHolder');
+    if (!state.path) { holder.innerHTML = ''; return; }
+    const labels = {
+      beginner:     { tag: 'beg', text: 'Beginner path' },
+      intermediate: { tag: 'int', text: 'Move fast path' },
+      express:      { tag: 'exp', text: 'Express Lane' }
+    };
+    const meta = labels[state.path];
+    holder.innerHTML =
+      '<span class="pathchip">' +
+        '<span class="pdot ' + meta.tag + '"></span>' +
+        meta.text +
+        '<button class="linklike" data-action="goto" data-target="landing">change</button>' +
+      '</span>';
+  }
+
+  // ===================== PROGRESS RAIL =====================
+  function renderProgress() {
+    const list = document.getElementById('progressList');
+    const isExpress = state.path === 'express';
+    const rows = [
+      { key: 'landing', label: 'Start',            sub: 'Path picker' },
+      { key: 'level1',  label: 'Level 1',           sub: 'Blocks',     locked: false },
+      { key: 'level2',  label: 'Level 2',           sub: 'Switch',     locked: false },
+      { key: 'level3',  label: 'Level 3',           sub: 'Python',     locked: false },
+      { key: 'bonus',   label: 'Bonus',             sub: 'Vision',     locked: !state.completed.level3 && !isExpress },
+      { key: 'express', label: 'Express Lane',      sub: 'Reference',  hideUnless: 'express' }
+    ];
+    list.innerHTML = rows.map(r => {
+      if (r.hideUnless && state.path !== r.hideUnless) return '';
+      const done = state.completed[r.key];
+      const current = state.screen === r.key;
+      const dotClass = ['dot'];
+      if (done) dotClass.push('done');
+      else if (current) dotClass.push('current');
+      else if (r.locked) dotClass.push('locked');
+      const rowClass = ['progress-row'];
+      if (current) rowClass.push('current');
+      const disabled = r.locked ? 'disabled' : '';
+      return (
+        '<button class="' + rowClass.join(' ') + '" data-action="goto" data-target="' + r.key + '" ' + disabled + '>' +
+          '<span class="' + dotClass.join(' ') + '"></span>' +
+          '<span>' +
+            '<div class="progress-label">' + r.label + '</div>' +
+            '<div class="progress-sub">' + r.sub + '</div>' +
+          '</span>' +
+        '</button>'
+      );
+    }).join('');
+  }
+
+  // ===================== HINTS =====================
+  function openCard(card) {
+    card.classList.add('opened');
+    const head = card.querySelector('.hint-head .btn');
+    if (head) head.textContent = 'Close';
+    persistHintState(card);
+  }
+  function closeCard(card) {
+    card.classList.remove('opened');
+    const head = card.querySelector('.hint-head .btn');
+    if (head) head.textContent = 'Open';
+  }
+  function revealNext(card) {
+    const steps = card.querySelectorAll('.hint-step');
+    let lastShown = -1;
+    steps.forEach((s, i) => { if (s.classList.contains('shown')) lastShown = i; });
+    if (lastShown < steps.length - 1) {
+      steps[lastShown + 1].classList.add('shown');
+    }
+    // Update "still stuck" button copy & hide when done
+    const btn = card.querySelector('[data-action="next-hint"]');
+    const shownCount = card.querySelectorAll('.hint-step.shown').length;
+    if (btn) {
+      if (shownCount >= steps.length) {
+        btn.style.display = 'none';
+      } else if (shownCount === 2) {
+        btn.textContent = 'Show me the approach';
+      }
+    }
+    persistHintState(card);
+  }
+  function persistHintState(card) {
+    const hints = card.closest('[data-hints]');
+    if (!hints) return;
+    const level = hints.dataset.hints;
+    const cards = Array.from(hints.querySelectorAll('[data-card]'));
+    const idx = cards.indexOf(card);
+    const shownCount = card.querySelectorAll('.hint-step.shown').length;
+    const opened = card.classList.contains('opened');
+    state.hints[level] = state.hints[level] || {};
+    state.hints[level][idx] = { shown: shownCount, opened: opened };
+    saveState();
+  }
+  function restoreHints() {
+    document.querySelectorAll('[data-hints]').forEach(group => {
+      const level = group.dataset.hints;
+      const data = state.hints[level] || {};
+      Array.from(group.querySelectorAll('[data-card]')).forEach((card, idx) => {
+        const saved = data[idx];
+        if (!saved) return;
+        if (saved.opened) {
+          card.classList.add('opened');
+          const head = card.querySelector('.hint-head .btn');
+          if (head) head.textContent = 'Close';
+        }
+        const steps = card.querySelectorAll('.hint-step');
+        for (let i = 1; i < Math.min(saved.shown, steps.length); i++) {
+          steps[i].classList.add('shown');
+        }
+        const shownCount = card.querySelectorAll('.hint-step.shown').length;
+        const btn = card.querySelector('[data-action="next-hint"]');
+        if (btn) {
+          if (shownCount >= steps.length) btn.style.display = 'none';
+          else if (shownCount === 2) btn.textContent = 'Show me the approach';
+        }
+      });
+    });
+  }
+
+  // ===================== BLOCK -> PYTHON DECODER =====================
+  const decoderContent = {
+    drive: {
+      code:
+        '<span class="cmt"># Drive forward 450 mm, no turn</span>\n' +
+        'robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)',
+      reads: '"Rover, drive 450 millimeters in a straight line."'
+    },
+    turn: {
+      code:
+        '<span class="cmt"># Turn right 90°</span>\n' +
+        'robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">90</span>)',
+      reads: '"Rover, rotate 90 degrees to the right." Use LEFT or RIGHT &mdash; the direction is a word, not a sign.'
+    },
+    turnto: {
+      code:
+        '<span class="cmt"># Face heading 180° (the opposite direction)</span>\n' +
+        'robot.<span class="fn">turn_to</span>(<span class="num">180</span>)',
+      reads: '"Rover, point yourself at compass heading 180." Useful for coming back to base.'
+    },
+    kick: {
+      code:
+        '<span class="cmt"># Kick the soccer ball</span>\n' +
+        'robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)\n' +
+        '<span class="cmt"># also: WEAK, STRONG</span>',
+      reads: 'Soccer balls get kicked. The kicker swings and launches.'
+    },
+    place: {
+      code:
+        '<span class="cmt"># Gently place a barrel</span>\n' +
+        'robot.<span class="fn">kicker</span>.place()',
+      reads: 'Barrels get placed, not kicked. <code>place()</code> sets them down without launching.'
+    },
+    wait: {
+      code:
+        '<span class="cmt"># Pause for half a second</span>\n' +
+        'wait(<span class="num">0.5</span>, <span class="kw">SECONDS</span>)',
+      reads: 'Holds the rover still. Use between actions when something needs to settle.'
+    }
+  };
+  function showDecode(key) {
+    const item = decoderContent[key];
+    if (!item) return;
+    document.getElementById('decoderCode').innerHTML = item.code;
+    document.getElementById('decoderReads').innerHTML = '<b>Reads as &mdash;</b> ' + item.reads;
+    document.querySelectorAll('[data-decode]').forEach(b => {
+      b.classList.toggle('active', b.dataset.decode === key);
+    });
+  }
+
+  // ===================== L3 TIMER + SCORE =====================
+  function fmtTime(sec) {
+    sec = Math.max(0, sec | 0);
+    const m = (sec / 60) | 0;
+    const s = sec % 60;
+    return m + ':' + (s < 10 ? '0' + s : s);
+  }
+  function renderTimer() {
+    const disp = document.getElementById('timerDisplay');
+    if (!disp) return;
+    disp.textContent = fmtTime(state.timer.remaining);
+    disp.classList.toggle('warn', state.timer.remaining <= 20 && state.timer.remaining > 5);
+    disp.classList.toggle('crit', state.timer.remaining <= 5 && state.timer.remaining > 0);
+    disp.classList.toggle('done', state.timer.remaining === 0);
+    document.getElementById('timerStart').textContent = state.timer.running ? 'Pause' : 'Start';
+  }
+  function tickTimer() {
+    if (!state.timer.running) return;
+    state.timer.remaining = Math.max(0, state.timer.remaining - 1);
+    if (state.timer.remaining === 0) {
+      state.timer.running = false;
+      clearInterval(timerInterval);
+      timerInterval = null;
+      showToast("Time's up. Stop the rover. Note what happened.");
+    }
+    saveState();
+    renderTimer();
+  }
+  function startTimer() {
+    if (state.timer.remaining === 0) state.timer.remaining = 60;
+    state.timer.running = true;
+    if (!timerInterval) timerInterval = setInterval(tickTimer, 1000);
+    renderTimer();
+  }
+  function pauseTimer() {
+    state.timer.running = false;
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    saveState();
+    renderTimer();
+  }
+  function resetTimer() {
+    state.timer.running = false;
+    state.timer.remaining = 60;
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    saveState();
+    renderTimer();
+  }
+  function renderScores() {
+    const map = { ball: 3, blue: 2, orange: 1 };
+    let total = 0;
+    Object.keys(map).forEach(k => {
+      const btn = document.querySelector('[data-score="' + k + '"]');
+      if (!btn) return;
+      const on = !!state.scores[k];
+      btn.classList.toggle('delivered', on);
+      btn.querySelector('span:first-child').textContent = on ? 'Delivered' : 'Delivered';
+      if (on) total += map[k];
+    });
+    const t = document.getElementById('scoreTotal');
+    if (t) t.textContent = String(total);
+  }
+  function toggleScore(key) {
+    state.scores[key] = !state.scores[key];
+    saveState();
+    renderScores();
+  }
+
+  // ===================== FAILURE LOGS =====================
+  function bindFailureLogs() {
+    document.querySelectorAll('[data-failure]').forEach(ta => {
+      const key = ta.dataset.failure;
+      ta.value = state.failure[key] || '';
+      let debounce = null;
+      ta.addEventListener('input', () => {
+        state.failure[key] = ta.value;
+        clearTimeout(debounce);
+        debounce = setTimeout(saveState, 200);
+      });
+    });
+  }
+
+  // ===================== EXPRESS EDITOR =====================
+  function bindExpressEditor() {
+    const ta = document.getElementById('expressCode');
+    const indicator = document.getElementById('exSaveState');
+    if (!ta) return;
+    ta.value = state.expressCode || '';
+    let debounce = null;
+    ta.addEventListener('input', () => {
+      state.expressCode = ta.value;
+      if (indicator) indicator.textContent = 'Saving…';
+      clearTimeout(debounce);
+      debounce = setTimeout(() => {
+        saveState();
+        if (indicator) indicator.textContent = 'Saved';
+      }, 350);
+    });
+    // Tab key inserts 4 spaces in the editor
+    ta.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = ta.selectionStart, end = ta.selectionEnd;
+        ta.value = ta.value.substring(0, start) + '    ' + ta.value.substring(end);
+        ta.selectionStart = ta.selectionEnd = start + 4;
+        ta.dispatchEvent(new Event('input'));
+      }
+    });
+  }
+
+  // ===================== COPY STARTER =====================
+  function copyStarter(btn) {
+    const codeText =
+      '# My deliveries: (distance_mm, angle_deg, cargo)\n' +
+      'deliveries = [\n' +
+      '    (___, ___, "soccer_ball"),\n' +
+      '    (___, ___, "blue_barrel"),\n' +
+      '    (___, ___, "orange_barrel"),\n' +
+      ']\n' +
+      '\n' +
+      'for distance, angle, cargo in deliveries:\n' +
+      '    robot.screen.print(cargo)\n' +
+      '    robot.move_for(distance, angle)\n' +
+      '    # drop off the right way for this cargo\n' +
+      '    robot.kicker.place()\n' +
+      '    # come back to the supply room\n' +
+      '    robot.move_for(distance, angle + 180)\n';
+    function done() {
+      btn.classList.add('ok');
+      btn.textContent = 'Copied';
+      setTimeout(() => { btn.classList.remove('ok'); btn.textContent = 'Copy'; }, 1400);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(codeText).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      const tmp = document.createElement('textarea');
+      tmp.value = codeText;
+      tmp.style.position = 'fixed'; tmp.style.left = '-9999px';
+      document.body.appendChild(tmp);
+      tmp.select();
+      try { document.execCommand('copy'); done(); }
+      catch (e) { btn.textContent = 'Press Ctrl+C'; }
+      document.body.removeChild(tmp);
+    }
+  }
+
+  // ===================== COMPLETION =====================
+  function markComplete(level) {
+    state.completed[level] = true;
+    saveState();
+    const bar = document.querySelector('[data-complete="' + level + '"]');
+    if (bar) {
+      bar.classList.add('done', 'just-completed');
+      bar.innerHTML =
+        '<div>' +
+          '<h3>' + levelDoneTitle(level) + '</h3>' +
+          '<p>' + levelDoneSub(level) + '</p>' +
+        '</div>' +
+        (nextScreenFor(level) ?
+          '<button class="btn" data-action="goto" data-target="' + nextScreenFor(level) + '">' +
+          nextScreenLabel(level) + ' &rarr;</button>'
+          : '<span class="check">Complete</span>');
+    }
+    renderProgress();
+    renderScreens();
+    showToast(levelToastFor(level));
+  }
+  function levelDoneTitle(level) {
+    return ({
+      level1: 'Level 1 complete.',
+      level2: 'Level 2 complete.',
+      level3: 'Level 3 complete.',
+      bonus:  'Bonus complete.',
+      express:'Reference complete.'
+    })[level];
+  }
+  function levelDoneSub(level) {
+    return ({
+      level1: 'Your rover made the delivery. Onward.',
+      level2: 'You translated blocks into Python. Onward.',
+      level3: 'One loop, three deliveries. That\'s the lesson.',
+      bonus:  'You drove by vision. Show your partner team.',
+      express:'Future students will read this. Thank you.'
+    })[level];
+  }
+  function nextScreenFor(level) {
+    return ({ level1: 'level2', level2: 'level3', level3: 'bonus', bonus: null, express: 'bonus' })[level];
+  }
+  function nextScreenLabel(level) {
+    return ({ level1: 'Continue to Level 2', level2: 'Continue to Level 3', level3: 'Open the Bonus', express: 'Open the Bonus' })[level];
+  }
+  function levelToastFor(level) {
+    return ({
+      level1: 'Level 1 complete. Level 2 is unlocked.',
+      level2: 'Level 2 complete. Level 3 is unlocked.',
+      level3: 'Level 3 complete. Bonus is unlocked.',
+      bonus:  'Bonus complete.',
+      express:'Reference saved. Onward to Vision.'
+    })[level] || 'Marked complete.';
+  }
+  function restoreCompletions() {
+    Object.keys(state.completed).forEach(level => {
+      if (state.completed[level]) {
+        const bar = document.querySelector('[data-complete="' + level + '"]');
+        if (!bar) return;
+        bar.classList.add('done');
+        bar.innerHTML =
+          '<div>' +
+            '<h3>' + levelDoneTitle(level) + '</h3>' +
+            '<p>' + levelDoneSub(level) + '</p>' +
+          '</div>' +
+          (nextScreenFor(level) ?
+            '<button class="btn" data-action="goto" data-target="' + nextScreenFor(level) + '">' +
+            nextScreenLabel(level) + ' &rarr;</button>'
+            : '<span class="check">Complete</span>');
+      }
+    });
+  }
+
+  // ===================== TOAST =====================
+  let toastTimeout = null;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  // ===================== RESET =====================
+  function openResetModal() { document.getElementById('resetModal').classList.add('open'); }
+  function closeResetModal() { document.getElementById('resetModal').classList.remove('open'); }
+  function doReset() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    state = clone(defaultState);
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    closeResetModal();
+    // Clear failure textareas
+    document.querySelectorAll('[data-failure]').forEach(t => t.value = '');
+    const ex = document.getElementById('expressCode'); if (ex) ex.value = '';
+    // Reset hint cards
+    document.querySelectorAll('[data-card]').forEach(card => {
+      card.classList.remove('opened');
+      const head = card.querySelector('.hint-head .btn');
+      if (head) head.textContent = 'Open';
+      const steps = card.querySelectorAll('.hint-step');
+      steps.forEach((s, i) => s.classList.toggle('shown', i === 0));
+      const btn = card.querySelector('[data-action="next-hint"]');
+      if (btn) { btn.style.display = ''; btn.textContent = 'Still stuck'; }
+    });
+    renderAll();
+    showToast('Progress reset. Welcome back.');
+  }
+
+  // ===================== EVENT WIRING =====================
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    const actionEl = t.closest('[data-action]');
+    if (actionEl) {
+      const action = actionEl.dataset.action;
+      switch (action) {
+        case 'goto':
+          gotoScreen(actionEl.dataset.target);
+          return;
+        case 'open-card': {
+          const card = actionEl.closest('[data-card]');
+          if (card) {
+            if (card.classList.contains('opened')) closeCard(card);
+            else openCard(card);
+          }
+          return;
+        }
+        case 'next-hint': {
+          const card = actionEl.closest('[data-card]');
+          if (card) revealNext(card);
+          return;
+        }
+        case 'complete':
+          markComplete(actionEl.dataset.level);
+          return;
+        case 'copy-starter':
+          copyStarter(actionEl);
+          return;
+        case 'cancel-reset':
+          closeResetModal();
+          return;
+        case 'confirm-reset':
+          doReset();
+          return;
+      }
+    }
+    // Path picker
+    const pathBtn = t.closest('[data-path]');
+    if (pathBtn) { setPath(pathBtn.dataset.path); return; }
+    // Sidebar collapsible
+    const toggle = t.closest('[data-toggle]');
+    if (toggle) {
+      const section = document.getElementById(toggle.dataset.toggle);
+      if (section) section.classList.toggle('open');
+      return;
+    }
+    // Block decoder
+    const dec = t.closest('[data-decode]');
+    if (dec) { showDecode(dec.dataset.decode); return; }
+    // Score buttons
+    const score = t.closest('[data-score]');
+    if (score) { toggleScore(score.dataset.score); return; }
+    // Reset
+    if (t.closest('#resetBtn')) { openResetModal(); return; }
+    // Timer
+    if (t.closest('#timerStart')) {
+      if (state.timer.running) pauseTimer(); else startTimer();
+      return;
+    }
+    if (t.closest('#timerReset')) { resetTimer(); return; }
+    // Close modal on backdrop
+    if (t.id === 'resetModal') { closeResetModal(); return; }
+  });
+
+  // Esc closes modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeResetModal();
+  });
+
+  // ===================== RENDER ALL =====================
+  function renderAll() {
+    renderScreens();
+    renderProgress();
+    renderPathChip();
+    renderCrumbs();
+    renderTimer();
+    renderScores();
+  }
+
+  // ===================== INIT =====================
+  function init() {
+    // If no path yet, force landing
+    if (!state.path) state.screen = 'landing';
+    bindFailureLogs();
+    bindExpressEditor();
+    restoreHints();
+    restoreCompletions();
+    renderAll();
+    // Block decoder default
+    showDecode('drive');
+    // If timer was running on reload, don't auto-resume (paused state is safer)
+    if (state.timer.running) {
+      state.timer.running = false;
+      saveState();
+      renderTimer();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
