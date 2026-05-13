@@ -290,6 +290,27 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 .pathchip .pdot.exp { background: #D03030; }
 .pathchip .linklike { margin-left: 6px; }
 
+.topstrip-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.codeaim-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  background: var(--teal);
+  padding: 8px 14px;
+  border: 1px solid var(--teal);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.codeaim-link:hover { background: var(--teal-800, #007096); border-color: var(--teal-800, #007096); }
+.codeaim-link .arrow { font-size: 14px; line-height: 1; }
+
 .screen { padding: 36px 48px 96px; max-width: 1200px; }
 .screen-header {
   display: flex;
@@ -1143,7 +1164,12 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   <main class="main">
     <div class="topstrip">
       <div class="crumbs" id="crumbs">Stadium Logistics Rover</div>
-      <div id="pathHolder"></div>
+      <div class="topstrip-right">
+        <a class="codeaim-link" href="https://codeaim.vex.com/" target="_blank" rel="noopener">
+          Open CodeAIM <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+        <div id="pathHolder"></div>
+      </div>
     </div>
 
     <!-- ====== LANDING ====== -->
