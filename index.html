@@ -210,6 +210,30 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 .side-link.active { background: var(--panel); color: var(--teal-800); }
 .side-link .arrow { color: var(--muted); font-size: 12px; }
 
+.skip-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.skip-label {
+  font-size: 14px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+.skip-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--teal);
+  cursor: pointer;
+  font-weight: 600;
+}
+.skip-btn:hover { background: var(--panel); border-color: var(--teal); }
+
 .cargo-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1414,6 +1438,12 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           <span class="p-cta">Begin &rarr;</span>
         </button>
       </div>
+
+      <div class="skip-row">
+        <span class="skip-label">Already comfortable? Jump ahead:</span>
+        <button class="skip-btn" data-action="skip" data-target="level2">Skip to Level 2 &rarr;</button>
+        <button class="skip-btn" data-action="skip" data-target="level3">Skip to Level 3 &rarr;</button>
+      </div>
     </section>
 
     <!-- ====== LEVEL 1 ====== -->
@@ -2533,6 +2563,13 @@ deliveries = [
         }
         case 'complete':
           markComplete(actionEl.dataset.level);
+          return;
+        case 'skip':
+          state.path = 'intermediate';
+          state.screen = actionEl.dataset.target;
+          saveState();
+          renderAll();
+          window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
           return;
         case 'cancel-reset':
           closeResetModal();
