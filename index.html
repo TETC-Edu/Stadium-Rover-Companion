@@ -210,6 +210,158 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 .side-link.active { background: var(--panel); color: var(--teal-800); }
 .side-link .arrow { color: var(--muted); font-size: 12px; }
 
+/* read-python anatomy */
+.anatomy-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 24px 22px;
+  margin: 14px 0 18px;
+  text-align: center;
+}
+.anatomy-code {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+}
+.anatomy-code .who     { color: var(--teal-800); background: rgba(24, 97, 114, 0.12); padding: 2px 6px; border-radius: 2px; }
+.anatomy-code .what    { color: var(--magenta-700); background: rgba(189, 47, 127, 0.12); padding: 2px 6px; border-radius: 2px; }
+.anatomy-code .details { color: #9C5500; background: rgba(241, 142, 33, 0.20); padding: 2px 6px; border-radius: 2px; }
+.anatomy-code .dot     { color: var(--muted); padding: 0 3px; }
+.anatomy-code .paren   { color: var(--muted); padding: 0 2px; }
+.anatomy-english {
+  font-size: 17px;
+  color: var(--ink);
+  font-style: italic;
+  margin-top: 6px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.anatomy-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto 16px;
+  max-width: 640px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  text-align: left;
+}
+.anatomy-legend li {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--body);
+}
+.anatomy-legend .chip {
+  flex: none;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  padding: 2px 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  min-width: 64px;
+  text-align: center;
+}
+.anatomy-legend .chip.who     { color: var(--teal-800); background: rgba(24, 97, 114, 0.14); }
+.anatomy-legend .chip.what    { color: var(--magenta-700); background: rgba(189, 47, 127, 0.14); }
+.anatomy-legend .chip.details { color: #9C5500; background: rgba(241, 142, 33, 0.22); }
+.anatomy-legend .chip.neutral { color: var(--muted); background: white; border: 1px solid var(--border); }
+.anatomy-legend code { font-family: var(--font-mono); color: var(--ink); }
+
+.mini-examples {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 12px 0 6px;
+}
+.mini-example {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  padding: 14px 16px;
+}
+.mini-example .mini-code {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.mini-example .mini-code .who     { color: var(--teal-800); }
+.mini-example .mini-code .what    { color: var(--magenta-700); }
+.mini-example .mini-code .details { color: #9C5500; }
+.mini-example .mini-meta {
+  font-size: 14.5px;
+  color: var(--body);
+  line-height: 1.5;
+}
+.mini-example .mini-meta b { color: var(--ink); }
+.mini-example .mini-english {
+  margin-top: 8px;
+  font-size: 14.5px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.framework-list {
+  counter-reset: framework;
+  padding: 0;
+  margin: 8px 0 0;
+  list-style: none;
+}
+.framework-list li {
+  counter-increment: framework;
+  position: relative;
+  padding: 0 0 14px 38px;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--body);
+}
+.framework-list li::before {
+  content: counter(framework);
+  position: absolute;
+  left: 0; top: 0;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  display: grid; place-items: center;
+}
+.framework-list li b { color: var(--ink); }
+
+.refresher-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  margin-bottom: 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  font: inherit;
+  font-size: 14px;
+  color: var(--teal);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.refresher-link:hover { background: var(--panel); border-color: var(--teal); }
+
+@media (max-width: 540px) {
+  .anatomy-code { font-size: 19px; }
+  .anatomy-legend .chip { min-width: 50px; font-size: 10px; }
+}
+
 .cargo-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1616,6 +1768,63 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <span>Your field changed. Every number in your code is wrong. You have to fix them all by hand. This is annoying on purpose. Notice it.</span>
       </div>
 
+      <details class="expandable" open id="read-python">
+        <summary>First: How to read Python</summary>
+        <div class="ex-body">
+          <p>When you turn your blocks into Switch, you'll see lines of Python like this for the first time. Don't panic. Every line in this lesson follows the same shape:</p>
+
+          <div class="anatomy-box">
+            <div class="anatomy-code">
+              <span class="who">robot</span><span class="dot">.</span><span class="what">move_for</span><span class="paren">(</span><span class="details">450, 0</span><span class="paren">)</span>
+            </div>
+            <ul class="anatomy-legend">
+              <li><span class="chip who">Who</span><span><code>robot</code> &mdash; who are you talking to? The robot.</span></li>
+              <li><span class="chip neutral">.</span><span>The <b>dot</b> means "go inside" or "use your..." &mdash; think of it as opening a toolbox.</span></li>
+              <li><span class="chip what">What</span><span><code>move_for</code> &mdash; what do you want it to do? Move.</span></li>
+              <li><span class="chip neutral">(</span><span>Open parenthesis &mdash; here come the details.</span></li>
+              <li><span class="chip details">Details</span><span><code>450, 0</code> &mdash; the specifics. 450 millimeters, 0 degrees. Commas separate them. <b>Order matters.</b></span></li>
+              <li><span class="chip neutral">)</span><span>Close parenthesis &mdash; done.</span></li>
+            </ul>
+            <p class="anatomy-english">In English: "Hey robot, use your <b>move</b> &mdash; 450 mm, 0 degrees."</p>
+          </div>
+
+          <h4 style="margin-top: 20px; margin-bottom: 8px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;">Try it on three more</h4>
+          <div class="mini-examples">
+
+            <div class="mini-example">
+              <div class="mini-code"><span class="who">robot</span>.<span class="what">turn_for</span>(<span class="details">LEFT, 90</span>)</div>
+              <div class="mini-meta"><b>Who:</b> robot &nbsp;&middot;&nbsp; <b>What:</b> turn_for &nbsp;&middot;&nbsp; <b>Details:</b> LEFT, 90 degrees</div>
+              <div class="mini-english">"Hey robot, use your <b>turn</b> &mdash; left, 90 degrees."</div>
+            </div>
+
+            <div class="mini-example">
+              <div class="mini-code"><span class="who">robot.kicker</span>.<span class="what">kick</span>(<span class="details">MEDIUM</span>)</div>
+              <div class="mini-meta"><b>Who:</b> robot.kicker (the kicker inside the robot &mdash; <b>two dots = two toolboxes deep</b>) &nbsp;&middot;&nbsp; <b>What:</b> kick &nbsp;&middot;&nbsp; <b>Details:</b> MEDIUM power</div>
+              <div class="mini-english">"Hey robot, open your <b>kicker</b> toolbox, use the <b>kick</b> &mdash; medium power."</div>
+            </div>
+
+            <div class="mini-example">
+              <div class="mini-code"><span class="what">wait</span>(<span class="details">0.5, SECONDS</span>)</div>
+              <div class="mini-meta"><b>Who:</b> nobody &mdash; this one isn't aimed at the robot &nbsp;&middot;&nbsp; <b>What:</b> wait &nbsp;&middot;&nbsp; <b>Details:</b> 0.5, SECONDS</div>
+              <div class="mini-english">"Pause for half a second."</div>
+            </div>
+
+          </div>
+
+          <div class="callout teal" style="margin-top: 14px;">
+            <span class="ctitle">Two dots?</span>
+            <span>That just means you're going deeper. <code>robot</code> &rarr; open the robot &rarr; <code>kicker</code> &rarr; open the kicker toolbox &rarr; <code>kick</code> &rarr; use the kick tool. It's nested boxes.</span>
+          </div>
+
+          <h4 style="margin-top: 22px; margin-bottom: 10px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;">Read any line</h4>
+          <ol class="framework-list">
+            <li><b>Find the dots.</b> Everything before the last dot is the <b>Who</b>. The word after the last dot (before the parenthesis) is the <b>What</b>.</li>
+            <li><b>Look inside the parentheses.</b> Those are the <b>Details</b>. Commas separate them. Order matters &mdash; the first detail is always the first thing the command needs to know.</li>
+            <li><b>Say it out loud.</b> "Hey [Who], do [What] with [Details]." If it sounds right in English, you probably read it right.</li>
+          </ol>
+        </div>
+      </details>
+
       <section class="section amber">
         <h3>Step 1: Erase and re-sketch your stadium</h3>
         <p>Wipe your Level 1 sketch off the mat. With the <b>Expo marker</b>, draw a brand new layout:</p>
@@ -1768,6 +1977,10 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <span class="label">Your task</span>
         <p>New field layout &mdash; redesign your stadium one more time. Now you're writing real Python from scratch. Type the commands for all three deliveries, one after another. No shortcuts &mdash; tell the rover exactly what to do, step by step.</p>
       </div>
+
+      <button class="refresher-link" data-action="goto" data-target="level2" data-anchor="read-python">
+        &larr; Refresher: How to read Python
+      </button>
 
       <section class="section">
         <h3>Step 1: Erase and re-sketch your stadium</h3>
@@ -1936,6 +2149,10 @@ robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class
           <span class="label">Your task</span>
           <p>Take your working Level 3 code and rewrite it using <b>variables</b> and a <b>loop</b>. Same three deliveries, same field, but the typing gets way shorter.</p>
         </div>
+
+        <button class="refresher-link" data-action="goto" data-target="level2" data-anchor="read-python">
+          &larr; Refresher: How to read Python
+        </button>
 
         <section class="section">
           <h3>1. Spot the pattern</h3>
@@ -2170,7 +2387,7 @@ deliveries = [
   // ===================== SCREENS / NAV =====================
   const screens = ['landing','level1','level2','level3','bonus'];
 
-  function gotoScreen(name) {
+  function gotoScreen(name, anchor) {
     if (name === 'bonus' && !state.completed.level3) {
       showToast('Finish Level 3 first to unlock the Bonus.');
       return;
@@ -2181,7 +2398,17 @@ deliveries = [
     renderProgress();
     renderCrumbs();
     renderErrors();
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    if (anchor) {
+      requestAnimationFrame(() => {
+        const target = document.getElementById(anchor);
+        if (target) {
+          if (target.tagName === 'DETAILS') target.open = true;
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
   }
 
   function renderScreens() {
@@ -2560,7 +2787,7 @@ deliveries = [
       const action = actionEl.dataset.action;
       switch (action) {
         case 'goto':
-          gotoScreen(actionEl.dataset.target);
+          gotoScreen(actionEl.dataset.target, actionEl.dataset.anchor);
           document.querySelector('.app').classList.remove('menu-open');
           return;
         case 'toggle-menu':
