@@ -151,7 +151,7 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 }
 .dot.locked { opacity: 0.5; }
 .progress-label { font-size: 14px; }
-.progress-sub  { font-size: 11px; color: var(--muted); margin-top: 1px; text-transform: uppercase; letter-spacing: 0.06em; }
+.progress-sub  { font-size: 12px; color: var(--muted); margin-top: 1px; text-transform: uppercase; letter-spacing: 0.06em; }
 
 .side-section {
   border-bottom: 1px solid var(--border);
@@ -184,7 +184,7 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 .side-body {
   display: none;
   padding: 4px 20px 18px;
-  font-size: 13.5px;
+  font-size: 15px;
   color: var(--body);
 }
 .side-section.open .side-body { display: block; }
@@ -311,7 +311,7 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 }
 .cheat-line {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--ink);
   padding: 3px 0;
   line-height: 1.35;
@@ -320,20 +320,21 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 .cheat-line .cmt { color: var(--muted); }
 
 .errors-list .err {
-  padding: 8px 0;
+  padding: 10px 0;
   border-bottom: 1px solid var(--border);
 }
 .errors-list .err:last-child { border-bottom: 0; }
 .errors-list .err-name {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--magenta-700);
   font-weight: 600;
 }
 .errors-list .err-fix {
-  font-size: 13px;
+  font-size: 14.5px;
   color: var(--body);
-  margin-top: 2px;
+  margin-top: 4px;
+  line-height: 1.45;
 }
 
 .sidebar-foot {
@@ -368,7 +369,7 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
   justify-content: space-between;
   gap: 16px;
 }
-.crumbs { font-size: 13px; color: var(--muted); }
+.crumbs { font-size: 14px; color: var(--muted); }
 .crumbs strong { color: var(--ink); font-weight: 600; }
 .pathchip {
   display: inline-flex;
@@ -580,7 +581,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 }
 .hint-step.h2 .h-label { color: var(--amber-700); }
 .hint-step.h3 .h-label { color: var(--magenta-700); }
-.hint-step .h-text { display: inline; color: var(--body); font-size: 15.5px; }
+.hint-step .h-text { display: inline; color: var(--body); font-size: 16.5px; }
 .hint-actions {
   margin-top: 6px;
   display: flex;
@@ -942,7 +943,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   padding: 18px 20px;
 }
 .failure h4 { color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-.failure .sub { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.failure .sub { font-size: 15px; color: var(--muted); margin-bottom: 10px; }
 .failure textarea {
   width: 100%;
   min-height: 90px;
@@ -994,7 +995,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   background: var(--teal-050);
 }
 .complete-bar h3 { font-size: 17px; margin: 0; color: var(--ink); }
-.complete-bar p  { color: var(--muted); font-size: 13.5px; margin: 4px 0 0; }
+.complete-bar p  { color: var(--muted); font-size: 15px; margin: 4px 0 0; }
 .complete-bar .check {
   display: inline-flex; align-items: center; gap: 8px;
   font-weight: 600; color: var(--teal-800); font-size: 15px;
@@ -1198,34 +1199,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   .hero h1 { font-size: 26px; }
 }
 
-/* scale up text on larger displays */
-@media (min-width: 1400px) {
-  body { font-size: 19px; }
-  h1 { font-size: 36px; }
-  h2 { font-size: 26px; }
-  h3 { font-size: 21px; }
-  .screen-header h1 { font-size: 40px; }
-  .lead { font-size: 17px; }
-  .hero h1 { font-size: 44px; }
-}
-@media (min-width: 1800px) {
-  body { font-size: 21px; }
-  h1 { font-size: 40px; }
-  h2 { font-size: 30px; }
-  h3 { font-size: 23px; }
-  .screen-header h1 { font-size: 46px; }
-  .lead { font-size: 19px; }
-  .hero h1 { font-size: 50px; }
-}
-@media (min-width: 2200px) {
-  body { font-size: 23px; }
-  h1 { font-size: 44px; }
-  h2 { font-size: 33px; }
-  h3 { font-size: 25px; }
-  .screen-header h1 { font-size: 52px; }
-  .lead { font-size: 21px; }
-  .hero h1 { font-size: 56px; }
-}
 
 /* print niceties (in case someone hits Cmd+P) */
 @media print {
