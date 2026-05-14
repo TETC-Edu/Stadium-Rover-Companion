@@ -1198,6 +1198,35 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   .hero h1 { font-size: 26px; }
 }
 
+/* scale up text on larger displays */
+@media (min-width: 1400px) {
+  body { font-size: 19px; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 26px; }
+  h3 { font-size: 21px; }
+  .screen-header h1 { font-size: 40px; }
+  .lead { font-size: 17px; }
+  .hero h1 { font-size: 44px; }
+}
+@media (min-width: 1800px) {
+  body { font-size: 21px; }
+  h1 { font-size: 40px; }
+  h2 { font-size: 30px; }
+  h3 { font-size: 23px; }
+  .screen-header h1 { font-size: 46px; }
+  .lead { font-size: 19px; }
+  .hero h1 { font-size: 50px; }
+}
+@media (min-width: 2200px) {
+  body { font-size: 23px; }
+  h1 { font-size: 44px; }
+  h2 { font-size: 33px; }
+  h3 { font-size: 25px; }
+  .screen-header h1 { font-size: 52px; }
+  .lead { font-size: 21px; }
+  .hero h1 { font-size: 56px; }
+}
+
 /* print niceties (in case someone hits Cmd+P) */
 @media print {
   .sidebar, .topstrip, .complete-bar, .modal-bg { display: none !important; }
