@@ -1099,12 +1099,53 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   transform: translateX(-50%) translateY(0);
 }
 
+/* hamburger (mobile only) */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  width: 36px; height: 36px;
+  padding: 0;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+.hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--ink);
+}
+.menu-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 90;
+}
+
 /* responsive */
 @media (max-width: 980px) {
   .app { grid-template-columns: 1fr; }
-  .sidebar { position: static; height: auto; }
-  .screen { padding: 24px 22px 80px; }
-  .topstrip { padding: 12px 22px; }
+  .hamburger { display: inline-flex; }
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    width: 280px;
+    max-width: 86vw;
+    transform: translateX(-100%);
+    transition: transform 220ms ease;
+    z-index: 100;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.12);
+  }
+  .app.menu-open .sidebar { transform: translateX(0); }
+  .app.menu-open .menu-backdrop { display: block; }
+  .topstrip { padding: 10px 16px; gap: 12px; flex-wrap: wrap; }
+  .topstrip-right { flex-wrap: wrap; gap: 8px; }
+  .screen { padding: 24px 18px 80px; }
   .paths { grid-template-columns: 1fr; }
   .run { grid-template-columns: 1fr; }
   .decoder { grid-template-columns: 1fr; }
@@ -1116,6 +1157,10 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 @media (max-width: 540px) {
   body { font-size: 16px; }
   .screen-header { flex-direction: column-reverse; align-items: flex-start; }
+  .codeaim-link { padding: 7px 10px; font-size: 12.5px; }
+  .crumbs { font-size: 12px; }
+  .screen { padding: 20px 14px 80px; }
+  .hero h1 { font-size: 26px; }
 }
 
 /* print niceties (in case someone hits Cmd+P) */
@@ -1129,11 +1174,14 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 
 <div class="app">
 
+  <div class="menu-backdrop" data-action="close-menu" aria-hidden="true"></div>
+
   <!-- ===================== SIDEBAR ===================== -->
   <aside class="sidebar" aria-label="Lesson navigation">
     <div class="brand">
       <div class="brand-mark" aria-hidden="true">
-        <span class="b1">TE+TC</span>
+        <span class="b1">TE</span>
+        <span class="b2">+TC</span>
       </div>
       <div>
         <div class="brand-name">TETC</div>
@@ -1229,6 +1277,9 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   <!-- ===================== MAIN ===================== -->
   <main class="main">
     <div class="topstrip">
+      <button class="hamburger" aria-label="Open navigation menu" data-action="toggle-menu">
+        <span></span><span></span><span></span>
+      </button>
       <div class="crumbs" id="crumbs">Stadium Logistics Rover</div>
       <div class="topstrip-right">
         <a class="codeaim-link" href="https://codeaim.vex.com/" target="_blank" rel="noopener">
@@ -2679,6 +2730,13 @@ deliveries = [
       switch (action) {
         case 'goto':
           gotoScreen(actionEl.dataset.target);
+          document.querySelector('.app').classList.remove('menu-open');
+          return;
+        case 'toggle-menu':
+          document.querySelector('.app').classList.toggle('menu-open');
+          return;
+        case 'close-menu':
+          document.querySelector('.app').classList.remove('menu-open');
           return;
         case 'open-card': {
           const card = actionEl.closest('[data-card]');
