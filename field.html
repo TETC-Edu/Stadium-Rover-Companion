@@ -234,18 +234,15 @@
         <rect x="255" y="150" width="60" height="32" fill="#ECEEEE" stroke="#888" stroke-width="1"/>
         <text x="285" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#333" letter-spacing="0.5">TEAM B</text>
 
-        <!-- Supply room (bottom center) -->
-        <rect x="120" y="240" width="140" height="62" fill="#F5F5F5" stroke="#888" stroke-width="1"/>
-        <text x="190" y="256" text-anchor="middle" font-size="10" font-weight="700" fill="#555" letter-spacing="0.6">SUPPLY ROOM</text>
+        <!-- Cargo scattered around the field, each far from its delivery zone -->
+        <circle cx="160" cy="280" r="9" fill="#F5C518" stroke="#222" stroke-width="1"/>
+        <rect x="280" y="245" width="14" height="20" fill="#3C87E3"/>
+        <rect x="80" y="250" width="14" height="20" fill="#F18E21"/>
 
-        <!-- Rover (dark circle with forward arrow) -->
-        <circle cx="190" cy="282" r="11" fill="#333"/>
-        <polygon points="190,268 185,276 195,276" fill="white"/>
-
-        <!-- Cargo items in the supply room -->
-        <circle cx="146" cy="282" r="8" fill="#F5C518" stroke="#222" stroke-width="1"/>
-        <rect x="220" y="273" width="14" height="18" fill="#3C87E3"/>
-        <rect x="240" y="273" width="14" height="18" fill="#F18E21"/>
+        <!-- Rover start position (small marker, bottom center) -->
+        <circle cx="220" cy="295" r="10" fill="#333"/>
+        <polygon points="220,283 215,290 225,290" fill="white"/>
+        <text x="220" y="316" text-anchor="middle" font-size="9" font-weight="700" fill="#555" letter-spacing="0.5">START</text>
 
         <!-- Bottom labels -->
         <text x="40" y="334" font-size="11" fill="#777" font-style="italic">0 cm</text>
@@ -253,9 +250,9 @@
 
         <!-- 30 cm rule note (right) -->
         <text x="360" y="40" font-size="13" font-weight="700" fill="#BD2F7F" letter-spacing="0.6">RULE</text>
-        <text x="360" y="58" font-size="11.5" fill="#333">Zones must be at</text>
-        <text x="360" y="72" font-size="11.5" fill="#333">least 30 cm from</text>
-        <text x="360" y="86" font-size="11.5" fill="#333">the rover.</text>
+        <text x="360" y="58" font-size="11.5" fill="#333">Each cargo must be</text>
+        <text x="360" y="72" font-size="11.5" fill="#333">at least 30 cm from</text>
+        <text x="360" y="86" font-size="11.5" fill="#333">its delivery zone.</text>
       </svg>
       <div class="caption">A sample layout &mdash; yours will look different.</div>
     </figure>
@@ -273,7 +270,7 @@
         <div>Orange barrel &rarr; Team B</div>
       </div>
       <div class="note">
-        <b>One rule:</b> each zone must be at least <b>30 cm</b> from where the rover starts. Other than that, the layout is yours.
+        <b>One rule:</b> each cargo must be placed at least <b>30 cm</b> from the zone it gets delivered to. Other than that, the layout is yours.
       </div>
     </div>
   </div>
