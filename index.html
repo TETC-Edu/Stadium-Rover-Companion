@@ -1644,9 +1644,8 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           <li>Turn (left or right) by your measured degrees</li>
           <li>Drive forward by your measured distance in mm</li>
           <li>Kick (for the soccer ball) or Place (for the barrels)</li>
-          <li>Turn around and drive back to where the rover started</li>
         </ul>
-        <p>Then do the same for zones 2 and 3. Run the whole stack.</p>
+        <p>Then do the same for the next delivery, starting from wherever the rover ends up. Run the whole stack.</p>
       </section>
 
       <section class="section amber">
@@ -1950,7 +1949,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       <section class="failure">
         <h4>What happened?</h4>
         <div class="sub">What was the most annoying part of fixing all those numbers? Be specific.</div>
-        <textarea data-failure="level2" placeholder="I changed the first distance but forgot the return distance. Also, every delivery has the same return code and I had to copy it three times."></textarea>
+        <textarea data-failure="level2" placeholder="I had to find and change the same number in three different lines. Also, every delivery is basically the same shape&mdash;I copied it three times and tweaked numbers."></textarea>
         <div class="save-hint">Saves as you type.</div>
       </section>
 
@@ -2006,12 +2005,9 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 <pre><span class="cmt"># Delivery 1: soccer ball to the Referee</span>
 robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">30</span>)        <span class="cmt"># your turn direction + degrees</span>
 robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)         <span class="cmt"># your distance in mm</span>
-robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <span class="cmt"># kick the ball</span>
-<span class="cmt"># turn around and drive back</span>
-robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">180</span>)
-robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)</pre>
+robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <span class="cmt"># kick the ball</span></pre>
         </div>
-        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">For the blue and orange barrels, use <code>robot.kicker.place()</code> instead of <code>kick()</code>. Then type the same shape for deliveries 2 and 3 with your new numbers.</p>
+        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">For the blue and orange barrels, use <code>robot.kicker.place()</code> instead of <code>kick()</code>. Then type the same shape for deliveries 2 and 3 &mdash; each one picks up from wherever the rover ended last.</p>
       </section>
 
       <section class="section magenta">
@@ -2100,7 +2096,7 @@ robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">Did you remember to drive back to the rover's start position before the next delivery? Or did you start delivery 2 from wherever delivery 1 ended?</span>
+                <span class="h-text">Remember: delivery 2 starts from <em>wherever delivery 1 ended</em>, not from the rover's original spot. Did you measure delivery 2's turn and distance from the right starting point?</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
@@ -2161,7 +2157,7 @@ robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class
 
           <div class="callout teal">
             <span class="ctitle">The answer &mdash;</span>
-            <span>The <b>shape</b> is the same every time: turn, drive, deliver, turn around, drive back. What's different is the <b>numbers</b> (distance, turn) and the <b>cargo</b> (kick vs place).</span>
+            <span>The <b>shape</b> is the same every time: turn, drive, deliver. What's different is the <b>numbers</b> (distance, turn) and the <b>cargo</b> (kick vs place).</span>
           </div>
         </section>
 
@@ -2222,11 +2218,7 @@ deliveries = [
     <span class="kw">if</span> cargo == <span class="str">"ball"</span>:
         robot.<span class="fn">kicker</span>.kick(MEDIUM)
     <span class="kw">else</span>:
-        robot.<span class="fn">kicker</span>.place()
-
-    <span class="cmt"># turn around and drive back</span>
-    robot.<span class="fn">turn_for</span>(direction, <span class="num">180</span>)
-    robot.<span class="fn">move_for</span>(distance, <span class="num">0</span>)</pre>
+        robot.<span class="fn">kicker</span>.place()</pre>
           </div>
           <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">Replace the numbers in the list with your real measurements. Don't touch the loop code below it.</p>
         </section>
