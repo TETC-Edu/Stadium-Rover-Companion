@@ -210,6 +210,55 @@ code, kbd, samp { font-family: var(--font-mono); font-size: 0.93em; }
 .side-link.active { background: var(--panel); color: var(--teal-800); }
 .side-link .arrow { color: var(--muted); font-size: 12px; }
 
+.cargo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+.cargo-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border-left: 3px solid var(--teal);
+}
+.cargo-dot {
+  width: 22px; height: 22px;
+  flex: none;
+}
+.cargo-dot.ball   { background: white; border: 1.5px solid #222; border-radius: 50%; }
+.cargo-dot.blue   { background: #3C87E3; }
+.cargo-dot.orange { background: #F18E21; }
+.cargo-name { font-weight: 700; color: var(--ink); font-size: 15px; }
+.cargo-dest { font-size: 13px; color: var(--muted); margin-top: 1px; }
+
+.overview-figure {
+  margin: 0;
+  width: 100%;
+  max-width: 560px;
+}
+.overview-figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.arc-list {
+  margin: 8px 0 0;
+  padding-left: 22px;
+}
+.arc-list li {
+  margin-bottom: 6px;
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+
+@media (max-width: 540px) {
+  .cargo-grid { grid-template-columns: 1fr; }
+}
+
 .ref-frame {
   color: var(--body);
   font-size: 15.5px;
@@ -1181,18 +1230,24 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       </button>
       <div class="side-body">
         <div class="cheat-group">
-          <h5>Motion</h5>
-          <div class="cheat-line">robot.move_for(<span class="cmt">dist_mm, angle, vel</span>)</div>
-          <div class="cheat-line">robot.turn_for(<span class="cmt">dir, deg, vel</span>)</div>
-          <div class="cheat-line">robot.turn_to(<span class="cmt">heading</span>)</div>
-          <div class="cheat-line">robot.set_move_velocity(<span class="cmt">pct</span>)</div>
+          <h5>Drive</h5>
+          <div class="cheat-line">robot.move_for(<span class="cmt">distance_mm, 0</span>)</div>
           <div class="cheat-line">robot.stop_all_movement()</div>
+        </div>
+        <div class="cheat-group">
+          <h5>Turn</h5>
+          <div class="cheat-line">robot.turn_for(<span class="kw">LEFT</span>, <span class="cmt">degrees</span>)</div>
+          <div class="cheat-line">robot.turn_for(<span class="kw">RIGHT</span>, <span class="cmt">degrees</span>)</div>
         </div>
         <div class="cheat-group">
           <h5>Kicker</h5>
           <div class="cheat-line">robot.kicker.kick(MEDIUM)</div>
           <div class="cheat-line">robot.kicker.place()</div>
           <div class="cheat-line"><span class="cmt"># also WEAK, STRONG</span></div>
+        </div>
+        <div class="cheat-group">
+          <h5>Speed</h5>
+          <div class="cheat-line">robot.set_move_velocity(<span class="cmt">percent</span>)</div>
         </div>
         <div class="cheat-group">
           <h5>LEDs &amp; screen</h5>
@@ -1205,18 +1260,13 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           <h5>Wait</h5>
           <div class="cheat-line">wait(0.5, SECONDS)</div>
         </div>
-        <div class="cheat-group">
-          <h5>Vision (Bonus)</h5>
-          <div class="cheat-line">robot.vision.get_data(BLUE_BARREL)</div>
-          <div class="cheat-line"><span class="cmt"># .bearing  .width  .centerX</span></div>
-        </div>
       </div>
     </section>
 
-    <button class="side-link" id="refLink" data-action="goto" data-target="reference">
+    <a class="side-link" id="refLink" href="field.html" target="_blank" rel="noopener">
       Field reference
       <span class="arrow" aria-hidden="true">&rsaquo;</span>
-    </button>
+    </a>
 
     <section class="side-section" id="errorsSection">
       <button class="side-toggle" data-toggle="errorsSection" aria-expanded="false">
@@ -1224,27 +1274,8 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <span class="chev" aria-hidden="true"></span>
       </button>
       <div class="side-body">
-        <div class="errors-list">
-          <div class="err">
-            <div class="err-name">IndentationError</div>
-            <div class="err-fix">Python reads spacing. Everything inside a <code>for</code> loop must be indented the same amount (4 spaces).</div>
-          </div>
-          <div class="err">
-            <div class="err-name">SyntaxError</div>
-            <div class="err-fix">Usually a missing colon at the end of <code>for ... :</code> or a missing parenthesis.</div>
-          </div>
-          <div class="err">
-            <div class="err-name">NameError</div>
-            <div class="err-fix">A name you used doesn't exist. Check spelling and capitalization &mdash; <code>Robot</code> and <code>robot</code> are different.</div>
-          </div>
-          <div class="err">
-            <div class="err-name">TypeError</div>
-            <div class="err-fix">Wrong kind of value. <code>"450"</code> is a string. <code>450</code> is a number. Distance wants a number.</div>
-          </div>
-          <div class="err">
-            <div class="err-name">Robot doesn't move</div>
-            <div class="err-fix">Powered on? Paired? Did you download the code, or just save it?</div>
-          </div>
+        <div class="errors-list" id="errorsList">
+          <!-- populated by JS based on current screen -->
         </div>
       </div>
     </section>
@@ -1269,7 +1300,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       </div>
     </div>
 
-    <!-- ====== LANDING ====== -->
+    <!-- ====== LANDING / OVERVIEW ====== -->
     <section class="screen" id="screen-landing" data-screen-label="00 Landing">
       <div class="hero">
         <h1>Match day at <span class="accent">NRG Stadium.</span></h1>
@@ -1277,38 +1308,111 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <div class="hero-meta">
           <span><b>3</b> cargo</span>
           <span><b>3</b> zones</span>
-          <span><b>90</b> minutes</span>
-          <span>1 rover</span>
+          <span><b>1</b> rover</span>
         </div>
+      </div>
+
+      <section class="section" style="margin-top: 28px;">
+        <h2 style="margin-bottom: 6px;">What you're doing</h2>
+        <p>You'll design your own stadium on the field mat, measure where everything is, then code the rover to make three deliveries on its own. You'll do this challenge three times &mdash; once with blocks, once with switch, and once typing real Python from scratch. Each round, you redesign the stadium, so the numbers in your code have to change.</p>
+
+        <h3 style="margin-top: 18px;">The three deliveries</h3>
+        <div class="cargo-grid">
+          <div class="cargo-card">
+            <div class="cargo-dot ball"></div>
+            <div>
+              <div class="cargo-name">Soccer ball</div>
+              <div class="cargo-dest">&rarr; Referee Station</div>
+            </div>
+          </div>
+          <div class="cargo-card">
+            <div class="cargo-dot blue"></div>
+            <div>
+              <div class="cargo-name">Blue barrel</div>
+              <div class="cargo-dest">&rarr; Team A Bench</div>
+            </div>
+          </div>
+          <div class="cargo-card">
+            <div class="cargo-dot orange"></div>
+            <div>
+              <div class="cargo-name">Orange barrel</div>
+              <div class="cargo-dest">&rarr; Team B Bench</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 22px;">Your field</h3>
+        <p style="color: var(--muted); font-size: 14px; margin-bottom: 10px;">A sample layout &mdash; yours will look different.</p>
+        <figure class="overview-figure">
+          <svg viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg"
+               font-family="Calibri, 'Segoe UI', Helvetica, Arial, sans-serif"
+               role="img" aria-label="A sample stadium layout on a 100 by 100 cm field.">
+            <!-- Field outline -->
+            <rect x="40" y="20" width="320" height="320" fill="white" stroke="#222" stroke-width="2"/>
+            <!-- Rover at bottom center (Supply Room) -->
+            <rect x="180" y="290" width="40" height="20" fill="#186172"/>
+            <text x="200" y="304" text-anchor="middle" font-size="9" font-weight="700" fill="white" letter-spacing="0.5">START</text>
+            <circle cx="200" cy="278" r="10" fill="#1a2a2e"/>
+            <polygon points="200,266 196,272 204,272" fill="white"/>
+            <!-- Referee Station (top center) -->
+            <circle cx="200" cy="78" r="14" fill="white" stroke="#222" stroke-width="1.5"/>
+            <text x="200" y="82" text-anchor="middle" font-size="11" font-weight="700" fill="#222">R</text>
+            <text x="200" y="58" text-anchor="middle" font-size="11" fill="#444">Referee</text>
+            <!-- Team A (left) -->
+            <rect x="110" y="160" width="22" height="22" fill="#3C87E3"/>
+            <text x="121" y="176" text-anchor="middle" font-size="11" font-weight="700" fill="white">A</text>
+            <text x="121" y="200" text-anchor="middle" font-size="11" fill="#444">Team A</text>
+            <!-- Team B (right) -->
+            <rect x="268" y="160" width="22" height="22" fill="#F18E21"/>
+            <text x="279" y="176" text-anchor="middle" font-size="11" font-weight="700" fill="white">B</text>
+            <text x="279" y="200" text-anchor="middle" font-size="11" fill="#444">Team B</text>
+            <!-- Field size labels -->
+            <text x="40" y="354" font-size="11" fill="#777" font-style="italic">0 cm</text>
+            <text x="360" y="354" font-size="11" fill="#777" font-style="italic" text-anchor="end">100 cm</text>
+            <text x="392" y="180" font-size="11" fill="#777" font-style="italic" transform="rotate(90 392,180)">100 cm</text>
+            <!-- Right column info -->
+            <text x="410" y="40" font-size="13" font-weight="700" fill="#186172" letter-spacing="0.6">FIELD</text>
+            <text x="410" y="58" font-size="11.5" fill="#333">100 × 100 cm</text>
+            <text x="410" y="74" font-size="11.5" fill="#333">3 zones</text>
+            <text x="410" y="90" font-size="11.5" fill="#333">1 rover</text>
+            <text x="410" y="120" font-size="13" font-weight="700" fill="#BD2F7F" letter-spacing="0.6">RULE</text>
+            <text x="410" y="138" font-size="11.5" fill="#333">Zones must be at</text>
+            <text x="410" y="152" font-size="11.5" fill="#333">least 30 cm from</text>
+            <text x="410" y="166" font-size="11.5" fill="#333">the rover.</text>
+          </svg>
+        </figure>
+
+        <h3 style="margin-top: 22px;">The arc</h3>
+        <p>You'll do the same challenge three times. Each level adds one new thing:</p>
+        <ul class="arc-list">
+          <li><b>Level 1 &mdash; Blocks.</b> Drag block commands together. Make all three deliveries.</li>
+          <li><b>Level 2 &mdash; Switch.</b> Convert your blocks to see the Python underneath. Edit numbers for a new field.</li>
+          <li><b>Level 3 &mdash; Python.</b> Type real Python from scratch. Three deliveries, one after another.</li>
+          <li><b>Bonus &mdash; Loops &amp; variables.</b> Make your Level 3 code shorter and cleaner.</li>
+        </ul>
+      </section>
+
+      <div class="callout teal" style="margin-top: 28px;">
+        <span class="ctitle">Before you code &mdash;</span>
+        <span>Grab the controller and drive the rover by hand through one delivery first. Your hands need to know the field before your code does.</span>
       </div>
 
       <h2 style="margin: 36px 0 6px;">Where do you start?</h2>
       <p style="color: var(--muted); margin-bottom: 4px;">Pick the lane that matches you. You can change it at any time.</p>
 
       <div class="paths">
-        <button class="path-card beginner"     data-path="beginner">
+        <button class="path-card beginner" data-path="beginner">
           <div class="p-tag">Never coded</div>
           <h3>Start at Level 1.</h3>
-          <p>Take your time. We're going to drive the rover before we code it.</p>
-          <span class="p-cta">Begin →</span>
+          <p>Take your time. We'll drive the rover by hand before we code it.</p>
+          <span class="p-cta">Begin &rarr;</span>
         </button>
         <button class="path-card intermediate" data-path="intermediate">
           <div class="p-tag">I've used blocks</div>
-          <h3>Start at Level 1.<br>Move fast.</h3>
-          <p>Skim the hints; we'll hit text Python in Level 3.</p>
-          <span class="p-cta">Begin →</span>
+          <h3>Start at Level 1. Move fast.</h3>
+          <p>Same path, faster pace. Skim the hints, push to Level 3.</p>
+          <span class="p-cta">Begin &rarr;</span>
         </button>
-        <button class="path-card express"      data-path="express">
-          <div class="p-tag">I've typed code</div>
-          <h3>Take the Express Lane.</h3>
-          <p>Different work, not harder work. You're writing the version future students will read.</p>
-          <span class="p-cta">Begin →</span>
-        </button>
-      </div>
-
-      <div class="callout teal" style="margin-top: 36px;">
-        <span class="ctitle">Before you code &mdash;</span>
-        <span>Drive the rover with the controller through one delivery first. Your hands need to know the field before your code does.</span>
       </div>
     </section>
 
@@ -1317,48 +1421,47 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       <div class="screen-header">
         <div>
           <h1>Level 1 &mdash; Blocks</h1>
-          <p class="lead">One delivery. One cargo, one zone, one stack of blocks. Make it work.</p>
+          <p class="lead">Design your stadium. Measure it. Drive it by hand. Then code it in Blocks.</p>
         </div>
         <span class="phase blocks">Blocks</span>
       </div>
 
       <div class="objective">
-        <span class="label">Objective</span>
-        <p>Make the rover deliver one cargo to its zone using VEXcode Blocks.</p>
+        <span class="label">Your task</span>
+        <p>Design your stadium layout. Measure the distance and turn for each zone. Then code the rover in Blocks to deliver all three cargo to the right zones.</p>
+      </div>
+
+      <div class="callout teal">
+        <span class="ctitle">Drive it first &mdash;</span>
+        <span>Grab the controller and drive one delivery by hand before you touch any code. Get a feel for how the rover moves on your field.</span>
       </div>
 
       <section class="section">
-        <h3>What you're doing</h3>
-        <p>Pick one delivery from your stadium &mdash; just one. Measure the distance from the supply room to the zone with the ruler. Measure the turn angle with the protractor. Translate those numbers into a stack of blocks. Run it. Watch what happens.</p>
-        <p>You're not trying to be perfect. You're trying to get the rover to <em>do a thing</em>.</p>
+        <h3>Step 1: Design your stadium</h3>
+        <p>Place your three zone markers on the field mat wherever you want. Place the rover at the supply room (the rover's starting spot).</p>
+        <p><b>One rule:</b> each zone must be at least <b>30 cm</b> from where the rover starts. Other than that, the layout is yours.</p>
+      </section>
 
-        <details class="expandable">
-          <summary>Show me the commands I'll need</summary>
-          <div class="ex-body">
-            <div class="commands-grid">
-              <div class="cheat-group">
-                <h5>Drive</h5>
-                <div class="cheat-line">Drive forward <span class="cmt">[mm]</span></div>
-                <div class="cheat-line">Drive backward <span class="cmt">[mm]</span></div>
-              </div>
-              <div class="cheat-group">
-                <h5>Turn</h5>
-                <div class="cheat-line">Turn left/right <span class="cmt">[degrees]</span></div>
-                <div class="cheat-line">Turn to heading <span class="cmt">[degrees]</span></div>
-              </div>
-              <div class="cheat-group">
-                <h5>Kicker</h5>
-                <div class="cheat-line">Kick (medium / weak / strong)</div>
-                <div class="cheat-line">Place (gentle drop)</div>
-              </div>
-              <div class="cheat-group">
-                <h5>Wait</h5>
-                <div class="cheat-line">Wait <span class="cmt">[sec]</span> seconds</div>
-              </div>
-            </div>
-            <p style="font-size: 14px; color: var(--muted); margin-top: 14px;">This is the inventory, not a recipe. The order and the numbers are yours.</p>
-          </div>
-        </details>
+      <section class="section">
+        <h3>Step 2: Measure each zone</h3>
+        <p>For each of the three zones, you need two numbers:</p>
+        <ul class="arc-list">
+          <li><b>Distance.</b> Use your ruler. Measure from the rover's center to the zone in centimeters, then multiply by 10 to get millimeters. (VEX wants mm.)</li>
+          <li><b>Turn.</b> Use your protractor on the rover. Stand behind it and look where it's pointing. Is the zone to the left or right? How many degrees?</li>
+        </ul>
+        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">Write these numbers down. You'll need them in your code.</p>
+      </section>
+
+      <section class="section">
+        <h3>Step 3: Code it in Blocks</h3>
+        <p>Open VEXcode AIM in Blocks mode. For each delivery, your stack will look something like:</p>
+        <ul class="arc-list">
+          <li>Turn (left or right) by your measured degrees</li>
+          <li>Drive forward by your measured distance in mm</li>
+          <li>Kick (for the soccer ball) or Place (for the barrels)</li>
+          <li>Turn around and drive back to the supply room</li>
+        </ul>
+        <p>Then do the same for zones 2 and 3. Run the whole stack.</p>
       </section>
 
       <section class="section amber">
@@ -1369,21 +1472,21 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           <!-- HINT CARD 1 -->
           <div class="hint-card" data-card>
             <div class="hint-head">
-              <div class="hint-q"><span class="qmark">?</span>The rover isn't moving the right distance.</div>
+              <div class="hint-q"><span class="qmark">?</span>The rover isn't going the right distance.</div>
               <button class="btn ghost sm" data-action="open-card">Open</button>
             </div>
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text">Stop. Measure again. Make sure your ruler and your block agree on units. VEX moves in <b>millimeters</b>. 1 cm = 10 mm.</span>
+                <span class="h-text">Stop and measure again. Make sure you converted to <b>millimeters</b>. 1 cm = 10 mm. So 45 cm is 450, not 45.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">Run it once and watch where it actually stops. Is it short, long, or in the right place but pointed wrong? That tells you which number to change.</span>
+                <span class="h-text">Run it once and watch where the rover actually stops. Is it short, too far, or pointing the wrong way? That tells you which number to change.</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">Distance and angle are two separate problems. Fix one at a time. Try a clean drive forward (angle = 0) first, then come back and adjust the heading.</span>
+                <span class="h-text">Distance and turn are two different problems. Fix one at a time. Try driving straight (no turn) first &mdash; just see if you can get to the right spot. Then come back and fix the turn.</span>
               </div>
               <div class="hint-actions">
                 <button class="btn ghost sm" data-action="next-hint">Still stuck</button>
@@ -1400,15 +1503,15 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text">Look at the protractor on the field. Which direction is 0°? Which way is positive? Sketch it before you change anything.</span>
+                <span class="h-text">Stand behind the rover. Look where it's pointing. Is the zone on its left side or its right side? That's the turn direction.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">VEX measures heading like a compass: 0 is forward, positive turns right, negative turns left. The <em>sign</em> of your number matters as much as the size.</span>
+                <span class="h-text">Check the block. Did you pick <b>Turn left</b> or <b>Turn right</b>? Easy to grab the wrong one.</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">Where is the rover pointed now? Where does it need to point? Say it out loud with your partner. The turn is the difference between those two &mdash; speak it before you type it.</span>
+                <span class="h-text">Say it out loud with your partner first: "the zone is on the rover's right, so it turns right." If you can't say it, you can't code it.</span>
               </div>
               <div class="hint-actions">
                 <button class="btn ghost sm" data-action="next-hint">Still stuck</button>
@@ -1425,15 +1528,15 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text">Is the Kicker block actually in your stack? It's easy to drop a Drive block where you meant a Kicker. Look closely.</span>
+                <span class="h-text">Is the Kicker block actually in your stack? It's easy to drop a Drive block where you meant a Kicker.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">The kicker has two modes: <b>kick</b> and <b>place</b>. Soccer ball gets kicked. Barrels get placed gently. Are you using the right one?</span>
+                <span class="h-text">The kicker has two modes: <b>kick</b> and <b>place</b>. The soccer ball gets kicked. The barrels get placed gently. Are you using the right one?</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">Order matters. The rover has to be <em>at</em> the zone before the kicker fires. If it fires mid-drive, the cargo lands wherever the rover happens to be. Walk through your stack, one block at a time.</span>
+                <span class="h-text">Order matters. The rover has to <em>arrive</em> at the zone before the kicker fires. If it fires mid-drive, the cargo lands wherever the rover is at that moment. Walk through your stack one block at a time.</span>
               </div>
               <div class="hint-actions">
                 <button class="btn ghost sm" data-action="next-hint">Still stuck</button>
@@ -1447,14 +1550,14 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       <section class="failure">
         <h4>What happened?</h4>
         <div class="sub">Did the rover do something you didn't expect? Write it down. That's your data.</div>
-        <textarea data-failure="level1" placeholder="Run 1: drove too far and missed the zone. Run 2: turned right when I wanted left&mdash;maybe my angle is negative?"></textarea>
+        <textarea data-failure="level1" placeholder="Run 1: drove too far and missed the zone. Run 2: turned the wrong way&mdash;I had left when it should have been right."></textarea>
         <div class="save-hint">Saves as you type.</div>
       </section>
 
       <div class="complete-bar" data-complete="level1">
         <div>
-          <h3>Got the rover to deliver?</h3>
-          <p>One delivery counts. Mark this level complete to unlock Level 2.</p>
+          <h3>All three deliveries working?</h3>
+          <p>Mark Level 1 complete when the rover delivers all three cargo to the right zones.</p>
         </div>
         <button class="btn" data-action="complete" data-level="level1">Mark Level 1 complete</button>
       </div>
@@ -1465,37 +1568,46 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       <div class="screen-header">
         <div>
           <h1>Level 2 &mdash; Switch</h1>
-          <p class="lead">Same delivery, new layout. Convert your blocks to Switch, then edit the Python values.</p>
+          <p class="lead">Redesign your stadium. Convert your blocks to Switch. Fix every number for the new layout.</p>
         </div>
         <span class="phase switch">Switch</span>
       </div>
 
       <div class="objective amber">
-        <span class="label">Objective</span>
-        <p>Convert your Level 1 stack to a Switch block. Read the Python it generates. Edit the numbers to match your new stadium.</p>
+        <span class="label">Your task</span>
+        <p>Redesign your stadium &mdash; move the zones to new spots. Convert your blocks to Switch mode to see the Python underneath. Now fix every distance and turn so all three deliveries work on the new field.</p>
+      </div>
+
+      <div class="callout magenta">
+        <span class="ctitle">Heads up &mdash;</span>
+        <span>Your field changed. Every number in your code is wrong. You have to fix them all by hand. This is annoying on purpose. Notice it.</span>
       </div>
 
       <section class="section amber">
-        <h3>What you're doing</h3>
-        <p>Match 2 is in a different city. The stadium moves. The supply room, the zones, the distances &mdash; at least two of them are in a new place. Your job is to keep the same delivery working in the new world.</p>
-        <p>In VEXcode, right-click your block stack &rarr; <b>Convert stack to Switch block</b>. Your blocks become Python inside a single Switch container. You don't have to write Python yet. You just have to find the numbers and change them.</p>
-
-        <div class="pull">You're not writing Python yet &mdash; you're a translator.</div>
+        <h3>Step 1: Move your zones</h3>
+        <p>Pick up your three zone markers and put them somewhere new on the field. Don't be polite about it &mdash; really move them.</p>
+        <p>Remeasure: new distance (cm × 10 = mm) and new turn (left or right, how many degrees) for each zone.</p>
       </section>
 
       <section class="section">
-        <h3>Block &rarr; Python decoder</h3>
-        <p style="font-size: 15px; color: var(--muted); margin-bottom: 14px;">Click a block on the left to see the Python it becomes.</p>
+        <h3>Step 2: Convert blocks to Switch</h3>
+        <p>In VEXcode AIM, <b>right-click</b> the first block of your stack (two-finger tap on a Chromebook). Pick <b>Convert stack to Switch block</b>. Your blocks turn into Python inside a Switch container.</p>
+        <p>You're not writing Python yet. You're reading it. Find the numbers and change them.</p>
+      </section>
+
+      <section class="section">
+        <h3>Step 3: Use the decoder</h3>
+        <p style="font-size: 15px; color: var(--muted); margin-bottom: 14px;">Click any block on the left to see the Python it becomes. This is what your Switch code looks like under the hood.</p>
         <div class="decoder">
           <div class="decoder-list" id="decoderList">
             <button class="dec-btn active" data-decode="drive">
               <span class="blk motion"></span> Drive forward
             </button>
-            <button class="dec-btn" data-decode="turn">
-              <span class="blk motion"></span> Turn (left / right)
+            <button class="dec-btn" data-decode="turnleft">
+              <span class="blk motion"></span> Turn left
             </button>
-            <button class="dec-btn" data-decode="turnto">
-              <span class="blk motion"></span> Turn to heading
+            <button class="dec-btn" data-decode="turnright">
+              <span class="blk motion"></span> Turn right
             </button>
             <button class="dec-btn" data-decode="kick">
               <span class="blk kick"></span> Kick (soccer ball)
@@ -1527,15 +1639,15 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text"><b>Right-click</b> &mdash; not left-click &mdash; on the first block of your stack. On a Chromebook, that's two-finger tap on the trackpad.</span>
+                <span class="h-text"><b>Right-click</b> &mdash; not left-click &mdash; on the first block of your stack. On a Chromebook, that's a two-finger tap on the trackpad.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">You have to right-click the <em>start</em> of the stack, not somewhere in the middle. The menu only appears on a clean stack origin.</span>
+                <span class="h-text">You have to right-click the <em>top</em> block of the stack, not one in the middle. The menu only shows up on the start.</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">If the menu opens but "Convert stack to Switch block" is grayed out, your stack contains a block Switch can't translate. Remove any custom or pictographic blocks and try again.</span>
+                <span class="h-text">If the menu opens but "Convert stack to Switch block" is grayed out, your stack has a block that Switch can't translate. Take any odd custom blocks out and try again.</span>
               </div>
               <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
             </div>
@@ -1543,21 +1655,21 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 
           <div class="hint-card" data-card>
             <div class="hint-head">
-              <div class="hint-q"><span class="qmark">?</span>I edited the number but nothing changed.</div>
+              <div class="hint-q"><span class="qmark">?</span>I changed the number but the rover does the same thing.</div>
               <button class="btn ghost sm" data-action="open-card">Open</button>
             </div>
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text">Did you save and re-download to the robot? VEXcode does not push your changes to the rover live.</span>
+                <span class="h-text">Did you save and download to the rover? VEXcode does not push changes live &mdash; you have to push the new version down.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">Numbers live in more than one place. If you changed the distance going to the zone, is there a "return to base" line that still has the old number?</span>
+                <span class="h-text">Numbers live in more than one spot. If you fixed the distance going <em>to</em> the zone, did you also fix the distance coming <em>back</em>? And the turn after?</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">You're editing four numbers in four different lines, and every one has to be exact. This is tedious. Notice the tedium &mdash; we'll come back to it in Level 3.</span>
+                <span class="h-text">Count how many numbers you have to change for one delivery. Now multiply by three. Yeah. We're going to fix that in the Bonus.</span>
               </div>
               <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
             </div>
@@ -1571,15 +1683,15 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text">Don't read it like a book. Find the <b>numbers</b> first. They're the parts you came here to change.</span>
+                <span class="h-text">Don't read it like a book. Find the <b>numbers</b> first. The numbers are the only parts you came here to change.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">Each line is a sentence: verb, then ingredients in parentheses. <code>robot.move_for(450, 30)</code> reads as "rover, move 450 millimeters, turning 30 degrees."</span>
+                <span class="h-text">Each line is a short sentence: action, then the details in parentheses. <code>robot.move_for(450, 0)</code> means "rover, drive 450 millimeters straight."</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">Cover the words with your finger. Look at only the numbers. Find your distance, find your angle, change them. The words are doing the same job your blocks did &mdash; they just look different.</span>
+                <span class="h-text">Cover the words with your finger. Look at only the numbers. Find your distance, find your turn. Change them. The words are doing the same job your blocks did.</span>
               </div>
               <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
             </div>
@@ -1590,15 +1702,15 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 
       <section class="failure">
         <h4>What happened?</h4>
-        <div class="sub">Where did the tedium show up? Which edit caught you?</div>
-        <textarea data-failure="level2" placeholder="I changed the first distance but forgot the return distance. Also, I had to edit the same angle in two places&mdash;feels like it should be in one."></textarea>
+        <div class="sub">What was the most annoying part of fixing all those numbers? Be specific.</div>
+        <textarea data-failure="level2" placeholder="I changed the first distance but forgot the return distance. Also, every delivery has the same return code and I had to copy it three times."></textarea>
         <div class="save-hint">Saves as you type.</div>
       </section>
 
       <div class="complete-bar" data-complete="level2">
         <div>
-          <h3>Same delivery, new field?</h3>
-          <p>If your rover makes the new run, you're done with Level 2.</p>
+          <h3>All three deliveries working on the new field?</h3>
+          <p>Mark Level 2 complete when the rover makes all three deliveries on your new layout.</p>
         </div>
         <button class="btn amber" data-action="complete" data-level="level2">Mark Level 2 complete</button>
       </div>
@@ -1608,106 +1720,65 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
     <section class="screen" id="screen-level3" data-screen-label="03 Level 3 Python" hidden>
       <div class="screen-header">
         <div>
-          <h1>Level 3 &mdash; Text Python</h1>
-          <p class="lead">Knockout round. Three matches, three days, no time to rewrite the code.</p>
+          <h1>Level 3 &mdash; Python</h1>
+          <p class="lead">Redesign the field one more time. Now type the code yourself.</p>
         </div>
         <span class="phase python">Python</span>
       </div>
 
       <div class="objective magenta">
-        <span class="label">Objective</span>
-        <p>All three deliveries. One list. One loop. Numbers at the top &mdash; the loop does the rest.</p>
+        <span class="label">Your task</span>
+        <p>New field layout &mdash; redesign your stadium one more time. Now you're writing real Python from scratch. Type the commands for all three deliveries, one after another. No shortcuts &mdash; tell the rover exactly what to do, step by step.</p>
       </div>
 
-      <section class="section magenta">
-        <h3>What you're doing</h3>
-        <p>The stadium moves every match. Your code can't. So instead of typing the same drive-place-return sequence three times, you write it <em>once</em> and feed it three deliveries.</p>
-        <p>Start a new text Python project in VEXcode AIM. You can drag and drop Python blocks, or type from scratch &mdash; typing is encouraged. The starter below shows the shape.</p>
+      <section class="section">
+        <h3>Step 1: Redesign your stadium</h3>
+        <p>Move your zones again. Pick new spots. Remeasure each one &mdash; new distance in mm, new turn (left or right, how many degrees).</p>
+      </section>
 
-        <div class="callout magenta">
-          <span class="ctitle">Why this matters &mdash;</span>
-          <span>In Level 2 you edited four numbers in four places. In Level 3, you change the numbers in <em>one</em> place. The loop does the rest. That's the whole reason Python exists.</span>
-        </div>
+      <section class="section magenta">
+        <h3>Step 2: Start a Python project</h3>
+        <p>Open VEXcode AIM. New project &rarr; pick <b>Python</b> (not Blocks). Save it before you write anything.</p>
+        <p>You've already seen what these commands look like in Level 2. Now you type them yourself.</p>
       </section>
 
       <section class="section">
-        <h3>Starter scaffold</h3>
-        <p style="font-size: 15px; color: var(--muted); margin-bottom: 14px;">Copy this into your project. Fill in the blanks with your measurements.</p>
+        <h3>Step 3: Type three deliveries</h3>
+        <p>Write the commands for delivery 1. Then delivery 2. Then delivery 3. Each one looks like this:</p>
         <div class="codeblock">
-          <div class="code-actions">
-            <button class="code-copy" data-action="copy-starter">Copy</button>
-          </div>
-<pre id="starterCode"><span class="cmt"># My deliveries: (distance_mm, angle_deg, cargo)</span>
-deliveries = [
-    (<span class="blank">___</span>, <span class="blank">___</span>, <span class="str">"soccer_ball"</span>),
-    (<span class="blank">___</span>, <span class="blank">___</span>, <span class="str">"blue_barrel"</span>),
-    (<span class="blank">___</span>, <span class="blank">___</span>, <span class="str">"orange_barrel"</span>),
-]
-
-<span class="kw">for</span> distance, angle, cargo <span class="kw">in</span> deliveries:
-    robot.<span class="fn">screen</span>.print(cargo)
-    robot.<span class="fn">move_for</span>(distance, angle)
-    <span class="cmt"># drop off the right way for this cargo</span>
-    robot.<span class="fn">kicker</span>.place()
-    <span class="cmt"># come back to the supply room</span>
-    robot.<span class="fn">move_for</span>(distance, angle + <span class="num">180</span>)</pre>
+<pre><span class="cmt"># Delivery 1: soccer ball to the Referee</span>
+robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">30</span>)        <span class="cmt"># your turn direction + degrees</span>
+robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)         <span class="cmt"># your distance in mm</span>
+robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <span class="cmt"># kick the ball</span>
+<span class="cmt"># turn around and drive back</span>
+robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">180</span>)
+robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)</pre>
         </div>
-        <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">The soccer ball wants <code>kick(MEDIUM)</code>, not <code>place()</code>. Decide where that goes.</p>
+        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">For the blue and orange barrels, use <code>robot.kicker.place()</code> instead of <code>kick()</code>. Then type the same shape for deliveries 2 and 3 with your new numbers.</p>
       </section>
 
       <section class="section magenta">
-        <h3>Delivery run &mdash; timer &amp; score</h3>
-        <p style="font-size: 14px; color: var(--muted); margin-bottom: 14px;">Press Start when you're ready to run. Click each cargo button as the rover successfully delivers it.</p>
-        <div class="run">
-          <div class="timer-card">
-            <div class="timer-label">Time remaining</div>
-            <div class="timer-display" id="timerDisplay">1:00</div>
-            <div class="timer-actions">
-              <button class="btn" id="timerStart">Start</button>
-              <button class="btn ghost" id="timerReset">Reset</button>
-            </div>
+        <h3>Commands you'll need</h3>
+        <p style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">Always open in the sidebar too. Here's the short list:</p>
+        <div class="commands-grid">
+          <div class="cheat-group">
+            <h5>Turn</h5>
+            <div class="cheat-line">robot.turn_for(<span class="kw">LEFT</span>, <span class="cmt">deg</span>)</div>
+            <div class="cheat-line">robot.turn_for(<span class="kw">RIGHT</span>, <span class="cmt">deg</span>)</div>
           </div>
-          <div class="scoreboard">
-            <div class="score-row">
-              <div class="score-cargo">
-                <div class="cargo-icon ball"></div>
-                <div>
-                  <div class="score-name">Soccer ball</div>
-                  <div class="score-zone">Referee Station</div>
-                </div>
-              </div>
-              <button class="score-btn" data-score="ball" data-pts="3">
-                <span>Delivered</span><span class="pts">+3</span>
-              </button>
-            </div>
-            <div class="score-row">
-              <div class="score-cargo">
-                <div class="cargo-icon blue"></div>
-                <div>
-                  <div class="score-name">Blue barrel</div>
-                  <div class="score-zone">Team A Bench</div>
-                </div>
-              </div>
-              <button class="score-btn" data-score="blue" data-pts="2">
-                <span>Delivered</span><span class="pts">+2</span>
-              </button>
-            </div>
-            <div class="score-row">
-              <div class="score-cargo">
-                <div class="cargo-icon orange"></div>
-                <div>
-                  <div class="score-name">Orange barrel</div>
-                  <div class="score-zone">Team B Bench</div>
-                </div>
-              </div>
-              <button class="score-btn" data-score="orange" data-pts="1">
-                <span>Delivered</span><span class="pts">+1</span>
-              </button>
-            </div>
-            <div class="score-total">
-              <span class="lbl">Total</span>
-              <span class="val" id="scoreTotal">0</span>
-            </div>
+          <div class="cheat-group">
+            <h5>Drive</h5>
+            <div class="cheat-line">robot.move_for(<span class="cmt">mm</span>, <span class="num">0</span>)</div>
+          </div>
+          <div class="cheat-group">
+            <h5>Deliver</h5>
+            <div class="cheat-line">robot.kicker.kick(MEDIUM)</div>
+            <div class="cheat-line">robot.kicker.place()</div>
+          </div>
+          <div class="cheat-group">
+            <h5>Helpful</h5>
+            <div class="cheat-line">robot.screen.print(<span class="str">"D1"</span>)</div>
+            <div class="cheat-line">wait(0.5, SECONDS)</div>
           </div>
         </div>
       </section>
@@ -1718,21 +1789,21 @@ deliveries = [
 
           <div class="hint-card" data-card>
             <div class="hint-head">
-              <div class="hint-q"><span class="qmark">?</span>I don't know how to start a text project.</div>
+              <div class="hint-q"><span class="qmark">?</span>I don't know how to start a Python project.</div>
               <button class="btn ghost sm" data-action="open-card">Open</button>
             </div>
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text">Open VEXcode AIM. New project &rarr; <b>Python</b> (not Blocks). Save it before you write anything.</span>
+                <span class="h-text">Open VEXcode AIM. <b>New project</b>. Pick <b>Python</b> &mdash; not Blocks. Give it a name and save.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">Type the line that wakes the robot up first. Run it. If the robot responds, you're ready. If it doesn't, fix that before writing more code.</span>
+                <span class="h-text">Type one short line and run it. <code>robot.screen.print("hi")</code> is enough. If the rover prints "hi", you're ready. If not, fix that first.</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">Copy the starter scaffold above. Fill in <em>one</em> delivery's numbers. Get that one delivery working before you fill in the other two.</span>
+                <span class="h-text">Get one delivery typing perfectly first. Run it. When that works, copy and paste the same shape for delivery 2 with new numbers. Then delivery 3.</span>
               </div>
               <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
             </div>
@@ -1740,21 +1811,21 @@ deliveries = [
 
           <div class="hint-card" data-card>
             <div class="hint-head">
-              <div class="hint-q"><span class="qmark">?</span>My loop only runs once.</div>
+              <div class="hint-q"><span class="qmark">?</span>Python gives me a red error message.</div>
               <button class="btn ghost sm" data-action="open-card">Open</button>
             </div>
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text">Look at indentation. Everything inside the <code>for</code> must be indented the same. Lines that aren't indented are outside the loop.</span>
+                <span class="h-text">Read the error. It usually tells you the line number. Go to that line first.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">Count your delivery entries. A loop runs exactly as many times as there are items in the list. If your list has one item, you get one run.</span>
+                <span class="h-text">The usual suspects: missing comma, missing parenthesis, typo in <code>robot</code> or a command name. Capital letters matter &mdash; <code>RIGHT</code> is different from <code>right</code>.</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">Print something inside the loop &mdash; <code>robot.screen.print(cargo)</code> &mdash; so you can <em>see</em> how many times it runs. The screen is your debugger.</span>
+                <span class="h-text">Comment out the new line you just added (put <code>#</code> in front of it). Run again. If the error goes away, the bug is in that line. Read it character by character.</span>
               </div>
               <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
             </div>
@@ -1762,21 +1833,21 @@ deliveries = [
 
           <div class="hint-card" data-card>
             <div class="hint-head">
-              <div class="hint-q"><span class="qmark">?</span>The variables aren't doing what I expected.</div>
+              <div class="hint-q"><span class="qmark">?</span>The rover goes to the wrong place.</div>
               <button class="btn ghost sm" data-action="open-card">Open</button>
             </div>
             <div class="hint-body">
               <div class="hint-step h1 shown">
                 <span class="h-label">Try first</span>
-                <span class="h-text">Say out loud what you <em>expect</em> the variables to do. Then say what they're <em>actually</em> doing. The gap is where the bug lives.</span>
+                <span class="h-text">Print which delivery you're on. Put <code>robot.screen.print("D1")</code> right before delivery 1, <code>"D2"</code> before delivery 2, etc. Now you can see exactly when things go wrong.</span>
               </div>
               <div class="hint-step h2">
                 <span class="h-label">Then this</span>
-                <span class="h-text">Variables in the list are unpacked in order: <code>distance, angle, cargo</code>. If you wrote them in a different order, the rover is using your distance as an angle.</span>
+                <span class="h-text">Did you remember to drive back to the supply room before the next delivery? Or did you start delivery 2 from wherever delivery 1 ended?</span>
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">Pick one delivery. Print all three of its values to the screen before the rover moves. If the numbers on the screen are wrong, your list is wrong. If they're right, the bug is somewhere else.</span>
+                <span class="h-text">Look at each delivery one at a time. Cover the other two with your hand on screen. Walk through line by line and say what the rover should do. Then run it.</span>
               </div>
               <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
             </div>
@@ -1787,28 +1858,28 @@ deliveries = [
 
       <section class="failure">
         <h4>What happened?</h4>
-        <div class="sub">Which delivery worked? Which didn't? What did you see on the screen?</div>
-        <textarea data-failure="level3" placeholder="First two ran fine, third one drove past the zone. I think the orange barrel's angle is wrong&mdash;rover ends up facing the field edge."></textarea>
+        <div class="sub">Which delivery worked? Which didn't? What did the rover do that surprised you?</div>
+        <textarea data-failure="level3" placeholder="First two deliveries ran fine. Third one drove past the zone&mdash;I think my turn was right but the distance was off."></textarea>
         <div class="save-hint">Saves as you type.</div>
       </section>
 
       <div class="complete-bar" data-complete="level3">
         <div>
-          <h3>All three deliveries running from one loop?</h3>
-          <p>Even partial counts. Mark complete to unlock the Bonus.</p>
+          <h3>All three deliveries running from typed Python?</h3>
+          <p>Mark Level 3 complete when the rover makes all three deliveries from code you typed.</p>
         </div>
         <button class="btn magenta" data-action="complete" data-level="level3">Mark Level 3 complete</button>
       </div>
     </section>
 
     <!-- ====== BONUS ====== -->
-    <section class="screen" id="screen-bonus" data-screen-label="04 Bonus Vision" hidden>
+    <section class="screen" id="screen-bonus" data-screen-label="04 Bonus Loops" hidden>
       <div class="screen-header">
         <div>
-          <h1>Bonus &mdash; Vision Final Approach</h1>
-          <p class="lead">The stadium just got rearranged five minutes before kickoff. Your code doesn't know the new layout. Your rover does have eyes.</p>
+          <h1>Bonus &mdash; Loops &amp; Variables</h1>
+          <p class="lead">Same field as Level 3. Same deliveries. But shorter, cleaner code.</p>
         </div>
-        <span class="phase vision">Vision</span>
+        <span class="phase python">Python</span>
       </div>
 
       <div id="bonusLocked" class="locked-card" hidden>
@@ -1817,56 +1888,120 @@ deliveries = [
       </div>
 
       <div id="bonusContent">
-        <div class="objective" style="background: rgba(0,112,150,0.08); border-left-color: var(--teal-dark);">
-          <span class="label" style="color: var(--teal-dark);">Objective</span>
-          <p>Use the AI Vision Sensor to find at least one zone instead of hardcoding its position.</p>
+        <div class="objective magenta">
+          <span class="label">Your task</span>
+          <p>Take your working Level 3 code and rewrite it using <b>variables</b> and a <b>loop</b>. Same three deliveries, same field, but the typing gets way shorter.</p>
         </div>
 
-        <section class="section dark">
-          <h3>The scenario</h3>
-          <p>A partner team rebuilt your stadium without telling you what changed. Your delivery list is wrong. Hardcoded distances will miss every time.</p>
-          <p>But the rover can <em>see</em>. The camera reports what color blobs it's looking at right now &mdash; their bearing, their width, where they are in the frame. Stop driving by memory. Start driving by what's in front of you.</p>
-        </section>
-
         <section class="section">
-          <h3>Vision commands</h3>
-          <div class="codeblock">
-<pre><span class="cmt"># Look for a specific color</span>
-data = robot.<span class="fn">vision</span>.get_data(<span class="kw">BLUE_BARREL</span>)
+          <h3>1. Spot the pattern</h3>
+          <p>Look at the code you wrote in Level 3. You wrote three deliveries. What's the <em>same</em> every time? What's <em>different</em>?</p>
+          <p>Talk it through with your partner before reading on.</p>
 
-<span class="cmt"># Each item in `data` has:</span>
-<span class="cmt">#   .bearing   how far off-center, in degrees</span>
-<span class="cmt">#   .width     bigger = closer</span>
-<span class="cmt">#   .centerX   horizontal pixel position</span>
-
-<span class="kw">if</span> <span class="fn">len</span>(data) &gt; <span class="num">0</span>:
-    target = data[<span class="num">0</span>]
-    robot.<span class="fn">turn_for</span>(RIGHT, target.bearing)
-    robot.<span class="fn">move_for</span>(<span class="num">100</span>, <span class="num">0</span>)</pre>
+          <div class="callout teal">
+            <span class="ctitle">The answer &mdash;</span>
+            <span>The <b>shape</b> is the same every time: turn, drive, deliver, turn around, drive back. What's different is the <b>numbers</b> (distance, turn) and the <b>cargo</b> (kick vs place).</span>
           </div>
         </section>
 
-        <section class="section dark">
+        <section class="section">
+          <h3>2. What's a variable?</h3>
+          <p>A <b>variable</b> is a name for a value. Instead of writing <code>450</code> all over your code, you write <code>distance</code>, and you decide once what <code>distance</code> means.</p>
+          <div class="codeblock">
+<pre><span class="cmt"># Before (number hardcoded)</span>
+robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)
+
+<span class="cmt"># After (with a variable)</span>
+distance = <span class="num">450</span>
+robot.<span class="fn">move_for</span>(distance, <span class="num">0</span>)</pre>
+          </div>
+          <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">That looks like more code, not less. But hold on &mdash; what if you had three different distances?</p>
+        </section>
+
+        <section class="section">
+          <h3>3. What's a loop?</h3>
+          <p>A <b>loop</b> means: do this thing more than once. Instead of writing the same delivery code three times, write it once and tell the rover "do this for each delivery."</p>
+          <p>Think of your three deliveries as a checklist. A loop checks off each item, does the work, then moves to the next one.</p>
+
+          <div class="codeblock">
+<pre><span class="cmt"># A list of three things</span>
+cargo_list = [<span class="str">"soccer_ball"</span>, <span class="str">"blue_barrel"</span>, <span class="str">"orange_barrel"</span>]
+
+<span class="cmt"># Do something with each one</span>
+<span class="kw">for</span> cargo <span class="kw">in</span> cargo_list:
+    robot.<span class="fn">screen</span>.print(cargo)</pre>
+          </div>
+          <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">This prints each cargo name one at a time. The loop does the repeating for you.</p>
+        </section>
+
+        <section class="section magenta">
+          <h3>4. Build it</h3>
+          <p>Now put it together. Each delivery has three things: a <b>distance</b>, a <b>turn</b>, and a <b>cargo type</b>. Stack them into a list.</p>
+          <p>Step by step:</p>
+          <ol class="arc-list">
+            <li>Make a list with your three deliveries' info: <code>(turn_direction, degrees, distance, cargo)</code>.</li>
+            <li>Write the delivery code <em>once</em>, using variable names instead of real numbers.</li>
+            <li>Wrap that code in a <code>for</code> loop.</li>
+          </ol>
+
+          <p style="margin-top: 14px;">Here's the shape &mdash; fill in your own numbers:</p>
+          <div class="codeblock">
+<pre><span class="cmt"># Each delivery: (direction, degrees, distance_mm, cargo)</span>
+deliveries = [
+    (<span class="kw">RIGHT</span>, <span class="num">30</span>, <span class="num">450</span>, <span class="str">"ball"</span>),
+    (<span class="kw">LEFT</span>,  <span class="num">45</span>, <span class="num">600</span>, <span class="str">"blue"</span>),
+    (<span class="kw">RIGHT</span>, <span class="num">90</span>, <span class="num">300</span>, <span class="str">"orange"</span>),
+]
+
+<span class="kw">for</span> direction, degrees, distance, cargo <span class="kw">in</span> deliveries:
+    robot.<span class="fn">screen</span>.print(cargo)
+    robot.<span class="fn">turn_for</span>(direction, degrees)
+    robot.<span class="fn">move_for</span>(distance, <span class="num">0</span>)
+
+    <span class="kw">if</span> cargo == <span class="str">"ball"</span>:
+        robot.<span class="fn">kicker</span>.kick(MEDIUM)
+    <span class="kw">else</span>:
+        robot.<span class="fn">kicker</span>.place()
+
+    <span class="cmt"># turn around and drive back</span>
+    robot.<span class="fn">turn_for</span>(direction, <span class="num">180</span>)
+    robot.<span class="fn">move_for</span>(distance, <span class="num">0</span>)</pre>
+          </div>
+          <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">Replace the numbers in the list with your real measurements. Don't touch the loop code below it.</p>
+        </section>
+
+        <section class="section">
+          <h3>5. The payoff</h3>
+          <p>Remember Level 2, when you had to fix every number by hand on a new field?</p>
+          <p>With a loop, you'd only change the numbers in <em>one place</em> &mdash; the list at the top. The driving code never changes.</p>
+
+          <div class="callout magenta">
+            <span class="ctitle">That's the whole point &mdash;</span>
+            <span>Variables and loops aren't fancy computer-science magic. They're what you do when you notice you're typing the same thing over and over. You had the problem first. Now you have the fix.</span>
+          </div>
+        </section>
+
+        <section class="section">
           <h3>Stuck?</h3>
           <div class="hints" data-hints="bonus">
 
             <div class="hint-card" data-card>
               <div class="hint-head">
-                <div class="hint-q"><span class="qmark">?</span>How do I know what the camera sees?</div>
+                <div class="hint-q"><span class="qmark">?</span>My loop only runs once.</div>
                 <button class="btn ghost sm" data-action="open-card">Open</button>
               </div>
               <div class="hint-body">
                 <div class="hint-step h1 shown">
                   <span class="h-label">Try first</span>
-                  <span class="h-text">Open the camera view on the rover. It shows you which color blobs it's detecting <em>right now</em>.</span>
+                  <span class="h-text">Count the items in your list. A loop runs once per item. If your list has one item, you get one run.</span>
                 </div>
                 <div class="hint-step h2">
                   <span class="h-label">Then this</span>
-                  <span class="h-text">In code, <code>robot.vision.get_data(BLUE_BARREL)</code> returns information about every blue barrel in view &mdash; bearing, width, and position.</span>
+                  <span class="h-text">Check indentation. Every line inside the <code>for</code> must be indented the same (use 4 spaces). Lines that aren't indented are outside the loop.</span>
                 </div>
                 <div class="hint-step h3">
                   <span class="h-label">Approach</span>
-                  <span class="h-text">Don't drive by vision yet. Stand still and print what the camera sees first. Once you trust the report, then drive.</span>
+                  <span class="h-text">Put <code>robot.screen.print(cargo)</code> as the first line inside the loop. Now you can <em>see</em> the loop run on the rover screen. If you see three names, the loop is fine and the bug is somewhere else.</span>
                 </div>
                 <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
               </div>
@@ -1874,21 +2009,43 @@ data = robot.<span class="fn">vision</span>.get_data(<span class="kw">BLUE_BARRE
 
             <div class="hint-card" data-card>
               <div class="hint-head">
-                <div class="hint-q"><span class="qmark">?</span>I see the object but the rover misses it.</div>
+                <div class="hint-q"><span class="qmark">?</span>My variables are doing weird things.</div>
                 <button class="btn ghost sm" data-action="open-card">Open</button>
               </div>
               <div class="hint-body">
                 <div class="hint-step h1 shown">
                   <span class="h-label">Try first</span>
-                  <span class="h-text">Bearing tells you which way to turn. Width tells you how close you are. You need both.</span>
+                  <span class="h-text">Check the order. The names in the <code>for</code> line have to match the order of values in your list. If you wrote <code>(direction, degrees, distance, cargo)</code> but unpacked as <code>distance, direction, degrees, cargo</code>, your numbers are in the wrong slots.</span>
                 </div>
                 <div class="hint-step h2">
                   <span class="h-label">Then this</span>
-                  <span class="h-text">Width grows as you approach. Decide what width counts as "close enough," then drive until width is bigger than that.</span>
+                  <span class="h-text">Pick one delivery. Print all four values on the rover screen before the rover moves. If the screen shows numbers in the wrong slots, your list and your unpack don't match.</span>
                 </div>
                 <div class="hint-step h3">
                   <span class="h-label">Approach</span>
-                  <span class="h-text">Vision is a feedback loop, not a one-shot calculation. Look, turn, look again, drive, look again. That's the structure.</span>
+                  <span class="h-text">Comment out everything except one delivery in your list. Get that one running with variables. Then add delivery 2. Then delivery 3.</span>
+                </div>
+                <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
+              </div>
+            </div>
+
+            <div class="hint-card" data-card>
+              <div class="hint-head">
+                <div class="hint-q"><span class="qmark">?</span>The kicker fires for the wrong cargo.</div>
+                <button class="btn ghost sm" data-action="open-card">Open</button>
+              </div>
+              <div class="hint-body">
+                <div class="hint-step h1 shown">
+                  <span class="h-label">Try first</span>
+                  <span class="h-text">Check your <code>if</code> line. What word are you comparing? Does it exactly match the word in your list (<code>"ball"</code> vs <code>"soccer_ball"</code>)?</span>
+                </div>
+                <div class="hint-step h2">
+                  <span class="h-label">Then this</span>
+                  <span class="h-text">Two equals signs: <code>==</code>, not <code>=</code>. One equals sign assigns a value, two equals signs checks if things match.</span>
+                </div>
+                <div class="hint-step h3">
+                  <span class="h-label">Approach</span>
+                  <span class="h-text">Print the cargo name right before the <code>if</code>. Look at the screen. Now check your <code>if</code> against what you just saw. They have to be exactly the same word.</span>
                 </div>
                 <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
               </div>
@@ -1897,270 +2054,23 @@ data = robot.<span class="fn">vision</span>.get_data(<span class="kw">BLUE_BARRE
           </div>
         </section>
 
+        <section class="failure">
+          <h4>What happened?</h4>
+          <div class="sub">Which version felt better &mdash; Level 3 or this one? Why?</div>
+          <textarea data-failure="bonus" placeholder="Once I got the list right, this version was way shorter. The hardest part was getting the unpack order to match the list order."></textarea>
+          <div class="save-hint">Saves as you type.</div>
+        </section>
+
         <div class="complete-bar" data-complete="bonus">
           <div>
-            <h3>Vision-guided run working?</h3>
-            <p>Mark the bonus complete when at least one delivery is using <code>get_data</code> to find its zone.</p>
+            <h3>All three deliveries running from one loop?</h3>
+            <p>Mark complete when the rover makes all three deliveries from a single <code>for</code> loop with your variables.</p>
           </div>
-          <button class="btn" style="background: var(--teal-dark);" data-action="complete" data-level="bonus">Mark Bonus complete</button>
+          <button class="btn magenta" data-action="complete" data-level="bonus">Mark Bonus complete</button>
         </div>
       </div>
     </section>
 
-    <!-- ====== EXPRESS LANE ====== -->
-    <section class="screen" id="screen-express" data-screen-label="05 Express Lane" hidden>
-      <div class="screen-header">
-        <div>
-          <h1>Express Lane</h1>
-          <p class="lead">You've typed code before. You're not here to learn what a <code>for</code> loop is. You're here to write the version future students will read to learn from.</p>
-        </div>
-        <span class="phase express">Reference</span>
-      </div>
-
-      <div class="objective" style="background: #f3f3f3; border-left-color: #444;">
-        <span class="label" style="color: #444;">The job</span>
-        <p>Write the reference implementation of the three-delivery loop. Future Level-3 students will read your code to learn how this lesson is meant to look in real Python.</p>
-      </div>
-
-      <section class="section dark">
-        <h3>Different work, not harder work</h3>
-        <p>You're not skipping the lesson. You're building the artifact the lesson points at. Your code is the thing a classmate at Level 3 will open when they're stuck. That's a real responsibility &mdash; lean into it.</p>
-
-        <h3 style="margin-top: 18px;">Constraints</h3>
-        <ul class="criteria">
-          <li>Works flawlessly. Three deliveries, correct cargo, returns to base each time.</li>
-          <li>Uses variables and a single <code>for</code> loop the way the lesson teaches. No list comprehensions. No lambdas. No clever tricks.</li>
-          <li>Comments explain <b>why</b>, not <b>what</b>. (<code># return to base</code> is good. <code># add 180 to angle</code> is not &mdash; the code already says that.)</li>
-          <li>A classmate sitting at Level 3 right now should be able to read your code top to bottom and not get lost.</li>
-        </ul>
-
-        <div class="callout">
-          <span class="ctitle">Voice check &mdash;</span>
-          <span>Imagine the person reading this never wrote a line of code before this morning. Would your comments help them or show off?</span>
-        </div>
-      </section>
-
-      <section class="section">
-        <h3>Your draft</h3>
-        <p style="font-size: 15px; color: var(--muted); margin-bottom: 14px;">Type here. It autosaves. When you're happy, paste it into VEXcode.</p>
-        <div class="editor">
-          <div class="editor-bar">
-            <span>reference_delivery.py</span>
-            <span class="savestate" id="exSaveState">Saved</span>
-          </div>
-          <textarea id="expressCode" spellcheck="false" placeholder="# Stadium Logistics Rover &mdash; reference implementation
-# Author: your name
-# Read me top-to-bottom.
-
-# Each delivery is (distance, angle, cargo).
-# Distance is millimeters. Angle is degrees from the supply room's
-# forward direction. Positive turns right.
-deliveries = [
-    (450,  30, 'soccer_ball'),
-    (600, -45, 'blue_barrel'),
-    (300,  90, 'orange_barrel'),
-]
-
-# ..."></textarea>
-        </div>
-      </section>
-
-      <section class="section dark">
-        <h3>Extension &mdash; AI Vision</h3>
-        <p>Once your reference is solid, switch one of the deliveries from hardcoded distance/angle to vision-guided. Same loop structure, different way of knowing where the zone is. The vision commands are in the Bonus section &mdash; jump there when you're ready.</p>
-        <button class="btn" style="background: var(--teal-dark);" data-action="goto" data-target="bonus">Open Bonus &rarr;</button>
-      </section>
-
-      <div class="complete-bar" data-complete="express">
-        <div>
-          <h3>Reference implementation done?</h3>
-          <p>Mark complete when your draft is something a Level 3 student could actually learn from.</p>
-        </div>
-        <button class="btn" data-action="complete" data-level="express">Mark Express complete</button>
-      </div>
-    </section>
-
-    <!-- ====== FIELD REFERENCE ====== -->
-    <section class="screen" id="screen-reference" data-screen-label="Field Reference" hidden>
-      <div class="screen-header">
-        <h1>Field Reference</h1>
-      </div>
-
-      <p class="ref-frame">
-        The field is 100&times;100 cm. Three locations live inside it. Distance is measured
-        from the rover's center to each zone in millimeters. Angle is measured from the
-        rover's current heading &mdash; 0&deg; is straight forward, positive turns right,
-        negative turns left. The example below shows ONE possible layout &mdash; yours will
-        look different.
-      </p>
-
-      <figure class="ref-figure">
-        <svg viewBox="0 0 680 720" xmlns="http://www.w3.org/2000/svg"
-             font-family="Calibri, 'Segoe UI', Helvetica, Arial, sans-serif"
-             role="img" aria-label="Stadium reference: field layout, heading rules, and how to measure each delivery">
-          <defs>
-            <pattern id="bufferHatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)">
-              <line x1="0" y1="0" x2="0" y2="7" stroke="#BD2F7F" stroke-width="1" opacity="0.35"/>
-            </pattern>
-          </defs>
-
-          <!-- ============================== HEADER ============================== -->
-          <rect x="0" y="0" width="680" height="58" fill="#186172"/>
-          <text x="22" y="36" fill="white" font-size="18" font-weight="700" letter-spacing="1.4">STADIUM REFERENCE</text>
-          <text x="658" y="36" fill="white" font-size="12.5" font-style="italic" text-anchor="end" opacity="0.95">how to read and measure your field</text>
-
-          <!-- ============================== SECTION TITLES ============================== -->
-          <text x="22" y="92" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">THE FIELD · 100 × 100 CM</text>
-          <text x="22" y="110" fill="#777" font-size="11.5" font-style="italic">a sample layout — yours will look different</text>
-
-          <text x="358" y="92" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">HEADING · FROM THE ROVER'S VIEW</text>
-          <text x="358" y="110" fill="#777" font-size="11.5" font-style="italic">0° is forward · + turns right · − turns left</text>
-
-          <!-- ============================== LEFT: FIELD BOX (300×300) ============================== -->
-          <!-- Outer field with magenta-tinted buffer hatch -->
-          <rect x="22" y="128" width="300" height="300" fill="#FAEFF4" stroke="#222" stroke-width="2"/>
-          <rect x="22" y="128" width="300" height="300" fill="url(#bufferHatch)" stroke="none"/>
-
-          <!-- "15 cm buffer" label inside buffer (top-left) -->
-          <text x="36" y="150" fill="#BD2F7F" font-size="11" font-weight="700">15 cm buffer</text>
-
-          <!-- Inner play area (white, dashed magenta border) - 210×210 centered -->
-          <rect x="67" y="173" width="210" height="210" fill="white" stroke="#BD2F7F" stroke-width="1" stroke-dasharray="4 3"/>
-
-          <!-- Referee (R) circle near top center of play area -->
-          <circle cx="172" cy="212" r="14" fill="white" stroke="#222" stroke-width="1.5"/>
-          <text x="172" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#222">R</text>
-
-          <!-- Diagonal dashed magenta line from rover to R, with "~470 mm" pill -->
-          <line x1="172" y1="365" x2="172" y2="226" stroke="#BD2F7F" stroke-width="1.4" stroke-dasharray="4 3"/>
-          <rect x="148" y="285" width="48" height="18" rx="9" fill="#FBE3EE" stroke="#BD2F7F" stroke-width="1"/>
-          <text x="172" y="298" text-anchor="middle" font-size="10.5" fill="#BD2F7F" font-weight="700">~470 mm</text>
-
-          <!-- A (Blue barrel) -->
-          <rect x="100" y="266" width="22" height="22" fill="#3C87E3"/>
-          <text x="111" y="282" text-anchor="middle" font-size="12" font-weight="700" fill="white">A</text>
-
-          <!-- B (Orange barrel) -->
-          <rect x="222" y="266" width="22" height="22" fill="#F18E21"/>
-          <text x="233" y="282" text-anchor="middle" font-size="12" font-weight="700" fill="white">B</text>
-
-          <!-- "30+ cm apart" line + pill between A and B -->
-          <line x1="122" y1="320" x2="222" y2="320" stroke="#186172" stroke-width="1"/>
-          <line x1="122" y1="316" x2="122" y2="324" stroke="#186172" stroke-width="1"/>
-          <line x1="222" y1="316" x2="222" y2="324" stroke="#186172" stroke-width="1"/>
-          <rect x="139" y="328" width="66" height="17" rx="8.5" fill="white" stroke="#186172" stroke-width="1"/>
-          <text x="172" y="340" text-anchor="middle" font-size="10.5" fill="#186172" font-weight="600">30+ cm apart</text>
-
-          <!-- Rover circle (dark) + forward triangle + "7" indicator -->
-          <circle cx="172" cy="365" r="10" fill="#1a2a2e"/>
-          <polygon points="172,353 168,360 176,360" fill="white"/>
-          <text x="172" y="369" text-anchor="middle" font-size="9" font-weight="700" fill="white">7</text>
-
-          <!-- START tag below rover -->
-          <rect x="156" y="378" width="32" height="14" fill="#186172"/>
-          <text x="172" y="389" text-anchor="middle" font-size="9" font-weight="700" fill="white" letter-spacing="0.5">START</text>
-
-          <!-- cm labels under field -->
-          <text x="22" y="446" fill="#777" font-size="11" font-style="italic">0 cm</text>
-          <text x="322" y="446" fill="#777" font-size="11" font-style="italic" text-anchor="end">100 cm</text>
-
-          <!-- ============================== LEGEND ============================== -->
-          <text x="22" y="476" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">LEGEND</text>
-
-          <rect x="22" y="488" width="20" height="14" fill="white" stroke="#BD2F7F" stroke-width="0.8"/>
-          <rect x="22" y="488" width="20" height="14" fill="url(#bufferHatch)" stroke="none"/>
-          <text x="52" y="500" font-size="12" fill="#333">15 cm edge buffer — no zones here</text>
-
-          <rect x="22" y="510" width="20" height="14" fill="#186172"/>
-          <text x="52" y="522" font-size="12" fill="#333">Supply Room — rover starts here</text>
-
-          <circle cx="32" cy="539" r="7.5" fill="white" stroke="#333" stroke-width="1"/>
-          <text x="52" y="544" font-size="12" fill="#333">Soccer ball → Referee (R)</text>
-
-          <rect x="22" y="554" width="20" height="14" fill="#3C87E3"/>
-          <text x="52" y="566" font-size="12" fill="#333">Blue barrel → Team A bench</text>
-
-          <rect x="22" y="576" width="20" height="14" fill="#F18E21"/>
-          <text x="52" y="588" font-size="12" fill="#333">Orange barrel → Team B bench</text>
-
-          <!-- ============================== RIGHT: HEADING DIAGRAM ============================== -->
-          <!-- "0° forward" label above circle -->
-          <text x="520" y="148" text-anchor="middle" font-size="12" font-weight="700" fill="#222">0° forward</text>
-
-          <!-- Compass circle -->
-          <circle cx="520" cy="238" r="78" fill="white" stroke="#999" stroke-width="0.8"/>
-
-          <!-- Horizontal dashed reference line -->
-          <line x1="442" y1="238" x2="598" y2="238" stroke="#bbb" stroke-width="0.8" stroke-dasharray="3 3"/>
-
-          <!-- Forward arrow from center going up -->
-          <line x1="520" y1="238" x2="520" y2="168" stroke="#222" stroke-width="2"/>
-          <polygon points="520,158 514,172 526,172" fill="#222"/>
-
-          <!-- -90° curve and label (left, magenta) -->
-          <path d="M 470 238 A 50 50 0 0 1 485 203" fill="none" stroke="#BD2F7F" stroke-width="1.6"/>
-          <polygon points="485,203 477,205 483,211" fill="#BD2F7F"/>
-          <text x="450" y="218" text-anchor="middle" fill="#BD2F7F" font-size="13" font-weight="700">−90°</text>
-
-          <!-- +90° curve and label (right, teal) -->
-          <path d="M 570 238 A 50 50 0 0 0 555 203" fill="none" stroke="#186172" stroke-width="1.6"/>
-          <polygon points="555,203 563,205 557,211" fill="#186172"/>
-          <text x="590" y="218" text-anchor="middle" fill="#186172" font-size="13" font-weight="700">+90°</text>
-
-          <!-- Rover at center -->
-          <circle cx="520" cy="238" r="8" fill="#1a2a2e"/>
-          <polygon points="520,229 515,235 525,235" fill="white"/>
-
-          <!-- "180° = backward" caption -->
-          <text x="520" y="340" text-anchor="middle" font-size="11" fill="#999">180° = backward</text>
-
-          <!-- ============================== TRANSLATION CARD ============================== -->
-          <rect x="358" y="368" width="300" height="120" fill="#F4F8F9" stroke="#cdd9dc" stroke-width="1" rx="2"/>
-          <text x="374" y="390" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">THE TRANSLATION</text>
-
-          <text x="374" y="416" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#222">robot.move_for(450, 30)</text>
-          <text x="374" y="432" font-size="11.5" font-style="italic" fill="#666">drive 450 mm at 30° to the right</text>
-
-          <text x="374" y="458" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#222">robot.move_for(600, −45)</text>
-          <text x="374" y="474" font-size="11.5" font-style="italic" fill="#666">drive 600 mm at 45° to the left</text>
-
-          <!-- ============================== HOW TO MEASURE BAND ============================== -->
-          <rect x="22" y="612" width="636" height="92" fill="#F5F5F5" stroke="#E4E4E4" stroke-width="1" rx="2"/>
-          <text x="42" y="634" fill="#186172" font-size="12.5" font-weight="700" letter-spacing="0.8">HOW TO MEASURE EACH DELIVERY</text>
-
-          <!-- Step 1 (teal) -->
-          <circle cx="58" cy="666" r="13" fill="#186172"/>
-          <text x="58" y="671" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">1</text>
-          <text x="80" y="660" font-size="11.5" font-weight="700" fill="#222">Place ruler</text>
-          <text x="80" y="674" font-size="11" fill="#444">from rover's center</text>
-          <text x="80" y="687" font-size="11" fill="#444">to the zone marker.</text>
-
-          <!-- Step 2 (magenta) -->
-          <circle cx="218" cy="666" r="13" fill="#BD2F7F"/>
-          <text x="218" y="671" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">2</text>
-          <text x="240" y="660" font-size="11.5" font-weight="700" fill="#222">Read distance</text>
-          <text x="240" y="674" font-size="11" fill="#444">in cm. Multiply by 10</text>
-          <text x="240" y="687" font-size="11" fill="#444">to get millimeters.</text>
-
-          <!-- Step 3 (teal) -->
-          <circle cx="378" cy="666" r="13" fill="#186172"/>
-          <text x="378" y="671" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">3</text>
-          <text x="400" y="660" font-size="11.5" font-weight="700" fill="#222">Protractor on rover</text>
-          <text x="400" y="674" font-size="11" fill="#444">aligned to its forward</text>
-          <text x="400" y="687" font-size="11" fill="#444">direction (0°).</text>
-
-          <!-- Step 4 (magenta) -->
-          <circle cx="538" cy="666" r="13" fill="#BD2F7F"/>
-          <text x="538" y="671" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">4</text>
-          <text x="560" y="660" font-size="11.5" font-weight="700" fill="#222">Read angle</text>
-          <text x="560" y="674" font-size="11" fill="#444">right = +, left = −.</text>
-          <text x="560" y="687" font-size="11" fill="#444">That's your turn.</text>
-
-          <!-- Bottom italic caption -->
-          <text x="340" y="717" text-anchor="middle" font-size="11" font-style="italic" fill="#888">remember: distance is in mm, angle is in degrees from forward</text>
-        </svg>
-      </figure>
-    </section>
 
   </main>
 </div>
@@ -2169,7 +2079,7 @@ deliveries = [
 <div class="modal-bg" id="resetModal" role="dialog" aria-modal="true">
   <div class="modal">
     <h3>Reset everything?</h3>
-    <p>This clears your path, your completed levels, your failure notes, and your reference code. There's no undo. (Use this when a new student is starting on this Chromebook.)</p>
+    <p>This clears your path, your completed levels, your failure notes, and your hint progress. There's no undo. (Use this when a new student is starting on this Chromebook.)</p>
     <div class="modal-acts">
       <button class="btn ghost" data-action="cancel-reset">Cancel</button>
       <button class="btn magenta" data-action="confirm-reset">Reset everything</button>
@@ -2184,16 +2094,13 @@ deliveries = [
   'use strict';
 
   // ===================== STATE =====================
-  const STORAGE_KEY = 'tetc_rover_companion_v1';
+  const STORAGE_KEY = 'tetc_rover_companion_v2';
   const defaultState = {
-    path: null,           // 'beginner' | 'intermediate' | 'express'
-    screen: 'landing',    // 'landing' | 'level1' | 'level2' | 'level3' | 'bonus' | 'express'
-    completed: { level1: false, level2: false, level3: false, bonus: false, express: false },
-    failure: { level1: '', level2: '', level3: '' },
-    hints: { level1: {}, level2: {}, level3: {}, bonus: {}, express: {} },
-    scores: { ball: false, blue: false, orange: false },
-    timer: { remaining: 60, running: false }, // remaining seconds
-    expressCode: ''
+    path: null,           // 'beginner' | 'intermediate'
+    screen: 'landing',    // 'landing' | 'level1' | 'level2' | 'level3' | 'bonus'
+    completed: { level1: false, level2: false, level3: false, bonus: false },
+    failure: { level1: '', level2: '', level3: '', bonus: '' },
+    hints: { level1: {}, level2: {}, level3: {}, bonus: {} }
   };
 
   function loadState() {
@@ -2201,13 +2108,10 @@ deliveries = [
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return clone(defaultState);
       const parsed = JSON.parse(raw);
-      // Shallow-merge so new defaults appear after updates
       return Object.assign(clone(defaultState), parsed, {
         completed: Object.assign({}, defaultState.completed, parsed.completed || {}),
         failure:   Object.assign({}, defaultState.failure,   parsed.failure   || {}),
-        hints:     Object.assign({}, defaultState.hints,     parsed.hints     || {}),
-        scores:    Object.assign({}, defaultState.scores,    parsed.scores    || {}),
-        timer:     Object.assign({}, defaultState.timer,     parsed.timer     || {})
+        hints:     Object.assign({}, defaultState.hints,     parsed.hints     || {})
       });
     } catch (e) { return clone(defaultState); }
   }
@@ -2218,13 +2122,12 @@ deliveries = [
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
   let state = loadState();
-  let timerInterval = null;
 
   // ===================== SCREENS / NAV =====================
-  const screens = ['landing','level1','level2','level3','bonus','express','reference'];
+  const screens = ['landing','level1','level2','level3','bonus'];
 
   function gotoScreen(name) {
-    if (name === 'bonus' && !state.completed.level3 && state.path !== 'express') {
+    if (name === 'bonus' && !state.completed.level3) {
       showToast('Finish Level 3 first to unlock the Bonus.');
       return;
     }
@@ -2233,6 +2136,7 @@ deliveries = [
     renderScreens();
     renderProgress();
     renderCrumbs();
+    renderErrors();
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
 
@@ -2242,11 +2146,10 @@ deliveries = [
       if (!el) return;
       el.hidden = (s !== state.screen);
     });
-    // Bonus lock state
     const bonusLocked  = document.getElementById('bonusLocked');
     const bonusContent = document.getElementById('bonusContent');
     if (bonusLocked && bonusContent) {
-      const locked = !state.completed.level3 && state.path !== 'express';
+      const locked = !state.completed.level3;
       bonusLocked.hidden  = !locked;
       bonusContent.hidden = locked;
     }
@@ -2257,22 +2160,16 @@ deliveries = [
       landing: 'Stadium Logistics Rover',
       level1: '<strong>Level 1</strong> &mdash; Blocks',
       level2: '<strong>Level 2</strong> &mdash; Switch',
-      level3: '<strong>Level 3</strong> &mdash; Text Python',
-      bonus:  '<strong>Bonus</strong> &mdash; Vision',
-      express:'<strong>Express Lane</strong>',
-      reference:'<strong>Field Reference</strong>'
+      level3: '<strong>Level 3</strong> &mdash; Python',
+      bonus:  '<strong>Bonus</strong> &mdash; Loops &amp; Variables'
     };
     document.getElementById('crumbs').innerHTML = titles[state.screen] || titles.landing;
-    const refLink = document.getElementById('refLink');
-    if (refLink) refLink.classList.toggle('active', state.screen === 'reference');
   }
 
   // ===================== PATH PICKER =====================
   function setPath(path) {
     state.path = path;
-    // Where does this path land?
-    if (path === 'express') state.screen = 'express';
-    else state.screen = 'level1';
+    state.screen = 'level1';
     saveState();
     renderAll();
   }
@@ -2281,10 +2178,10 @@ deliveries = [
     if (!state.path) { holder.innerHTML = ''; return; }
     const labels = {
       beginner:     { tag: 'beg', text: 'Beginner path' },
-      intermediate: { tag: 'int', text: 'Move fast path' },
-      express:      { tag: 'exp', text: 'Express Lane' }
+      intermediate: { tag: 'int', text: 'Move fast path' }
     };
     const meta = labels[state.path];
+    if (!meta) { holder.innerHTML = ''; return; }
     holder.innerHTML =
       '<span class="pathchip">' +
         '<span class="pdot ' + meta.tag + '"></span>' +
@@ -2296,17 +2193,14 @@ deliveries = [
   // ===================== PROGRESS RAIL =====================
   function renderProgress() {
     const list = document.getElementById('progressList');
-    const isExpress = state.path === 'express';
     const rows = [
-      { key: 'landing', label: 'Start',            sub: 'Path picker' },
-      { key: 'level1',  label: 'Level 1',           sub: 'Blocks',     locked: false },
-      { key: 'level2',  label: 'Level 2',           sub: 'Switch',     locked: false },
-      { key: 'level3',  label: 'Level 3',           sub: 'Python',     locked: false },
-      { key: 'bonus',   label: 'Bonus',             sub: 'Vision',     locked: !state.completed.level3 && !isExpress },
-      { key: 'express', label: 'Express Lane',      sub: 'Reference',  hideUnless: 'express' }
+      { key: 'landing', label: 'Start',    sub: 'Overview' },
+      { key: 'level1',  label: 'Level 1',  sub: 'Blocks',            locked: false },
+      { key: 'level2',  label: 'Level 2',  sub: 'Switch',            locked: false },
+      { key: 'level3',  label: 'Level 3',  sub: 'Python',            locked: false },
+      { key: 'bonus',   label: 'Bonus',    sub: 'Loops & variables', locked: !state.completed.level3 }
     ];
     list.innerHTML = rows.map(r => {
-      if (r.hideUnless && state.path !== r.hideUnless) return '';
       const done = state.completed[r.key];
       const current = state.screen === r.key;
       const dotClass = ['dot'];
@@ -2326,6 +2220,49 @@ deliveries = [
         '</button>'
       );
     }).join('');
+  }
+
+  // ===================== ERRORS (context-sensitive) =====================
+  const errorsByScreen = {
+    level1: [
+      { name: "Robot doesn't move",   fix: "Powered on? Paired? Did you download the code to the rover, or just save it on your screen?" },
+      { name: "Kicker isn't firing",  fix: "Make sure the kicker block is in your stack and using the right mode. Soccer ball uses <b>Kick</b>. Barrels use <b>Place</b>." },
+      { name: "Robot goes to wrong place", fix: "Check your measurements. Remember: cm × 10 = mm. And which direction is the rover actually facing when it starts the turn?" }
+    ],
+    level2: [
+      { name: "Robot doesn't move",   fix: "Did you re-download to the rover after editing? VEXcode doesn't push changes live." },
+      { name: "Number changed but rover didn't",  fix: "You probably edited one place but not the other. Each delivery has a distance going out and a distance coming back &mdash; both need updating." },
+      { name: "Switch option is grayed out", fix: "Right-click the <em>top</em> block of the stack, not one in the middle. Two-finger tap on a Chromebook." }
+    ],
+    level3: [
+      { name: "IndentationError",     fix: "Python reads spacing. Lines that go together must be lined up exactly. Use 4 spaces, not tabs." },
+      { name: "SyntaxError",          fix: "Usually a missing comma, a missing parenthesis, or a missing colon. The error usually points to the line." },
+      { name: "NameError",            fix: "A name you used doesn't exist. Check spelling and capital letters. <code>Robot</code> and <code>robot</code> are different." },
+      { name: "TypeError",            fix: "Wrong kind of value. <code>\"450\"</code> is a string. <code>450</code> is a number. Distance wants a number." },
+      { name: "Robot doesn't move",   fix: "Did you re-download? Did you click Run on the rover after pairing?" }
+    ],
+    bonus: [
+      { name: "Loop only runs once",  fix: "Check indentation, then check your list. A loop runs once per item. One item in the list = one run." },
+      { name: "Variables in wrong slots", fix: "The names in the <code>for</code> line must match the order of values in your list. Print them on the rover screen to check." },
+      { name: "IndentationError",     fix: "Everything inside the loop has to be indented the same (4 spaces). Lines that aren't indented are outside the loop." },
+      { name: "Wrong cargo gets kicked", fix: "Check your <code>if cargo == \"...\"</code> line. The word has to match exactly &mdash; <code>\"ball\"</code> is not <code>\"soccer_ball\"</code>." }
+    ],
+    landing: []
+  };
+  function renderErrors() {
+    const list = document.getElementById('errorsList');
+    if (!list) return;
+    const errors = errorsByScreen[state.screen] || [];
+    if (!errors.length) {
+      list.innerHTML = '<div class="err"><div class="err-fix" style="color: var(--muted); font-style: italic;">Pick a level to see errors that might come up.</div></div>';
+      return;
+    }
+    list.innerHTML = errors.map(e =>
+      '<div class="err">' +
+        '<div class="err-name">' + e.name + '</div>' +
+        '<div class="err-fix">' + e.fix + '</div>' +
+      '</div>'
+    ).join('');
   }
 
   // ===================== HINTS =====================
@@ -2401,28 +2338,28 @@ deliveries = [
   const decoderContent = {
     drive: {
       code:
-        '<span class="cmt"># Drive forward 450 mm, no turn</span>\n' +
+        '<span class="cmt"># Drive straight 450 mm</span>\n' +
         'robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)',
-      reads: '"Rover, drive 450 millimeters in a straight line."'
+      reads: '"Rover, drive 450 millimeters straight ahead."'
     },
-    turn: {
+    turnleft: {
       code:
-        '<span class="cmt"># Turn right 90°</span>\n' +
-        'robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">90</span>)',
-      reads: '"Rover, rotate 90 degrees to the right." Use LEFT or RIGHT &mdash; the direction is a word, not a sign.'
+        '<span class="cmt"># Turn left 30 degrees</span>\n' +
+        'robot.<span class="fn">turn_for</span>(<span class="kw">LEFT</span>, <span class="num">30</span>)',
+      reads: '"Rover, turn 30 degrees to the left."'
     },
-    turnto: {
+    turnright: {
       code:
-        '<span class="cmt"># Face heading 180° (the opposite direction)</span>\n' +
-        'robot.<span class="fn">turn_to</span>(<span class="num">180</span>)',
-      reads: '"Rover, point yourself at compass heading 180." Useful for coming back to base.'
+        '<span class="cmt"># Turn right 30 degrees</span>\n' +
+        'robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">30</span>)',
+      reads: '"Rover, turn 30 degrees to the right."'
     },
     kick: {
       code:
         '<span class="cmt"># Kick the soccer ball</span>\n' +
         'robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)\n' +
         '<span class="cmt"># also: WEAK, STRONG</span>',
-      reads: 'Soccer balls get kicked. The kicker swings and launches.'
+      reads: 'Soccer ball gets kicked. The kicker swings and launches.'
     },
     place: {
       code:
@@ -2440,78 +2377,13 @@ deliveries = [
   function showDecode(key) {
     const item = decoderContent[key];
     if (!item) return;
-    document.getElementById('decoderCode').innerHTML = item.code;
-    document.getElementById('decoderReads').innerHTML = '<b>Reads as &mdash;</b> ' + item.reads;
+    const codeEl = document.getElementById('decoderCode');
+    const readsEl = document.getElementById('decoderReads');
+    if (codeEl) codeEl.innerHTML = item.code;
+    if (readsEl) readsEl.innerHTML = '<b>Reads as &mdash;</b> ' + item.reads;
     document.querySelectorAll('[data-decode]').forEach(b => {
       b.classList.toggle('active', b.dataset.decode === key);
     });
-  }
-
-  // ===================== L3 TIMER + SCORE =====================
-  function fmtTime(sec) {
-    sec = Math.max(0, sec | 0);
-    const m = (sec / 60) | 0;
-    const s = sec % 60;
-    return m + ':' + (s < 10 ? '0' + s : s);
-  }
-  function renderTimer() {
-    const disp = document.getElementById('timerDisplay');
-    if (!disp) return;
-    disp.textContent = fmtTime(state.timer.remaining);
-    disp.classList.toggle('warn', state.timer.remaining <= 20 && state.timer.remaining > 5);
-    disp.classList.toggle('crit', state.timer.remaining <= 5 && state.timer.remaining > 0);
-    disp.classList.toggle('done', state.timer.remaining === 0);
-    document.getElementById('timerStart').textContent = state.timer.running ? 'Pause' : 'Start';
-  }
-  function tickTimer() {
-    if (!state.timer.running) return;
-    state.timer.remaining = Math.max(0, state.timer.remaining - 1);
-    if (state.timer.remaining === 0) {
-      state.timer.running = false;
-      clearInterval(timerInterval);
-      timerInterval = null;
-      showToast("Time's up. Stop the rover. Note what happened.");
-    }
-    saveState();
-    renderTimer();
-  }
-  function startTimer() {
-    if (state.timer.remaining === 0) state.timer.remaining = 60;
-    state.timer.running = true;
-    if (!timerInterval) timerInterval = setInterval(tickTimer, 1000);
-    renderTimer();
-  }
-  function pauseTimer() {
-    state.timer.running = false;
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    saveState();
-    renderTimer();
-  }
-  function resetTimer() {
-    state.timer.running = false;
-    state.timer.remaining = 60;
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    saveState();
-    renderTimer();
-  }
-  function renderScores() {
-    const map = { ball: 3, blue: 2, orange: 1 };
-    let total = 0;
-    Object.keys(map).forEach(k => {
-      const btn = document.querySelector('[data-score="' + k + '"]');
-      if (!btn) return;
-      const on = !!state.scores[k];
-      btn.classList.toggle('delivered', on);
-      btn.querySelector('span:first-child').textContent = on ? 'Delivered' : 'Delivered';
-      if (on) total += map[k];
-    });
-    const t = document.getElementById('scoreTotal');
-    if (t) t.textContent = String(total);
-  }
-  function toggleScore(key) {
-    state.scores[key] = !state.scores[key];
-    saveState();
-    renderScores();
   }
 
   // ===================== FAILURE LOGS =====================
@@ -2526,71 +2398,6 @@ deliveries = [
         debounce = setTimeout(saveState, 200);
       });
     });
-  }
-
-  // ===================== EXPRESS EDITOR =====================
-  function bindExpressEditor() {
-    const ta = document.getElementById('expressCode');
-    const indicator = document.getElementById('exSaveState');
-    if (!ta) return;
-    ta.value = state.expressCode || '';
-    let debounce = null;
-    ta.addEventListener('input', () => {
-      state.expressCode = ta.value;
-      if (indicator) indicator.textContent = 'Saving…';
-      clearTimeout(debounce);
-      debounce = setTimeout(() => {
-        saveState();
-        if (indicator) indicator.textContent = 'Saved';
-      }, 350);
-    });
-    // Tab key inserts 4 spaces in the editor
-    ta.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab') {
-        e.preventDefault();
-        const start = ta.selectionStart, end = ta.selectionEnd;
-        ta.value = ta.value.substring(0, start) + '    ' + ta.value.substring(end);
-        ta.selectionStart = ta.selectionEnd = start + 4;
-        ta.dispatchEvent(new Event('input'));
-      }
-    });
-  }
-
-  // ===================== COPY STARTER =====================
-  function copyStarter(btn) {
-    const codeText =
-      '# My deliveries: (distance_mm, angle_deg, cargo)\n' +
-      'deliveries = [\n' +
-      '    (___, ___, "soccer_ball"),\n' +
-      '    (___, ___, "blue_barrel"),\n' +
-      '    (___, ___, "orange_barrel"),\n' +
-      ']\n' +
-      '\n' +
-      'for distance, angle, cargo in deliveries:\n' +
-      '    robot.screen.print(cargo)\n' +
-      '    robot.move_for(distance, angle)\n' +
-      '    # drop off the right way for this cargo\n' +
-      '    robot.kicker.place()\n' +
-      '    # come back to the supply room\n' +
-      '    robot.move_for(distance, angle + 180)\n';
-    function done() {
-      btn.classList.add('ok');
-      btn.textContent = 'Copied';
-      setTimeout(() => { btn.classList.remove('ok'); btn.textContent = 'Copy'; }, 1400);
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(codeText).then(done, fallback);
-    } else { fallback(); }
-    function fallback() {
-      const tmp = document.createElement('textarea');
-      tmp.value = codeText;
-      tmp.style.position = 'fixed'; tmp.style.left = '-9999px';
-      document.body.appendChild(tmp);
-      tmp.select();
-      try { document.execCommand('copy'); done(); }
-      catch (e) { btn.textContent = 'Press Ctrl+C'; }
-      document.body.removeChild(tmp);
-    }
   }
 
   // ===================== COMPLETION =====================
@@ -2619,32 +2426,29 @@ deliveries = [
       level1: 'Level 1 complete.',
       level2: 'Level 2 complete.',
       level3: 'Level 3 complete.',
-      bonus:  'Bonus complete.',
-      express:'Reference complete.'
+      bonus:  'Bonus complete.'
     })[level];
   }
   function levelDoneSub(level) {
     return ({
-      level1: 'Your rover made the delivery. Onward.',
-      level2: 'You translated blocks into Python. Onward.',
-      level3: 'One loop, three deliveries. That\'s the lesson.',
-      bonus:  'You drove by vision. Show your partner team.',
-      express:'Future students will read this. Thank you.'
+      level1: 'All three deliveries in Blocks. Onward.',
+      level2: 'You read Python and edited it. Onward.',
+      level3: 'You typed real Python from scratch. That\'s the lesson.',
+      bonus:  'You wrote a loop. That\'s why Python exists.'
     })[level];
   }
   function nextScreenFor(level) {
-    return ({ level1: 'level2', level2: 'level3', level3: 'bonus', bonus: null, express: 'bonus' })[level];
+    return ({ level1: 'level2', level2: 'level3', level3: 'bonus', bonus: null })[level];
   }
   function nextScreenLabel(level) {
-    return ({ level1: 'Continue to Level 2', level2: 'Continue to Level 3', level3: 'Open the Bonus', express: 'Open the Bonus' })[level];
+    return ({ level1: 'Continue to Level 2', level2: 'Continue to Level 3', level3: 'Open the Bonus' })[level];
   }
   function levelToastFor(level) {
     return ({
       level1: 'Level 1 complete. Level 2 is unlocked.',
       level2: 'Level 2 complete. Level 3 is unlocked.',
       level3: 'Level 3 complete. Bonus is unlocked.',
-      bonus:  'Bonus complete.',
-      express:'Reference saved. Onward to Vision.'
+      bonus:  'Bonus complete. Nice work.'
     })[level] || 'Marked complete.';
   }
   function restoreCompletions() {
@@ -2682,12 +2486,8 @@ deliveries = [
   function doReset() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     state = clone(defaultState);
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     closeResetModal();
-    // Clear failure textareas
     document.querySelectorAll('[data-failure]').forEach(t => t.value = '');
-    const ex = document.getElementById('expressCode'); if (ex) ex.value = '';
-    // Reset hint cards
     document.querySelectorAll('[data-card]').forEach(card => {
       card.classList.remove('opened');
       const head = card.querySelector('.hint-head .btn');
@@ -2734,9 +2534,6 @@ deliveries = [
         case 'complete':
           markComplete(actionEl.dataset.level);
           return;
-        case 'copy-starter':
-          copyStarter(actionEl);
-          return;
         case 'cancel-reset':
           closeResetModal();
           return;
@@ -2745,35 +2542,20 @@ deliveries = [
           return;
       }
     }
-    // Path picker
     const pathBtn = t.closest('[data-path]');
     if (pathBtn) { setPath(pathBtn.dataset.path); return; }
-    // Sidebar collapsible
     const toggle = t.closest('[data-toggle]');
     if (toggle) {
       const section = document.getElementById(toggle.dataset.toggle);
       if (section) section.classList.toggle('open');
       return;
     }
-    // Block decoder
     const dec = t.closest('[data-decode]');
     if (dec) { showDecode(dec.dataset.decode); return; }
-    // Score buttons
-    const score = t.closest('[data-score]');
-    if (score) { toggleScore(score.dataset.score); return; }
-    // Reset
     if (t.closest('#resetBtn')) { openResetModal(); return; }
-    // Timer
-    if (t.closest('#timerStart')) {
-      if (state.timer.running) pauseTimer(); else startTimer();
-      return;
-    }
-    if (t.closest('#timerReset')) { resetTimer(); return; }
-    // Close modal on backdrop
     if (t.id === 'resetModal') { closeResetModal(); return; }
   });
 
-  // Esc closes modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeResetModal();
   });
@@ -2784,27 +2566,17 @@ deliveries = [
     renderProgress();
     renderPathChip();
     renderCrumbs();
-    renderTimer();
-    renderScores();
+    renderErrors();
   }
 
   // ===================== INIT =====================
   function init() {
-    // If no path yet, force landing
     if (!state.path) state.screen = 'landing';
     bindFailureLogs();
-    bindExpressEditor();
     restoreHints();
     restoreCompletions();
     renderAll();
-    // Block decoder default
     showDecode('drive');
-    // If timer was running on reload, don't auto-resume (paused state is safer)
-    if (state.timer.running) {
-      state.timer.running = false;
-      saveState();
-      renderTimer();
-    }
   }
 
   if (document.readyState === 'loading') {
