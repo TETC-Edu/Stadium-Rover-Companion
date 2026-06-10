@@ -208,10 +208,11 @@
 
   <h1>Field Reference</h1>
   <p class="frame">
-    The field is 100&times;100 cm. Three zones live on it &mdash; you decide where. Distance is measured
-    from the rover to each zone in millimeters. Turn is measured from the rover's current direction
-    &mdash; how far left or right does it need to spin to face the zone? The example below shows
-    ONE possible layout. Yours will look different.
+    The field is 100&times;100 cm. Three zones and three cargo &mdash; you decide where everything goes.
+    The rover's run is a chain: drive to a cargo, grab it, carry it to its zone, then head to the
+    next cargo from there. Every leg of the chain needs a distance (in millimeters) and a turn
+    (left or right, in degrees), measured from where the rover is at that moment. The example
+    below shows ONE possible layout. Yours will look different.
   </p>
 
   <h2>The field · 100 × 100 cm</h2>
@@ -310,7 +311,7 @@
     <div>
       <h3>How to think about the turn</h3>
       <p>Stand behind the rover and look where it's pointing. That's <b>forward</b>.</p>
-      <p>If the zone you want to deliver to is on the rover's <b>left side</b>, you turn LEFT. If it's on the <b>right side</b>, you turn RIGHT. The number is how many degrees.</p>
+      <p>If the rover's next stop &mdash; a cargo or a zone &mdash; is on its <b>left side</b>, you turn LEFT. If it's on the <b>right side</b>, you turn RIGHT. The number is how many degrees.</p>
       <p style="font-size: 13.5px; color: var(--muted);">You're using a protractor on the rover to measure this &mdash; not doing math in your head.</p>
     </div>
   </div>
@@ -325,39 +326,40 @@ robot.move_for(450, 0)</pre>
   </div>
 
   <h2>How to measure each delivery</h2>
+  <p style="font-size: 14px; color: var(--muted);">Each delivery is two legs: rover &rarr; cargo, then cargo &rarr; zone. Measure one leg at a time, in the order the rover will drive them.</p>
   <div class="measure-steps">
     <div class="step">
       <div class="step-num">1</div>
       <div>
-        <div class="step-title">Place the ruler</div>
-        <div class="step-text">From the rover's center to the zone marker.</div>
+        <div class="step-title">Trace the leg</div>
+        <div class="step-text">From where the rover will be to where it's going next &mdash; the cargo, or the zone.</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <div>
         <div class="step-title">Read distance</div>
-        <div class="step-text">In cm. Multiply by 10 to get millimeters.</div>
+        <div class="step-text">Place the ruler along the leg. Read cm, multiply by 10 to get millimeters.</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <div>
-        <div class="step-title">Stand behind the rover</div>
-        <div class="step-text">Look at where it's pointing &mdash; that's forward.</div>
+        <div class="step-title">Face the rover's way</div>
+        <div class="step-text">Point your protractor the direction the rover will be facing at the start of this leg &mdash; not the way it faced at START.</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
       <div>
         <div class="step-title">Read the turn</div>
-        <div class="step-text">Is the zone on the rover's left or right? Use your protractor to measure how many degrees.</div>
+        <div class="step-text">Is the next stop to the rover's left or right? How many degrees? That's the turn for this leg.</div>
       </div>
     </div>
   </div>
 
   <div class="note" style="margin-top: 22px;">
-    <b>Remember:</b> distance is in <b>millimeters</b> (cm × 10). Turn is in <b>degrees</b>, either LEFT or RIGHT.
+    <b>Remember:</b> distance is in <b>millimeters</b> (cm × 10). Turn is in <b>degrees</b>, either LEFT or RIGHT. The next delivery starts wherever this one ended.
   </div>
 
 </div>

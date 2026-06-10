@@ -1624,7 +1624,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 
       <div class="objective">
         <span class="label">Your task</span>
-        <p>Design your stadium layout. Measure the distance and turn for each zone. Then code the rover in Blocks to deliver all three cargo to the right zones.</p>
+        <p>Design your stadium layout. Measure every leg of the rover's path. Then code the rover in Blocks to deliver all three cargo to the right zones.</p>
       </div>
 
       <div class="callout teal">
@@ -1646,21 +1646,23 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       </section>
 
       <section class="section">
-        <h3>Step 2: Measure each zone</h3>
-        <p>For each of the three zones, you need two numbers:</p>
+        <h3>Step 2: Measure the path</h3>
+        <p>Each delivery has <b>two legs</b>: first the rover drives to the cargo and grabs it, then it carries the cargo to its zone. And the next delivery starts from wherever the last one ended.</p>
+        <p>So your whole run is one long chain. Trace it on the mat with your finger first: START &rarr; ball &rarr; Referee &rarr; blue barrel &rarr; Team A &rarr; orange barrel &rarr; Team B.</p>
+        <p>For <b>every leg</b> of the chain, you need two numbers:</p>
         <ul class="arc-list">
-          <li><b>Distance.</b> Use your ruler. Measure from the rover's center to the zone in centimeters, then multiply by 10 to get millimeters. (VEX wants mm.)</li>
-          <li><b>Turn.</b> Use your protractor on the rover. Stand behind it and look where it's pointing. Is the zone to the left or right? How many degrees?</li>
+          <li><b>Distance.</b> Use your ruler. Measure from where the rover will be to where it's going, in centimeters. Multiply by 10 to get millimeters. (VEX wants mm.)</li>
+          <li><b>Turn.</b> Put your protractor where the rover will be, pointed the way the rover will be facing <em>at that moment</em> &mdash; not the way it faced at the start. Is the next stop to its left or right? How many degrees?</li>
         </ul>
-        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">Write these numbers down. You'll need them in your code.</p>
+        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">Write the numbers down in order. You'll need every one of them in your code.</p>
       </section>
 
       <section class="section">
         <h3>Step 3: Code it in Blocks</h3>
         <p>Open VEXcode AIM in Blocks mode. For each delivery, your stack will look something like:</p>
         <ul class="arc-list">
-          <li>Turn (left or right) by your measured degrees</li>
-          <li>Drive forward by your measured distance in mm</li>
+          <li>Turn (left or right), then drive to the cargo &mdash; the rover grabs it when it arrives</li>
+          <li>Turn (left or right), then drive to the zone</li>
           <li>Kick (for the soccer ball) or Place (for the barrels)</li>
         </ul>
         <p>Then do the same for the next delivery, starting from wherever the rover ends up. Run the whole stack.</p>
@@ -1850,7 +1852,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           <li>New Xs for where each cargo starts. Move them, really &mdash; don't be polite.</li>
           <li>A new START for the rover.</li>
         </ul>
-        <p>Place the cargo objects on the new marks. Remeasure: new distance (cm × 10 = mm) and new turn (left or right, how many degrees) for each delivery.</p>
+        <p>Place the cargo objects on the new marks. Remeasure <b>every leg</b> of the new chain: rover to cargo, cargo to zone, then on to the next cargo. New distance (cm × 10 = mm) and new turn (left or right, how many degrees) for each leg.</p>
       </section>
 
       <section class="section">
@@ -2007,7 +2009,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           <li>New Xs for where each cargo starts.</li>
           <li>A new START mark for the rover.</li>
         </ul>
-        <p>Place the cargo on the marks. Remeasure each delivery &mdash; new distance in mm, new turn (left or right, how many degrees).</p>
+        <p>Place the cargo on the marks. Remeasure every leg of the chain &mdash; new distance in mm, new turn (left or right, how many degrees).</p>
       </section>
 
       <section class="section magenta">
@@ -2021,11 +2023,13 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <p>Write the commands for delivery 1. Then delivery 2. Then delivery 3. Each one looks like this:</p>
         <div class="codeblock">
 <pre><span class="cmt"># Delivery 1: soccer ball to the Referee</span>
-robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">30</span>)        <span class="cmt"># your turn direction + degrees</span>
-robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)         <span class="cmt"># your distance in mm</span>
+robot.<span class="fn">turn_for</span>(<span class="kw">RIGHT</span>, <span class="num">30</span>)        <span class="cmt"># leg 1: turn toward the ball</span>
+robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)         <span class="cmt"># drive to it — the rover grabs it</span>
+robot.<span class="fn">turn_for</span>(<span class="kw">LEFT</span>, <span class="num">15</span>)         <span class="cmt"># leg 2: turn toward the Referee zone</span>
+robot.<span class="fn">move_for</span>(<span class="num">300</span>, <span class="num">0</span>)         <span class="cmt"># carry it there</span>
 robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <span class="cmt"># kick the ball</span></pre>
         </div>
-        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">For the blue and orange barrels, use <code>robot.kicker.place()</code> instead of <code>kick()</code>. Then type the same shape for deliveries 2 and 3 &mdash; each one picks up from wherever the rover ended last.</p>
+        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">For the blue and orange barrels, use <code>robot.kicker.place()</code> instead of <code>kick()</code>. Then type the same shape for deliveries 2 and 3 &mdash; each one starts from wherever the rover ended last, so use the legs you measured from there.</p>
       </section>
 
       <section class="section magenta">
@@ -2175,7 +2179,7 @@ robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <s
 
           <div class="callout teal">
             <span class="ctitle">The answer &mdash;</span>
-            <span>The <b>shape</b> is the same every time: turn, drive, deliver. What's different is the <b>numbers</b> (distance, turn) and the <b>cargo</b> (kick vs place).</span>
+            <span>The <b>shape</b> is the same every time: turn, drive to the cargo, turn, carry it to the zone, deliver. What's different is the <b>numbers</b> (turns, distances) and the <b>cargo</b> (kick vs place).</span>
           </div>
         </section>
 
@@ -2211,27 +2215,29 @@ cargo_list = [<span class="str">"soccer_ball"</span>, <span class="str">"blue_ba
 
         <section class="section magenta">
           <h3>4. Build it</h3>
-          <p>Now put it together. Each delivery has three things: a <b>distance</b>, a <b>turn</b>, and a <b>cargo type</b>. Stack them into a list.</p>
+          <p>Now put it together. Each delivery has <b>two legs</b> (turn + drive to the cargo, turn + drive to the zone) and a <b>cargo type</b>. Stack all of that into a list.</p>
           <p>Step by step:</p>
           <ol class="arc-list">
-            <li>Make a list with your three deliveries' info: <code>(turn_direction, degrees, distance, cargo)</code>.</li>
+            <li>Make a list with your three deliveries' info &mdash; both legs plus the cargo.</li>
             <li>Write the delivery code <em>once</em>, using variable names instead of real numbers.</li>
             <li>Wrap that code in a <code>for</code> loop.</li>
           </ol>
 
           <p style="margin-top: 14px;">Here's the shape &mdash; fill in your own numbers:</p>
           <div class="codeblock">
-<pre><span class="cmt"># Each delivery: (direction, degrees, distance_mm, cargo)</span>
+<pre><span class="cmt"># Each delivery: (turn to cargo, drive to cargo, turn to zone, drive to zone, cargo)</span>
 deliveries = [
-    (<span class="kw">RIGHT</span>, <span class="num">30</span>, <span class="num">450</span>, <span class="str">"ball"</span>),
-    (<span class="kw">LEFT</span>,  <span class="num">45</span>, <span class="num">600</span>, <span class="str">"blue"</span>),
-    (<span class="kw">RIGHT</span>, <span class="num">90</span>, <span class="num">300</span>, <span class="str">"orange"</span>),
+    (<span class="kw">RIGHT</span>, <span class="num">30</span>, <span class="num">450</span>, <span class="kw">LEFT</span>,  <span class="num">15</span>, <span class="num">300</span>, <span class="str">"ball"</span>),
+    (<span class="kw">LEFT</span>,  <span class="num">45</span>, <span class="num">600</span>, <span class="kw">RIGHT</span>, <span class="num">90</span>, <span class="num">250</span>, <span class="str">"blue"</span>),
+    (<span class="kw">RIGHT</span>, <span class="num">90</span>, <span class="num">300</span>, <span class="kw">LEFT</span>,  <span class="num">40</span>, <span class="num">500</span>, <span class="str">"orange"</span>),
 ]
 
-<span class="kw">for</span> direction, degrees, distance, cargo <span class="kw">in</span> deliveries:
+<span class="kw">for</span> turn1, deg1, dist1, turn2, deg2, dist2, cargo <span class="kw">in</span> deliveries:
     robot.<span class="fn">screen</span>.print(cargo)
-    robot.<span class="fn">turn_for</span>(direction, degrees)
-    robot.<span class="fn">move_for</span>(distance, <span class="num">0</span>)
+    robot.<span class="fn">turn_for</span>(turn1, deg1)
+    robot.<span class="fn">move_for</span>(dist1, <span class="num">0</span>)      <span class="cmt"># drive to the cargo</span>
+    robot.<span class="fn">turn_for</span>(turn2, deg2)
+    robot.<span class="fn">move_for</span>(dist2, <span class="num">0</span>)      <span class="cmt"># carry it to the zone</span>
 
     <span class="kw">if</span> cargo == <span class="str">"ball"</span>:
         robot.<span class="fn">kicker</span>.kick(MEDIUM)
@@ -2286,11 +2292,11 @@ deliveries = [
               <div class="hint-body">
                 <div class="hint-step h1 shown">
                   <span class="h-label">Try first</span>
-                  <span class="h-text">Check the order. The names in the <code>for</code> line have to match the order of values in your list. If you wrote <code>(direction, degrees, distance, cargo)</code> but unpacked as <code>distance, direction, degrees, cargo</code>, your numbers are in the wrong slots.</span>
+                  <span class="h-text">Check the order. The names in the <code>for</code> line have to match the order of values in your list, slot by slot. If your list goes <code>(turn1, deg1, dist1, ...)</code> but your <code>for</code> line unpacks <code>dist1</code> first, every number lands in the wrong slot.</span>
                 </div>
                 <div class="hint-step h2">
                   <span class="h-label">Then this</span>
-                  <span class="h-text">Pick one delivery. Print all four values on the rover screen before the rover moves. If the screen shows numbers in the wrong slots, your list and your unpack don't match.</span>
+                  <span class="h-text">Pick one delivery. Print its values on the rover screen before the rover moves. If the screen shows numbers in the wrong slots, your list and your unpack don't match.</span>
                 </div>
                 <div class="hint-step h3">
                   <span class="h-label">Approach</span>
