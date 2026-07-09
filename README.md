@@ -1,193 +1,104 @@
 # Stadium Logistics Rover — Companion
 
-An interactive HTML companion to the paper student sheet for TETC's "Stadium
-Logistics Rover" lesson (90-minute Python intro using the VEX AIM Coding Robot,
-9th/10th grade). This is the **HTML companion only** — the paper sheet owns
-stadium sketches, measurement tables, exit ticket, and handwritten reflection.
+The interactive companion for TETC's "Stadium Logistics Rover" lesson — a
+90-minute Python intro using the VEX AIM Coding Robot (9th/10th grade).
+This site is the whole lesson artifact (there is no paper sheet).
 
-## What this bundle is
+**Live:** https://tetc-edu.github.io/Stadium-Rover-Companion/
+**Repo:** https://github.com/TETC-Edu/Stadium-Rover-Companion (org: TETC-Edu)
 
-A single file, `index.html`, that is the complete, working artifact. No build
-step, no dependencies, no backend. Open it in any modern browser and it works.
-
-You're picking it up to:
-1. **Continue iterating on it** in Claude Code as the lesson evolves.
-2. **Host it somewhere** so kids can reach it from a Chromebook.
-
-This is not a "recreate this design in React" handoff. The HTML *is* the
-shipping artifact. Edit it in place.
-
-## Quick start
+## Deploying changes
 
 ```bash
-# Run locally
-cd claude-code-handoff
-python3 -m http.server 8000
-# open http://localhost:8000
+git add <file> && git commit -m "describe the change" && git push
+# GitHub Pages picks it up in ~60s; hard-refresh to see it
 ```
 
-Or just double-click `index.html`. (Some browsers restrict the Clipboard API
-on `file://` URLs — the "Copy starter code" button falls back to a manual
-prompt. Serving it over HTTP/HTTPS fixes that.)
+Keep the URL stable — student progress lives in `localStorage`, keyed to the
+origin. Moving hosts wipes everyone's state.
 
-## Hosting options (pick one)
-
-| Option | Cost | Time | Notes |
-|---|---|---|---|
-| **Netlify Drop** ([netlify.com/drop](https://netlify.com/drop)) | Free | ~30 sec | Drag the folder onto the page, get a URL. No signup needed for a one-off. |
-| **GitHub Pages** | Free | ~5 min | Push to a repo, enable Pages on the main branch. Best if you'll iterate often. |
-| **Cloudflare Pages** | Free | ~5 min | Wrangler CLI: `npx wrangler pages deploy claude-code-handoff`. |
-| **Google Drive** | Free | ~2 min | Upload, share "Anyone with link," use the `/preview` URL. Slightly slower load. |
-| **Google Sites** | Free | ~10 min | Embed the file. Heavier than needed, but plays nice with Google Classroom. |
-
-Recommendation for ongoing iteration: **GitHub Pages**, because then Claude
-Code can `git push` and the new version is live.
-
-**State note.** The companion saves student progress to `localStorage`, keyed
-to the URL origin. Once you pick a host, *keep that URL stable* — moving to a
-new URL means kids on the old URL won't see their state on the new one.
-
-## File structure
+## Files
 
 ```
-claude-code-handoff/
-├── README.md          ← you are here
-└── index.html         ← the entire application (~2,400 lines)
-    ├── <style>        — TETC design tokens + all component CSS
-    ├── <body>         — six <section class="screen"> blocks
-    └── <script>       — vanilla JS IIFE, no framework
+index.html   — the entire app (CSS + markup + vanilla JS IIFE, no build step)
+field.html   — standalone Field Reference page, linked from the sidebar
+fonts/       — EMprint Regular + Semibold (real TETC brand font, shipped as web fonts)
+logo-tetc.png, favicon.png
 ```
 
-Everything is inlined intentionally. Splitting CSS/JS into separate files is
-allowed but not required. If you split, keep the load order the same and don't
-add a build step — this needs to stay one-folder-deploy simple.
+No frameworks, no build, works offline once loaded. Chromebook-first;
+mobile gets a hamburger drawer at ≤980px.
 
-## What's in the app
+## The lesson
 
-### Screens
+Students sketch a stadium on a 100×100 cm dry-erase mat with an Expo marker
+(three zones, three cargo, a rover START), measure every leg of the rover's
+path, then code three deliveries. Each delivery is **two legs**: drive to the
+cargo (rover grabs it), then carry it to its zone. The next delivery starts
+wherever the last one ended — no return trips, no "supply room."
 
-1. **Landing** — World Cup hook + Path Picker (Beginner / Intermediate / Express)
-2. **Level 1 — Blocks** — single delivery, three hint cards
-3. **Level 2 — Switch** — interactive Block→Python decoder, three hint cards
-4. **Level 3 — Python** — starter scaffold (copyable), 60s timer, 3/2/1 scoreboard, three hint cards
-5. **Bonus — Vision** — locked behind L3, vision-sensor scenario, two hint cards
-6. **Express Lane** — separate path for the Type-D coder; reference-implementation brief + autosaving editor
+One rule: each cargo starts at least 30 cm from its delivery zone.
 
-One screen is visible at a time; switching is pure CSS `[hidden]` toggle.
+Same challenge four times, one new idea per level:
 
-### Persistent UI
+1. **Level 1 — Blocks.** Drive it by hand first, then code all three
+   deliveries in VEXcode Blocks.
+2. **Level 2 — Switch.** Re-sketch the field, convert blocks to Switch, fix
+   every number by hand. Includes "How to Read Python" — the
+   WHO.WHAT(DETAILS) anatomy with a you-try decode challenge. The tedium here
+   is deliberate; it sets up the Bonus.
+3. **Level 3 — Python.** Re-sketch again, type sequential Python from
+   scratch. No loops, no variables.
+4. **Bonus — Loops & variables.** Same field as L3. Refactor working code:
+   spot the pattern, learn variables, learn loops, rebuild, feel the payoff.
+   Ends with "Send your engineer's log" — a mailto that emails all four
+   "What happened?" logs to taylor.eads@tetc.org.
 
-- **Left sidebar** with the progress rail, collapsible Command Cheat Sheet, collapsible Common Errors, and "Reset my progress" (with confirm modal).
-- **Top strip** with breadcrumbs and a path chip ("change" link returns to Landing).
+Path picker on the landing page routes by experience: never coded → L1,
+used blocks → L2, coded in text → L3.
 
-### State model
+## State model
 
-All persisted in `localStorage` under key `tetc_rover_companion_v1`:
+`localStorage` key `tetc_rover_companion_v2`:
 
 ```js
 {
-  path: 'beginner' | 'intermediate' | 'express' | null,
-  screen: 'landing' | 'level1' | 'level2' | 'level3' | 'bonus' | 'express',
-  completed:   { level1, level2, level3, bonus, express : bool },
-  failure:     { level1, level2, level3 : string },          // textarea logs
-  hints:       { <level>: { <cardIdx>: { shown:int, opened:bool } } },
-  scores:      { ball, blue, orange : bool },                // L3 scoreboard
-  timer:       { remaining:int (sec), running:bool },        // L3 timer
-  expressCode: string                                        // Express Lane editor
+  path: 'beginner' | 'intermediate' | 'advanced' | null,
+  screen: 'landing' | 'level1' | 'level2' | 'level3' | 'bonus',
+  completed: { level1, level2, level3, bonus : bool },
+  failure:   { level1, level2, level3, bonus : string },   // "What happened?" logs
+  hints:     { <level>: { <cardIdx>: { shown, opened } } }
 }
 ```
 
-The shape is shallow-merged with `defaultState` on load, so adding new keys in
-future versions is safe — existing students don't get wiped.
+Loads shallow-merge against defaults, so adding keys is safe. To version-break
+on purpose, bump to `_v3`.
 
-To version-break on purpose (e.g. you reshape the data), bump the key to
-`tetc_rover_companion_v2`.
+## Rules that are intentional (don't "fix" these)
 
-### Hint progression contract
+- **One new idea per level.** Never combine cognitive jumps.
+- **L2's manual number-fixing stays painful.** No helpers that sync values —
+  the pain is what makes loops land in the Bonus.
+- **Hint cards are 3 steps** (try first / then this / approach). Hint 3
+  reframes; it never gives the answer.
+- **Left/right turn language only.** No compass headings, no +/- angles,
+  no `turn_to()`.
+- **Kid-friendly words.** If a 9th grader wouldn't say it, rewrite it.
+  Banned: tedium, enumerate, scaffold, abstraction, sequential, iterate,
+  heading, bearing, method, object, parameter, syntax.
+- **No scoring, no timer, no vision sensor, no Express Lane.** All removed
+  deliberately; vision is saved for a future lesson.
+- **"What happened?"** is the failure-log header — observation, not shame.
+- **No emoji.** TETC brand rule.
 
-Each hint card has three steps (`.hint-step.h1` / `.h2` / `.h3`).
-- Hint 1 = "try first" (cheap observation)
-- Hint 2 = "then this" (mechanical fact / point to a thing)
-- Hint 3 = "approach" (reframes the problem, never gives the solution)
+## Brand
 
-If you add a hint card, follow this contract. **Don't ever write a Hint 3 that
-gives the answer.** The pedagogy depends on the student doing the work.
-
-### Pedagogy anchors baked into the code
-
-These are intentional — please don't "fix" them:
-
-- **Level 2's tedium is preserved.** The hint about "I edited the number but
-  nothing changed" tells students to *notice the tedium* — that frustration is
-  what motivates variables in L3. Do not add a helper that syncs values.
-- **"What happened?"** is the failure-log header, not "what went wrong?" One
-  invites observation, the other invites shame.
-- **Express Lane is "different work, not harder work."** No "advanced" labels,
-  no "challenge mode" energy. If you add Express content, keep that frame.
-- **No emoji anywhere.** TETC brand rule. Colored dots and phase chips do the
-  job emoji would do in other systems.
-
-## Design tokens
-
-The brand colors live as CSS custom properties at the top of `<style>`:
-
-| Token | Hex | Used for |
-|---|---|---|
-| `--teal` | `#00ACA8` | Primary brand, Blocks phase, headers |
-| `--teal-dark` | `#007096` | Vision/EVALUATE phase, dark surfaces |
-| `--magenta` | `#B01E78` | Python phase, pull-quotes, magenta CTAs |
-| `--amber` | `#F18E21` | Switch phase, Notice callouts, warn states |
-| `--blue` | `#3C87E3` | Step 1 / Partner Testing accent (used sparingly) |
-| `--ink` | `#1F2A2B` | Display text, near-black |
-| `--body` | `#333333` | Body copy |
-| `--muted` | `#5A5A5A` | Secondary text |
-| `--border` | `#E4E4E4` | Dividers |
-| `--panel` | `#F5F5F5` | Light surface fills |
-
-Type stack is **Calibri → Segoe UI → Helvetica Neue → system-ui**. EMprint is
-the real brand font but is proprietary; Calibri is the documented fallback.
-
-## How to iterate (Claude Code tips)
-
-When you ask Claude Code to change something, useful framings:
-
-- **"Update Level 2's third hint to reference the protractor mark"** —
-  precise, points at one block.
-- **"Add a Level 2 progress bar showing how many numbers they've edited"** —
-  ⚠️ this would remove the L2 tedium that L3 depends on. Don't add it.
-- **"Add a fourth hint card to Level 3 for 'my robot won't pair'"** — follow
-  the 3-step hint contract above.
-- **"Add a teacher view that surfaces failure logs"** — would require a
-  backend or a shared store; out of scope of this single-file artifact.
-  Possible but a different project.
-
-The file is ~2,400 lines but well-sectioned. Key landmarks (search inside the
-file):
-
-- `===================== STATE =====================` — state machine
-- `===================== SCREENS / NAV =====================` — routing
-- `===================== HINTS =====================` — hint card logic
-- `===================== L3 TIMER + SCORE =====================` — timer/score
-- `===================== BLOCK -> PYTHON DECODER =====================` — L2
-- `<section class="screen" id="screen-level1"` — Level 1 markup
-  (same pattern for level2, level3, bonus, express)
+EMprint (Regular 400 / Semibold 600–900) with Calibri fallback,
+`font-display: swap`. Colors live as CSS custom properties at the top of each
+file's `<style>` — teal/magenta/amber palette, square corners, no gradients.
 
 ## Known limitations
 
-- **Single-device state.** A student switching Chromebooks loses progress.
-  Acceptable for a single 90-min lesson; not acceptable for a multi-day arc.
-  If you need cross-device, you need a backend.
-- **No teacher dashboard.** Failure logs live on each student's Chromebook
-  only.
-- **No accessibility audit yet.** Keyboard nav works (buttons are real
-  buttons), but screen-reader testing hasn't happened. If you have students on
-  AT, please run a pass before deploying.
-- **No print stylesheet** beyond hiding chrome. Designed for screen.
-
-## License / Attribution
-
-Built for TETC (Teen Engineering + Tech Center). Uses the TETC design system
-(teal/magenta/amber palette, EMprint→Calibri type, square corners, no
-gradients). Brand mark is a text glyph placeholder — swap in the real
-TE+TC monogram SVG (`logo-tetc-monogram-transparent.svg`) when you have it
-in this folder.
+- Single-device state; switching Chromebooks loses progress.
+- No teacher dashboard (mailto log is the v1 of that; Sheets/Firebase deferred).
+- No screen-reader audit yet.

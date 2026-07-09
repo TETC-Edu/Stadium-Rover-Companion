@@ -488,45 +488,6 @@ details.reveal .reveal-body .mini-english {
   .cargo-grid { grid-template-columns: 1fr; }
 }
 
-.ref-frame {
-  color: var(--body);
-  font-size: 15.5px;
-  line-height: 1.55;
-  max-width: 720px;
-  margin-bottom: 22px;
-}
-.ref-figure {
-  width: 100%;
-  max-width: 720px;
-}
-.ref-figure svg {
-  width: 100%;
-  height: auto;
-  max-width: 720px;
-  display: block;
-}
-.svg-placeholder {
-  width: 100%;
-  max-width: 720px;
-  aspect-ratio: 680 / 720;
-  background: var(--panel);
-  border: 2px dashed var(--border);
-  display: grid;
-  place-items: center;
-  text-align: center;
-  color: var(--muted);
-  font-size: 14px;
-  padding: 24px;
-  box-sizing: border-box;
-}
-.svg-placeholder code {
-  background: white;
-  border: 1px solid var(--border);
-  padding: 2px 6px;
-  font-size: 12px;
-  display: inline-block;
-  margin-top: 8px;
-}
 
 .cheat-group { margin-bottom: 14px; }
 .cheat-group:last-child { margin-bottom: 0; }
@@ -664,8 +625,6 @@ details.reveal .reveal-body .mini-english {
 .phase.blocks  { background: var(--teal); }
 .phase.switch  { background: var(--amber); }
 .phase.python  { background: var(--magenta); }
-.phase.vision  { background: var(--teal-dark); }
-.phase.express { background: #444; }
 
 /* cards & sections */
 .section {
@@ -677,7 +636,6 @@ details.reveal .reveal-body .mini-english {
 }
 .section.amber  { border-top-color: var(--amber); }
 .section.magenta{ border-top-color: var(--magenta); }
-.section.dark   { border-top-color: var(--teal-dark); }
 .section h2 { margin-bottom: 8px; }
 .section h3 { margin: 0 0 10px; }
 .section .lead {
@@ -706,17 +664,6 @@ details.reveal .reveal-body .mini-english {
 .objective.amber   .label { color: var(--amber-700); }
 .objective.magenta .label { color: var(--magenta-700); }
 .objective p { font-size: 17px; color: var(--ink); font-weight: 500; }
-
-/* pull-quote */
-.pull {
-  border-left: 4px solid var(--magenta);
-  padding: 6px 0 6px 18px;
-  margin: 18px 0;
-  font-size: 19px;
-  color: var(--magenta-700);
-  font-weight: 600;
-  font-style: normal;
-}
 
 /* expandable */
 details.expandable {
@@ -1039,131 +986,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 .codeblock .str { color: #8FCC8F; }
 .codeblock .num { color: #E89AC7; }
 .codeblock .fn  { color: #6FD0CC; }
-.codeblock .blank { color: var(--amber); font-weight: 700; }
-.code-actions {
-  position: absolute;
-  top: 12px; right: 12px;
-  display: flex; gap: 8px;
-}
-.code-copy {
-  background: rgba(255,255,255,0.08);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 4px 10px;
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 120ms ease;
-}
-.code-copy:hover { background: rgba(255,255,255,0.15); }
-.code-copy.ok { background: var(--teal); border-color: var(--teal); }
-
-/* delivery run */
-.run {
-  display: grid;
-  grid-template-columns: 230px 1fr;
-  gap: 20px;
-  align-items: stretch;
-}
-.timer-card {
-  background: var(--ink);
-  color: white;
-  padding: 22px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  text-align: center;
-}
-.timer-label {
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.6);
-  font-weight: 700;
-}
-.timer-display {
-  font-family: var(--font-mono);
-  font-size: 56px;
-  line-height: 1;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: white;
-  font-variant-numeric: tabular-nums;
-}
-.timer-display.warn { color: var(--amber); }
-.timer-display.crit { color: var(--magenta); }
-.timer-display.done { color: #FF6E6E; }
-.timer-actions { display: flex; gap: 8px; justify-content: center; }
-.timer-actions .btn { padding: 7px 14px; font-size: 13px; }
-.timer-actions .btn.ghost { color: white; border-color: rgba(255,255,255,0.25); }
-.timer-actions .btn.ghost:hover { background: rgba(255,255,255,0.08); }
-
-.scoreboard {
-  background: white;
-  border: 1px solid var(--border);
-  padding: 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.score-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-}
-.score-cargo {
-  display: flex; align-items: center; gap: 12px;
-}
-.cargo-icon {
-  width: 28px; height: 28px;
-  border: 2px solid var(--ink);
-  flex: none;
-  position: relative;
-}
-.cargo-icon.ball   { border-radius: 50%; background: white; }
-.cargo-icon.ball::before, .cargo-icon.ball::after {
-  content: ""; position: absolute; background: var(--ink);
-}
-.cargo-icon.ball::before { left: 50%; top: 3px; bottom: 3px; width: 2px; transform: translateX(-50%); }
-.cargo-icon.ball::after  { top: 50%; left: 3px; right: 3px; height: 2px; transform: translateY(-50%); }
-.cargo-icon.blue   { background: var(--blue); border-color: var(--blue); }
-.cargo-icon.orange { background: var(--amber); border-color: var(--amber); }
-.score-name { font-weight: 600; color: var(--ink); }
-.score-zone { font-size: 12px; color: var(--muted); margin-top: 1px; }
-.score-btn {
-  background: white;
-  border: 1px solid var(--border-2);
-  padding: 8px 14px;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 130px;
-  justify-content: center;
-  transition: all 120ms ease;
-}
-.score-btn:hover { background: var(--panel); }
-.score-btn .pts { color: var(--muted); font-size: 12px; font-weight: 700; }
-.score-btn.delivered {
-  background: var(--teal);
-  border-color: var(--teal);
-  color: white;
-}
-.score-btn.delivered .pts { color: rgba(255,255,255,0.9); }
-.score-total {
-  margin-top: 6px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-.score-total .lbl { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
-.score-total .val { font-size: 32px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 
 /* failure log */
 .failure {
@@ -1241,59 +1063,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   100% { transform: scale(1); opacity: 1; }
 }
 .complete-bar.just-completed .check::before { animation: pop 320ms ease-out; }
-
-/* express editor */
-.editor {
-  background: #1B2526;
-  border: 1px solid #0F1717;
-}
-.editor-bar {
-  background: #243031;
-  padding: 8px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: rgba(255,255,255,0.7);
-  font-size: 12px;
-  font-family: var(--font-mono);
-}
-.editor-bar .savestate { display: inline-flex; align-items: center; gap: 6px; }
-.editor-bar .savestate::before {
-  content: ""; width: 6px; height: 6px; background: var(--teal); border-radius: 50%;
-}
-.editor textarea {
-  width: 100%;
-  min-height: 360px;
-  background: #1B2526;
-  color: #E8EBEB;
-  border: 0;
-  padding: 16px 20px;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 1.6;
-  resize: vertical;
-  display: block;
-  tab-size: 4;
-}
-.editor textarea:focus { outline: none; }
-
-/* constraints list */
-.criteria { display: grid; gap: 8px; margin-top: 8px; }
-.criteria li {
-  list-style: none;
-  padding-left: 28px;
-  position: relative;
-  font-size: 15px;
-  color: var(--body);
-}
-.criteria li::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 6px;
-  width: 14px; height: 14px;
-  border: 2px solid var(--magenta);
-  background: white;
-}
 
 /* tiny callout */
 .callout {
@@ -1412,7 +1181,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   .topstrip-right { flex-wrap: wrap; gap: 8px; }
   .screen { padding: 24px 18px 80px; }
   .paths { grid-template-columns: 1fr; }
-  .run { grid-template-columns: 1fr; }
   .decoder { grid-template-columns: 1fr; }
   .commands-grid { grid-template-columns: 1fr; }
   .hero { padding: 28px 24px; }
@@ -2473,7 +2241,7 @@ deliveries = [
 <div class="modal-bg" id="resetModal" role="dialog" aria-modal="true">
   <div class="modal">
     <h3>Reset everything?</h3>
-    <p>This clears your path, your completed levels, your failure notes, and your hint progress. There's no undo. (Use this when a new student is starting on this Chromebook.)</p>
+    <p>This wipes all progress and notes for the next student. No undo.</p>
     <div class="modal-acts">
       <button class="btn ghost" data-action="cancel-reset">Cancel</button>
       <button class="btn magenta" data-action="confirm-reset">Reset everything</button>
