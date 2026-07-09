@@ -6,6 +6,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="favicon.png?v=2">
 <style>
+/* ===== EMprint (TETC brand font) ===== */
+@font-face {
+  font-family: 'EMprint';
+  src: url('fonts/EMprint-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'EMprint';
+  src: url('fonts/EMprint-Semibold.ttf') format('truetype');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ===== TETC tokens ===== */
 :root {
   --teal:        #00ACA8;
@@ -30,7 +46,7 @@
   --white:       #FFFFFF;
   --shadow:      0 1px 0 rgba(0,0,0,0.04);
 
-  --font-body: Calibri, "Segoe UI", "Helvetica Neue", -apple-system, system-ui, Arial, sans-serif;
+  --font-body: 'EMprint', Calibri, "Segoe UI", "Helvetica Neue", -apple-system, system-ui, Arial, sans-serif;
   --font-mono: "Cascadia Mono", "Cascadia Code", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
@@ -1566,7 +1582,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <p style="color: var(--muted); font-size: 14px; margin-bottom: 10px;">A sample layout &mdash; yours will look different.</p>
         <figure class="overview-figure">
           <svg viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg"
-               font-family="Calibri, 'Segoe UI', Helvetica, Arial, sans-serif"
+               font-family="EMprint, Calibri, 'Segoe UI', Helvetica, Arial, sans-serif"
                role="img" aria-label="A sample stadium layout: three zones, the rover's start position, and three cargo items.">
             <!-- Field outline -->
             <rect x="40" y="20" width="300" height="300" fill="white" stroke="#222" stroke-width="2"/>
@@ -1711,7 +1727,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         </div>
         <figure class="mirror-figure">
           <svg viewBox="0 0 460 150" xmlns="http://www.w3.org/2000/svg"
-               font-family="Calibri, 'Segoe UI', Helvetica, Arial, sans-serif"
+               font-family="EMprint, Calibri, 'Segoe UI', Helvetica, Arial, sans-serif"
                role="img" aria-label="Two rovers: one facing away from you shares your left; one facing toward you has left and right flipped.">
             <!-- Rover facing away (same as you) -->
             <circle cx="110" cy="62" r="16" fill="#333"/>
