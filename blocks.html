@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>What Are Blocks? · Stadium Rover Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="favicon.png?v=2">
+<style>
+  @font-face {
+    font-family: 'EMprint';
+    src: url('fonts/EMprint-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'EMprint';
+    src: url('fonts/EMprint-Semibold.ttf') format('truetype');
+    font-weight: 600 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --teal: #186172;
+    --magenta: #BD2F7F;
+    --ink: #1F2A2B;
+    --body: #333333;
+    --muted: #5A5A5A;
+    --border: #E4E4E4;
+    --panel: #F5F5F5;
+    --font-body: 'EMprint', Calibri, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: Consolas, "SF Mono", "Roboto Mono", "Courier New", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; touch-action: pan-y; overscroll-behavior: none; }
+  body {
+    font-family: var(--font-body);
+    color: var(--body);
+    background: white;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+  .pageheader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .pageheader img { height: 48px; width: auto; display: block; }
+  .pageheader .back {
+    font-size: 13px;
+    color: var(--teal);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .pageheader .back:hover { text-decoration: underline; }
+
+  h1 { font-size: 32px; color: var(--ink); margin: 0 0 6px; letter-spacing: -0.01em; }
+  h2 {
+    font-size: 18px;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 34px 0 10px;
+    font-weight: 700;
+  }
+  p { margin: 0 0 14px; }
+  code { font-family: var(--font-mono); font-size: 0.92em; background: var(--panel); padding: 1px 5px; }
+
+  .frame { font-size: 17px; margin-bottom: 4px; }
+
+  /* fake block visuals */
+  .block {
+    display: inline-block;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 10px 16px;
+    border-radius: 4px;
+    margin: 0;
+  }
+  .block.motion { background: #3C87E3; }
+  .block.kick   { background: #B01E78; }
+  .block.wait   { background: #F18E21; }
+  .block .val {
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+    padding: 1px 9px;
+    margin: 0 2px;
+  }
+
+  .stack {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 6px 0 4px;
+  }
+  .stack .block { border-radius: 0; }
+  .stack .block:first-child { border-radius: 4px 4px 0 0; }
+  .stack .block:last-child  { border-radius: 0 0 4px 4px; }
+
+  .side-by-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+    margin-top: 6px;
+  }
+  @media (max-width: 640px) { .side-by-side { grid-template-columns: 1fr; } }
+  .side-by-side h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+  .side-by-side pre {
+    margin: 0;
+    background: #1B2526;
+    color: #E8EFEF;
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: auto;
+  }
+  .side-by-side pre .cmt { color: #6B8C8B; }
+
+  .note {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: var(--panel);
+    border-left: 3px solid var(--magenta);
+    font-size: 16px;
+  }
+  .note b { color: var(--magenta); }
+
+  .cta {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 12px 22px;
+    background: var(--teal);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .cta:hover { background: #124b58; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="pageheader">
+    <img src="logo-tetc.png" alt="TETC — Teen Engineering + Tech Center">
+    <a class="back" href="index.html">&larr; back to the lesson</a>
+  </header>
+
+  <h1>What are blocks?</h1>
+  <p class="frame">
+    Never seen any of this before? Read this first. It takes about two minutes,
+    and then Level 1 will make a lot more sense. Nothing here is a test.
+  </p>
+
+  <h2>A block is a command</h2>
+  <p>
+    A <b>block</b> is one instruction for the robot. You don't type it &mdash; you
+    drag it from a list and drop it into your program. This one tells the rover to
+    drive forward 450 millimeters:
+  </p>
+  <div class="block motion">drive forward <span class="val">450</span> mm</div>
+  <p style="margin-top: 14px;">
+    The white bubble is a number <em>you</em> choose. Click it, type a different
+    number, and the rover drives a different distance. That's it &mdash; that's the
+    whole idea.
+  </p>
+
+  <h2>Blocks snap together</h2>
+  <p>
+    One block on its own doesn't do much. You snap them together into a
+    <b>stack</b>, like LEGO. The robot runs the stack from the <b>top down</b>, one
+    block at a time, in order:
+  </p>
+  <div class="stack">
+    <div class="block motion">turn <span class="val">right</span> <span class="val">30</span> degrees</div>
+    <div class="block motion">drive forward <span class="val">450</span> mm</div>
+    <div class="block kick">kick <span class="val">medium</span></div>
+  </div>
+  <p style="margin-top: 14px;">
+    Read that out loud: turn right 30 degrees, drive forward 450 millimeters, kick.
+    That's a delivery. You just read a program.
+  </p>
+
+  <h2>Order is everything</h2>
+  <p>
+    The robot does exactly what you stacked, in exactly that order. It won't guess
+    what you meant. If the kick block sits <em>above</em> the drive block, the rover
+    kicks the cargo before it goes anywhere &mdash; and the cargo ends up in the
+    wrong place.
+  </p>
+  <p>
+    That's not the robot being broken. That's the robot doing precisely what you
+    told it. Most of the work in this lesson is figuring out the difference.
+  </p>
+
+  <h2>The blocks you'll use</h2>
+  <div class="stack">
+    <div class="block motion">drive forward <span class="val">450</span> mm</div>
+    <div class="block motion">turn <span class="val">left</span> <span class="val">90</span> degrees</div>
+    <div class="block kick">kick <span class="val">medium</span></div>
+    <div class="block kick">place</div>
+    <div class="block wait">wait <span class="val">0.5</span> seconds</div>
+  </div>
+  <p style="margin-top: 14px;">
+    Five blocks. <b>Kick</b> launches the soccer ball. <b>Place</b> sets a barrel
+    down gently. <b>Wait</b> pauses so things settle. That's the whole toolbox for
+    Level 1.
+  </p>
+
+  <h2>Blocks are real code</h2>
+  <p>
+    Here's the part people don't expect: blocks aren't a toy version of coding.
+    Each block <em>is</em> a line of code wearing a costume. In Level 2 you'll flip
+    a switch and see the exact same program written as Python text:
+  </p>
+  <div class="side-by-side">
+    <div>
+      <h3>Your blocks</h3>
+      <div class="stack">
+        <div class="block motion">turn <span class="val">right</span> <span class="val">30</span> degrees</div>
+        <div class="block motion">drive forward <span class="val">450</span> mm</div>
+        <div class="block kick">kick <span class="val">medium</span></div>
+      </div>
+    </div>
+    <div>
+      <h3>The same thing in Python</h3>
+<pre>robot.turn_for(RIGHT, 30)
+robot.move_for(450, 0)
+robot.kicker.kick(MEDIUM)</pre>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>So the order matters:</b> build it in blocks first, then convert. Level 2
+    turns <em>your own blocks</em> into Python &mdash; so you need to have built
+    them in Level 1 for there to be anything to convert.
+  </div>
+
+  <a class="cta" href="index.html">I'm ready &mdash; back to the lesson &rarr;</a>
+
+</div>
+
+</body>
+</html>

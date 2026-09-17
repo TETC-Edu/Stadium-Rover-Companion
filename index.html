@@ -434,6 +434,13 @@ details.reveal .reveal-body .mini-english {
 }
 .refresher-link:hover { background: var(--panel); border-color: var(--teal); }
 
+.primer-line {
+  margin-top: 16px;
+  font-size: 15px;
+  color: var(--muted);
+}
+.primer-line a { color: var(--teal-800); font-weight: 600; }
+
 @media (max-width: 540px) {
   .anatomy-code { font-size: 19px; }
   .anatomy-legend .chip { min-width: 50px; font-size: 10px; }
@@ -1251,6 +1258,11 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       </div>
     </section>
 
+    <a class="side-link" href="blocks.html" target="_blank" rel="noopener">
+      What are blocks?
+      <span class="arrow" aria-hidden="true">&rsaquo;</span>
+    </a>
+
     <a class="side-link" id="refLink" href="field.html" target="_blank" rel="noopener">
       Field reference
       <span class="arrow" aria-hidden="true">&rsaquo;</span>
@@ -1426,6 +1438,12 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           <span class="p-cta">Begin &rarr;</span>
         </button>
       </div>
+
+      <p class="primer-line">
+        Never seen blocks before and want to know what they even are?
+        <a href="blocks.html" target="_blank" rel="noopener">Read the 2-minute primer first &rarr;</a>
+        It's not a level &mdash; just a quick read.
+      </p>
     </section>
 
     <!-- ====== LEVEL 1 ====== -->
@@ -1447,6 +1465,8 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <span class="ctitle">Drive it first &mdash;</span>
         <span>One delivery by hand with the controller before you touch any code.</span>
       </div>
+
+      <a class="refresher-link" href="blocks.html" target="_blank" rel="noopener">New to this? What are blocks? &rarr;</a>
 
       <section class="section">
         <h3>Step 1: Sketch your stadium</h3>

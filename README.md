@@ -22,6 +22,9 @@ origin. Moving hosts wipes everyone's state.
 ```
 index.html   — the entire app (CSS + markup + vanilla JS IIFE, no build step)
 field.html   — standalone Field Reference page, linked from the sidebar
+blocks.html  — "What are blocks?" primer for absolute beginners. A reference,
+               NOT a level: no progress, no completion gate. Linked from the
+               sidebar, the path picker, and the top of Level 1.
 fonts/       — EMprint Regular + Semibold (real TETC brand font, shipped as web fonts)
 logo-tetc.png, favicon.png
 ```
