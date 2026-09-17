@@ -52,8 +52,10 @@ Same challenge three times, one new idea per level:
    a mailto that emails all three "What happened?" logs to
    taylor.eads@tetc.org.
 
-Path picker on the landing page routes by experience: never coded → L1,
-used blocks → L2, coded in text → L3.
+Path picker on the landing page sets **pacing, not starting point** — all three
+options (never coded / used blocks / written code) begin at Level 1. Level 2
+converts the student's own Level 1 blocks, so skipping L1 leaves nothing to
+convert.
 
 ## State model
 

@@ -1403,26 +1403,26 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         </ul>
       </section>
 
-      <h2 style="margin: 36px 0 6px;">Where do you start?</h2>
-      <p style="color: var(--muted); margin-bottom: 4px;">Pick the lane that matches you. You can change it at any time.</p>
+      <h2 style="margin: 36px 0 6px;">How much have you coded?</h2>
+      <p style="color: var(--muted); margin-bottom: 4px;">Everyone starts at Level 1 &mdash; Level 2 converts <em>your own blocks</em> into Python, so you need to build them first. This just tells us how fast to move. You can change it at any time.</p>
 
       <div class="paths">
         <button class="path-card beginner" data-path="beginner">
           <div class="p-tag">Never coded</div>
-          <h3>Start at Level 1.</h3>
-          <p>Take your time. We'll drive the rover by hand before we code it.</p>
+          <h3>I've never coded before.</h3>
+          <p>Never seen a block or a line of code. That's the right place to be &mdash; take your time and open the hints whenever you're stuck.</p>
           <span class="p-cta">Begin &rarr;</span>
         </button>
         <button class="path-card intermediate" data-path="intermediate">
           <div class="p-tag">I've used blocks</div>
-          <h3>Start at Level 2.</h3>
-          <p>You know Blocks already. Jump straight into Switch and Python.</p>
+          <h3>I've dragged blocks before.</h3>
+          <p>Scratch, VEXcode Blocks, something like that. Level 1 should go quick &mdash; the new stuff starts in Level 2.</p>
           <span class="p-cta">Begin &rarr;</span>
         </button>
         <button class="path-card express" data-path="advanced">
-          <div class="p-tag">I've coded in text</div>
-          <h3>Start at Level 3.</h3>
-          <p>Same challenge, straight to typing real Python.</p>
+          <div class="p-tag">I've typed code</div>
+          <h3>I've written real code.</h3>
+          <p>Build your blocks fast, then push through to Level 3 and type the Python yourself.</p>
           <span class="p-cta">Begin &rarr;</span>
         </button>
       </div>
@@ -2084,10 +2084,11 @@ robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <s
   }
 
   // ===================== PATH PICKER =====================
+  // every path starts at Level 1 — Level 2 converts the blocks built there
   const pathStartScreen = {
     beginner: 'level1',
-    intermediate: 'level2',
-    advanced: 'level3'
+    intermediate: 'level1',
+    advanced: 'level1'
   };
   function setPath(path) {
     state.path = path;
@@ -2100,9 +2101,9 @@ robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <s
     const holder = document.getElementById('pathHolder');
     if (!state.path) { holder.innerHTML = ''; return; }
     const labels = {
-      beginner:     { tag: 'beg', text: 'Never coded' },
+      beginner:     { tag: 'beg', text: 'New to coding' },
       intermediate: { tag: 'int', text: 'Used blocks' },
-      advanced:     { tag: 'exp', text: 'Used text code' }
+      advanced:     { tag: 'exp', text: 'Written code' }
     };
     const meta = labels[state.path];
     if (!meta) { holder.innerHTML = ''; return; }
