@@ -44,7 +44,7 @@ One rule: each cargo starts at least 30 cm from its delivery zone.
 
 Same challenge three times, one new idea per level:
 
-1. **Level 1 — Blocks.** Drive it by hand first, then code all three
+1. **Level 1 — Blocks.** Sketch and measure the field, then code all three
    deliveries in VEXcode Blocks.
 2. **Level 2 — Switch.** Re-sketch the field, convert blocks to Switch, fix
    every number by hand. Re-sketch and convert come first, then "How to Read

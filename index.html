@@ -434,17 +434,18 @@ details.reveal .reveal-body .mini-english {
 }
 .refresher-link:hover { background: var(--panel); border-color: var(--teal); }
 
-/* prominent "what are blocks?" entry point */
+/* full-bleed "what are blocks?" banner — breaks out of .screen padding */
 .primer-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding: 18px 22px;
+  margin: -12px -48px 24px;
+  padding: 20px 48px;
   background: var(--magenta-050);
-  border: 2px solid var(--magenta);
+  border-top: 2px solid var(--magenta);
+  border-bottom: 2px solid var(--magenta);
   text-decoration: none;
   transition: background 120ms ease;
 }
@@ -1208,6 +1209,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   .topstrip { padding: 10px 16px; gap: 12px; flex-wrap: wrap; }
   .topstrip-right { flex-wrap: wrap; gap: 8px; }
   .screen { padding: 24px 18px 80px; }
+  .primer-card { margin: -8px -18px 20px; padding: 16px 18px; }
   .paths { grid-template-columns: 1fr; }
   .decoder { grid-template-columns: 1fr; }
   .commands-grid { grid-template-columns: 1fr; }
@@ -1221,6 +1223,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
   .codeaim-link { padding: 7px 10px; font-size: 12.5px; }
   .crumbs { font-size: 12px; }
   .screen { padding: 20px 14px 80px; }
+  .primer-card { margin: -6px -14px 18px; padding: 14px; }
   .hero h1 { font-size: 26px; }
 }
 
@@ -1454,7 +1457,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <button class="path-card beginner" data-path="beginner">
           <div class="p-tag">Never coded</div>
           <h3>Start at Level 1.</h3>
-          <p>Take your time. We'll drive the rover by hand before we code it.</p>
+          <p>Take your time. We'll start from the very beginning.</p>
           <span class="p-cta">Begin &rarr;</span>
         </button>
         <button class="path-card intermediate" data-path="intermediate">
@@ -1477,7 +1480,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       <div class="screen-header">
         <div>
           <h1>Level 1 &mdash; Blocks</h1>
-          <p class="lead">Design your stadium. Measure it. Drive it by hand. Then code it in Blocks.</p>
+          <p class="lead">Design your stadium. Measure it. Then code it in Blocks.</p>
         </div>
         <span class="phase blocks">Blocks</span>
       </div>
@@ -1493,11 +1496,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
       <div class="objective">
         <span class="label">Your task</span>
         <p>Design your stadium layout. Measure every leg of the rover's path. Then code the rover in Blocks to deliver all three cargo to the right zones.</p>
-      </div>
-
-      <div class="callout teal">
-        <span class="ctitle">Drive it first &mdash;</span>
-        <span>One delivery by hand with the controller before you touch any code.</span>
       </div>
 
       <section class="section">
