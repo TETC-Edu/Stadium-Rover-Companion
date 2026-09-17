@@ -23,8 +23,8 @@ origin. Moving hosts wipes everyone's state.
 index.html   — the entire app (CSS + markup + vanilla JS IIFE, no build step)
 field.html   — standalone Field Reference page, linked from the sidebar
 blocks.html  — "What are blocks?" primer for absolute beginners. A reference,
-               NOT a level: no progress, no completion gate. Linked from the
-               sidebar, the path picker, and the top of Level 1.
+               NOT a level: no progress, no completion gate. Optional link at
+               the top of Level 1, plus one in the sidebar.
 fonts/       — EMprint Regular + Semibold (real TETC brand font, shipped as web fonts)
 logo-tetc.png, favicon.png
 ```
@@ -55,10 +55,8 @@ Same challenge three times, one new idea per level:
    a mailto that emails all three "What happened?" logs to
    taylor.eads@tetc.org.
 
-Path picker on the landing page sets **pacing, not starting point** — all three
-options (never coded / used blocks / written code) begin at Level 1. Level 2
-converts the student's own Level 1 blocks, so skipping L1 leaves nothing to
-convert.
+Path picker on the landing page routes by experience: never coded → L1,
+used blocks → L2, coded in text → L3.
 
 ## State model
 
