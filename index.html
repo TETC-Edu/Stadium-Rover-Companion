@@ -441,36 +441,37 @@ details.reveal .reveal-body .mini-english {
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  margin: -12px -48px 24px;
-  padding: 20px 48px;
-  background: var(--magenta-050);
-  border-top: 2px solid var(--magenta);
-  border-bottom: 2px solid var(--magenta);
+  margin: -12px -48px 26px;
+  padding: 24px 48px;
+  background: var(--magenta);
   text-decoration: none;
   transition: background 120ms ease;
 }
-.primer-card:hover { background: #f7d9e8; }
+.primer-card:hover { background: var(--magenta-700); }
+.primer-card:hover .primer-card-cta { background: var(--ink); color: white; }
 .primer-card-text { display: block; }
 .primer-card-title {
   display: block;
-  font-size: 18px;
+  font-size: 21px;
   font-weight: 700;
-  color: var(--magenta-700);
-  margin-bottom: 3px;
+  color: white;
+  margin-bottom: 4px;
+  letter-spacing: -0.005em;
 }
 .primer-card-sub {
   display: block;
-  font-size: 15px;
-  color: var(--body);
+  font-size: 15.5px;
+  color: rgba(255,255,255,0.92);
 }
 .primer-card-cta {
   flex: none;
-  background: var(--magenta);
-  color: white;
+  background: white;
+  color: var(--magenta-700);
   font-weight: 700;
-  font-size: 15px;
-  padding: 11px 20px;
+  font-size: 16px;
+  padding: 13px 24px;
   white-space: nowrap;
+  transition: background 120ms ease, color 120ms ease;
 }
 
 
