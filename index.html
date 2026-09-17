@@ -434,6 +434,44 @@ details.reveal .reveal-body .mini-english {
 }
 .refresher-link:hover { background: var(--panel); border-color: var(--teal); }
 
+/* prominent "what are blocks?" entry point */
+.primer-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 18px 22px;
+  background: var(--magenta-050);
+  border: 2px solid var(--magenta);
+  text-decoration: none;
+  transition: background 120ms ease;
+}
+.primer-card:hover { background: #f7d9e8; }
+.primer-card-text { display: block; }
+.primer-card-title {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--magenta-700);
+  margin-bottom: 3px;
+}
+.primer-card-sub {
+  display: block;
+  font-size: 15px;
+  color: var(--body);
+}
+.primer-card-cta {
+  flex: none;
+  background: var(--magenta);
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 11px 20px;
+  white-space: nowrap;
+}
+
 
 @media (max-width: 540px) {
   .anatomy-code { font-size: 19px; }
@@ -1444,6 +1482,14 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <span class="phase blocks">Blocks</span>
       </div>
 
+      <a class="primer-card" href="blocks.html" target="_blank" rel="noopener">
+        <span class="primer-card-text">
+          <span class="primer-card-title">Never seen blocks before? Read this first.</span>
+          <span class="primer-card-sub">Two minutes on what a block is and how they snap together. Opens in a new tab &mdash; you won't lose your place here.</span>
+        </span>
+        <span class="primer-card-cta">What are blocks? &rarr;</span>
+      </a>
+
       <div class="objective">
         <span class="label">Your task</span>
         <p>Design your stadium layout. Measure every leg of the rover's path. Then code the rover in Blocks to deliver all three cargo to the right zones.</p>
@@ -1453,8 +1499,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <span class="ctitle">Drive it first &mdash;</span>
         <span>One delivery by hand with the controller before you touch any code.</span>
       </div>
-
-      <a class="refresher-link" href="blocks.html" target="_blank" rel="noopener">New to this? What are blocks? &rarr;</a>
 
       <section class="section">
         <h3>Step 1: Sketch your stadium</h3>
