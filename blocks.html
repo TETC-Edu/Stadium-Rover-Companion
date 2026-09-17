@@ -78,35 +78,80 @@
 
   .frame { font-size: 17px; margin-bottom: 4px; }
 
-  /* fake block visuals */
+  /* VEXcode-style blocks in TETC colors */
   .block {
-    display: inline-block;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     color: white;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 15px;
-    padding: 10px 16px;
-    border-radius: 4px;
-    margin: 0;
+    padding: 12px 16px;
+    border-radius: 5px;
+    line-height: 1;
+  }
+  /* notch cut into the top */
+  .block::before {
+    content: "";
+    position: absolute;
+    left: 15px; top: 0;
+    width: 26px; height: 6px;
+    background: white;
+    border-radius: 0 0 6px 6px;
+  }
+  /* tab bumping out the bottom */
+  .block::after {
+    content: "";
+    position: absolute;
+    left: 15px; bottom: -6px;
+    width: 26px; height: 6px;
+    background: inherit;
+    border-radius: 0 0 6px 6px;
   }
   .block.motion { background: #3C87E3; }
   .block.kick   { background: #B01E78; }
   .block.wait   { background: #F18E21; }
+  .block.hat    { background: #186172; }
+  /* hat block: domed top, no notch */
+  .block.hat {
+    border-radius: 20px 20px 5px 5px;
+    padding-top: 18px;
+  }
+  .block.hat::before { display: none; }
+
   .block .val {
-    background: rgba(255,255,255,0.25);
-    border-radius: 10px;
-    padding: 1px 9px;
-    margin: 0 2px;
+    background: white;
+    color: var(--ink);
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 4px 13px;
+    min-width: 14px;
+    text-align: center;
+    display: inline-block;
+    line-height: 1.2;
   }
 
   .stack {
     display: inline-flex;
     flex-direction: column;
-    gap: 2px;
-    margin: 6px 0 4px;
+    margin: 8px 0 10px;
   }
-  .stack .block { border-radius: 0; }
-  .stack .block:first-child { border-radius: 4px 4px 0 0; }
-  .stack .block:last-child  { border-radius: 0 0 4px 4px; }
+  /* loose blocks, not snapped together */
+  .palette {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 8px 0 10px;
+  }
+  /* upper blocks paint above lower ones so each tab fills the notch below it */
+  .stack .block:nth-child(1) { z-index: 9; }
+  .stack .block:nth-child(2) { z-index: 8; }
+  .stack .block:nth-child(3) { z-index: 7; }
+  .stack .block:nth-child(4) { z-index: 6; }
+  .stack .block:nth-child(5) { z-index: 5; }
+  .stack .block:nth-child(6) { z-index: 4; }
 
   .side-by-side {
     display: grid;
@@ -192,6 +237,7 @@
     block at a time, in order:
   </p>
   <div class="stack">
+    <div class="block hat">when started</div>
     <div class="block motion">turn <span class="val">right</span> <span class="val">30</span> degrees</div>
     <div class="block motion">drive forward <span class="val">450</span> mm</div>
     <div class="block kick">kick <span class="val">medium</span></div>
@@ -199,6 +245,11 @@
   <p style="margin-top: 14px;">
     Read that out loud: turn right 30 degrees, drive forward 450 millimeters, kick.
     That's a delivery. You just read a program.
+  </p>
+  <p>
+    The rounded one on top is a <b>hat block</b> &mdash; <code>when started</code>.
+    Every stack begins with one. It's what tells the robot "this is where to
+    start when someone presses play."
   </p>
 
   <h2>Order is everything</h2>
@@ -214,7 +265,7 @@
   </p>
 
   <h2>The blocks you'll use</h2>
-  <div class="stack">
+  <div class="palette">
     <div class="block motion">drive forward <span class="val">450</span> mm</div>
     <div class="block motion">turn <span class="val">left</span> <span class="val">90</span> degrees</div>
     <div class="block kick">kick <span class="val">medium</span></div>
