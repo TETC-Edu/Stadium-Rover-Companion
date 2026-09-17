@@ -1081,17 +1081,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
 .callout.magenta { background: var(--magenta-050); border-left-color: var(--magenta); }
 .callout.magenta .ctitle { color: var(--magenta-700); }
 
-/* locked screen */
-.locked-card {
-  background: var(--panel);
-  border: 1px dashed var(--border-2);
-  padding: 40px;
-  text-align: center;
-  color: var(--muted);
-}
-.locked-card h2 { color: var(--muted); margin-bottom: 8px; }
-.locked-card p  { color: var(--muted); max-width: 380px; margin: 0 auto; }
-
 /* modal */
 .modal-bg {
   position: fixed; inset: 0;
@@ -1411,7 +1400,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           <li><b>Level 1 &mdash; Blocks.</b> Drag block commands together. Make all three deliveries.</li>
           <li><b>Level 2 &mdash; Switch.</b> Convert your blocks to see the Python underneath. Edit numbers for a new field.</li>
           <li><b>Level 3 &mdash; Python.</b> Type real Python from scratch. Three deliveries, one after another.</li>
-          <li><b>Bonus &mdash; Loops &amp; variables.</b> Make your Level 3 code shorter and cleaner.</li>
         </ul>
       </section>
 
@@ -1643,8 +1631,25 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
         <span>Your field changed. Every number in your code is wrong. You have to fix them all by hand. This is annoying on purpose. Notice it.</span>
       </div>
 
+      <section class="section amber">
+        <h3>Step 1: Erase and re-sketch your stadium</h3>
+        <p>Wipe your Level 1 sketch off the mat. With the <b>Expo marker</b>, draw a brand new layout:</p>
+        <ul class="arc-list">
+          <li>Three new zone boxes (REFEREE, TEAM A, TEAM B) in different spots.</li>
+          <li>New Xs for where each cargo starts. Move them, really &mdash; don't be polite.</li>
+          <li>A new START for the rover.</li>
+        </ul>
+        <p>Place the cargo objects on the new marks. Remeasure <b>every leg</b> of the new chain: rover to cargo, cargo to zone, then on to the next cargo. New distance (cm × 10 = mm) and new turn (left or right, how many degrees) for each leg.</p>
+      </section>
+
+      <section class="section">
+        <h3>Step 2: Convert blocks to Switch</h3>
+        <p>In VEXcode AIM, <b>right-click</b> the first block of your stack (two-finger tap on a Chromebook). Pick <b>Convert stack to Switch block</b>. Your blocks turn into Python inside a Switch container.</p>
+        <p>You're not writing Python yet. You're reading it. Find the numbers and change them.</p>
+      </section>
+
       <details class="expandable" open id="read-python">
-        <summary>First: How to read Python</summary>
+        <summary>How to read Python</summary>
         <div class="ex-body">
           <p>When you turn your blocks into Switch, you'll see lines of Python like this for the first time. Don't panic. Every line in this lesson follows the same shape:</p>
 
@@ -1714,23 +1719,6 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
           </div>
         </div>
       </details>
-
-      <section class="section amber">
-        <h3>Step 1: Erase and re-sketch your stadium</h3>
-        <p>Wipe your Level 1 sketch off the mat. With the <b>Expo marker</b>, draw a brand new layout:</p>
-        <ul class="arc-list">
-          <li>Three new zone boxes (REFEREE, TEAM A, TEAM B) in different spots.</li>
-          <li>New Xs for where each cargo starts. Move them, really &mdash; don't be polite.</li>
-          <li>A new START for the rover.</li>
-        </ul>
-        <p>Place the cargo objects on the new marks. Remeasure <b>every leg</b> of the new chain: rover to cargo, cargo to zone, then on to the next cargo. New distance (cm × 10 = mm) and new turn (left or right, how many degrees) for each leg.</p>
-      </section>
-
-      <section class="section">
-        <h3>Step 2: Convert blocks to Switch</h3>
-        <p>In VEXcode AIM, <b>right-click</b> the first block of your stack (two-finger tap on a Chromebook). Pick <b>Convert stack to Switch block</b>. Your blocks turn into Python inside a Switch container.</p>
-        <p>You're not writing Python yet. You're reading it. Find the numbers and change them.</p>
-      </section>
 
       <section class="section">
         <h3>Step 3: Use the decoder</h3>
@@ -1806,7 +1794,7 @@ details.expandable > .ex-body { padding: 4px 18px 18px; }
               </div>
               <div class="hint-step h3">
                 <span class="h-label">Approach</span>
-                <span class="h-text">Count how many numbers you have to change for one delivery. Now multiply by three. Yeah. We're going to fix that in the Bonus.</span>
+                <span class="h-text">Count how many numbers you have to change for one delivery. Now multiply by three. Yeah &mdash; that's the job. Be systematic: fix one delivery completely, run it, then move to the next.</span>
               </div>
               <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
             </div>
@@ -1977,28 +1965,6 @@ robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <s
             </div>
           </div>
 
-          <div class="hint-card" data-card>
-            <div class="hint-head">
-              <div class="hint-q"><span class="qmark">?</span>The rover goes to the wrong place.</div>
-              <button class="btn ghost sm" data-action="open-card">Open</button>
-            </div>
-            <div class="hint-body">
-              <div class="hint-step h1 shown">
-                <span class="h-label">Try first</span>
-                <span class="h-text">Print which delivery you're on. Put <code>robot.screen.print("D1")</code> right before delivery 1, <code>"D2"</code> before delivery 2, etc. Now you can see exactly when things go wrong.</span>
-              </div>
-              <div class="hint-step h2">
-                <span class="h-label">Then this</span>
-                <span class="h-text">Remember: delivery 2 starts from <em>wherever delivery 1 ended</em>, not from the rover's original spot. Did you measure delivery 2's turn and distance from the right starting point?</span>
-              </div>
-              <div class="hint-step h3">
-                <span class="h-label">Approach</span>
-                <span class="h-text">Look at each delivery one at a time. Cover the other two with your hand on screen. Walk through line by line and say what the rover should do. Then run it.</span>
-              </div>
-              <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -2009,6 +1975,13 @@ robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <s
         <div class="save-hint">Saves as you type.</div>
       </section>
 
+      <section class="section">
+        <h3>Send your engineer's log</h3>
+        <p>Real engineers write down what went wrong and what they learned &mdash; that's the most valuable thing they make. Email your "What happened?" notes from all three levels to Mr. Eads.</p>
+        <button class="btn magenta" data-action="email-log">Email my log</button>
+        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">This opens your email app with everything filled in. Add your name, hit send.</p>
+      </section>
+
       <div class="complete-bar" data-complete="level3">
         <div>
           <h3>All three deliveries running from typed Python?</h3>
@@ -2017,215 +1990,6 @@ robot.<span class="fn">kicker</span>.kick(<span class="kw">MEDIUM</span>)     <s
         <button class="btn magenta" data-action="complete" data-level="level3">Mark Level 3 complete</button>
       </div>
     </section>
-
-    <!-- ====== BONUS ====== -->
-    <section class="screen" id="screen-bonus" data-screen-label="04 Bonus Loops" hidden>
-      <div class="screen-header">
-        <div>
-          <h1>Bonus &mdash; Loops &amp; Variables</h1>
-          <p class="lead">Same field as Level 3. Same deliveries. But shorter, cleaner code.</p>
-        </div>
-        <span class="phase python">Python</span>
-      </div>
-
-      <div id="bonusLocked" class="locked-card" hidden>
-        <h2>Locked</h2>
-        <p>Finish Level 3 first. The Bonus opens when you mark it complete.</p>
-      </div>
-
-      <div id="bonusContent">
-        <div class="objective magenta">
-          <span class="label">Your task</span>
-          <p>Take your working Level 3 code and rewrite it using <b>variables</b> and a <b>loop</b>. Same three deliveries, same field, but the typing gets way shorter.</p>
-        </div>
-
-        <button class="refresher-link" data-action="goto" data-target="level2" data-anchor="read-python">
-          &larr; Refresher: How to read Python
-        </button>
-
-        <section class="section">
-          <h3>1. Spot the pattern</h3>
-          <p>Look at the code you wrote in Level 3. You wrote three deliveries. What's the <em>same</em> every time? What's <em>different</em>?</p>
-          <p>Talk it through with your partner before reading on.</p>
-
-          <div class="callout teal">
-            <span class="ctitle">The answer &mdash;</span>
-            <span>The <b>shape</b> is the same every time: turn, drive to the cargo, turn, carry it to the zone, deliver. What's different is the <b>numbers</b> (turns, distances) and the <b>cargo</b> (kick vs place).</span>
-          </div>
-        </section>
-
-        <section class="section">
-          <h3>2. What's a variable?</h3>
-          <p>A <b>variable</b> is a name for a value. Instead of writing <code>450</code> all over your code, you write <code>distance</code>, and you decide once what <code>distance</code> means.</p>
-          <div class="codeblock">
-<pre><span class="cmt"># Before (number hardcoded)</span>
-robot.<span class="fn">move_for</span>(<span class="num">450</span>, <span class="num">0</span>)
-
-<span class="cmt"># After (with a variable)</span>
-distance = <span class="num">450</span>
-robot.<span class="fn">move_for</span>(distance, <span class="num">0</span>)</pre>
-          </div>
-          <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">That looks like more code, not less. But hold on &mdash; what if you had three different distances?</p>
-        </section>
-
-        <section class="section">
-          <h3>3. What's a loop?</h3>
-          <p>A <b>loop</b> means: do this thing more than once. Instead of writing the same delivery code three times, write it once and tell the rover "do this for each delivery."</p>
-          <p>Think of your three deliveries as a checklist. A loop checks off each item, does the work, then moves to the next one.</p>
-
-          <div class="codeblock">
-<pre><span class="cmt"># A list of three things</span>
-cargo_list = [<span class="str">"soccer_ball"</span>, <span class="str">"blue_barrel"</span>, <span class="str">"orange_barrel"</span>]
-
-<span class="cmt"># Do something with each one</span>
-<span class="kw">for</span> cargo <span class="kw">in</span> cargo_list:
-    robot.<span class="fn">screen</span>.print(cargo)</pre>
-          </div>
-          <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">This prints each cargo name one at a time. The loop does the repeating for you.</p>
-        </section>
-
-        <section class="section magenta">
-          <h3>4. Build it</h3>
-          <p>Now put it together. Each delivery has <b>two legs</b> (turn + drive to the cargo, turn + drive to the zone) and a <b>cargo type</b>. Stack all of that into a list.</p>
-          <p>Step by step:</p>
-          <ol class="arc-list">
-            <li>Make a list with your three deliveries' info &mdash; both legs plus the cargo.</li>
-            <li>Write the delivery code <em>once</em>, using variable names instead of real numbers.</li>
-            <li>Wrap that code in a <code>for</code> loop.</li>
-          </ol>
-
-          <p style="margin-top: 14px;">Here's the shape &mdash; fill in your own numbers:</p>
-          <div class="codeblock">
-<pre><span class="cmt"># Each delivery: (turn to cargo, drive to cargo, turn to zone, drive to zone, cargo)</span>
-deliveries = [
-    (<span class="kw">RIGHT</span>, <span class="num">30</span>, <span class="num">450</span>, <span class="kw">LEFT</span>,  <span class="num">15</span>, <span class="num">300</span>, <span class="str">"ball"</span>),
-    (<span class="kw">LEFT</span>,  <span class="num">45</span>, <span class="num">600</span>, <span class="kw">RIGHT</span>, <span class="num">90</span>, <span class="num">250</span>, <span class="str">"blue"</span>),
-    (<span class="kw">RIGHT</span>, <span class="num">90</span>, <span class="num">300</span>, <span class="kw">LEFT</span>,  <span class="num">40</span>, <span class="num">500</span>, <span class="str">"orange"</span>),
-]
-
-<span class="kw">for</span> turn1, deg1, dist1, turn2, deg2, dist2, cargo <span class="kw">in</span> deliveries:
-    robot.<span class="fn">screen</span>.print(cargo)
-    robot.<span class="fn">turn_for</span>(turn1, deg1)
-    robot.<span class="fn">move_for</span>(dist1, <span class="num">0</span>)      <span class="cmt"># drive to the cargo</span>
-    robot.<span class="fn">turn_for</span>(turn2, deg2)
-    robot.<span class="fn">move_for</span>(dist2, <span class="num">0</span>)      <span class="cmt"># carry it to the zone</span>
-
-    <span class="kw">if</span> cargo == <span class="str">"ball"</span>:
-        robot.<span class="fn">kicker</span>.kick(MEDIUM)
-    <span class="kw">else</span>:
-        robot.<span class="fn">kicker</span>.place()</pre>
-          </div>
-          <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">Replace the numbers in the list with your real measurements. Don't touch the loop code below it.</p>
-        </section>
-
-        <section class="section">
-          <h3>5. The payoff</h3>
-          <p>Remember Level 2, when you had to fix every number by hand on a new field?</p>
-          <p>With a loop, you'd only change the numbers in <em>one place</em> &mdash; the list at the top. The driving code never changes.</p>
-
-          <div class="callout magenta">
-            <span class="ctitle">That's the whole point &mdash;</span>
-            <span>Variables and loops aren't fancy computer-science magic. They're what you do when you notice you're typing the same thing over and over. You had the problem first. Now you have the fix.</span>
-          </div>
-        </section>
-
-        <section class="section">
-          <h3>Stuck?</h3>
-          <div class="hints" data-hints="bonus">
-
-            <div class="hint-card" data-card>
-              <div class="hint-head">
-                <div class="hint-q"><span class="qmark">?</span>My loop only runs once.</div>
-                <button class="btn ghost sm" data-action="open-card">Open</button>
-              </div>
-              <div class="hint-body">
-                <div class="hint-step h1 shown">
-                  <span class="h-label">Try first</span>
-                  <span class="h-text">Count the items in your list. A loop runs once per item. If your list has one item, you get one run.</span>
-                </div>
-                <div class="hint-step h2">
-                  <span class="h-label">Then this</span>
-                  <span class="h-text">Check indentation. Every line inside the <code>for</code> must be indented the same (use 4 spaces). Lines that aren't indented are outside the loop.</span>
-                </div>
-                <div class="hint-step h3">
-                  <span class="h-label">Approach</span>
-                  <span class="h-text">Put <code>robot.screen.print(cargo)</code> as the first line inside the loop. Now you can <em>see</em> the loop run on the rover screen. If you see three names, the loop is fine and the bug is somewhere else.</span>
-                </div>
-                <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
-              </div>
-            </div>
-
-            <div class="hint-card" data-card>
-              <div class="hint-head">
-                <div class="hint-q"><span class="qmark">?</span>My variables are doing weird things.</div>
-                <button class="btn ghost sm" data-action="open-card">Open</button>
-              </div>
-              <div class="hint-body">
-                <div class="hint-step h1 shown">
-                  <span class="h-label">Try first</span>
-                  <span class="h-text">Check the order. The names in the <code>for</code> line have to match the order of values in your list, slot by slot. If your list goes <code>(turn1, deg1, dist1, ...)</code> but your <code>for</code> line unpacks <code>dist1</code> first, every number lands in the wrong slot.</span>
-                </div>
-                <div class="hint-step h2">
-                  <span class="h-label">Then this</span>
-                  <span class="h-text">Pick one delivery. Print its values on the rover screen before the rover moves. If the screen shows numbers in the wrong slots, your list and your unpack don't match.</span>
-                </div>
-                <div class="hint-step h3">
-                  <span class="h-label">Approach</span>
-                  <span class="h-text">Comment out everything except one delivery in your list. Get that one running with variables. Then add delivery 2. Then delivery 3.</span>
-                </div>
-                <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
-              </div>
-            </div>
-
-            <div class="hint-card" data-card>
-              <div class="hint-head">
-                <div class="hint-q"><span class="qmark">?</span>The kicker fires for the wrong cargo.</div>
-                <button class="btn ghost sm" data-action="open-card">Open</button>
-              </div>
-              <div class="hint-body">
-                <div class="hint-step h1 shown">
-                  <span class="h-label">Try first</span>
-                  <span class="h-text">Check your <code>if</code> line. What word are you comparing? Does it exactly match the word in your list (<code>"ball"</code> vs <code>"soccer_ball"</code>)?</span>
-                </div>
-                <div class="hint-step h2">
-                  <span class="h-label">Then this</span>
-                  <span class="h-text">Two equals signs: <code>==</code>, not <code>=</code>. One equals sign assigns a value, two equals signs checks if things match.</span>
-                </div>
-                <div class="hint-step h3">
-                  <span class="h-label">Approach</span>
-                  <span class="h-text">Print the cargo name right before the <code>if</code>. Look at the screen. Now check your <code>if</code> against what you just saw. They have to be exactly the same word.</span>
-                </div>
-                <div class="hint-actions"><button class="btn ghost sm" data-action="next-hint">Still stuck</button></div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <section class="failure">
-          <h4>What happened?</h4>
-          <div class="sub">Which version felt better &mdash; Level 3 or this one? Why?</div>
-          <textarea data-failure="bonus" placeholder="Once I got the list right, this version was way shorter. The hardest part was getting the unpack order to match the list order."></textarea>
-          <div class="save-hint">Saves as you type.</div>
-        </section>
-
-        <section class="section">
-          <h3>Send your engineer's log</h3>
-          <p>Real engineers write down what went wrong and what they learned &mdash; that's the most valuable thing they make. Email your "What happened?" notes from all four levels to Mr. Eads.</p>
-          <button class="btn magenta" data-action="email-log">Email my log</button>
-          <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">This opens your email app with everything filled in. Add your name, hit send.</p>
-        </section>
-
-        <div class="complete-bar" data-complete="bonus">
-          <div>
-            <h3>All three deliveries running from one loop?</h3>
-            <p>Mark complete when the rover makes all three deliveries from a single <code>for</code> loop with your variables.</p>
-          </div>
-          <button class="btn magenta" data-action="complete" data-level="bonus">Mark Bonus complete</button>
-        </div>
-      </div>
-    </section>
-
 
   </main>
 </div>
@@ -2252,10 +2016,10 @@ deliveries = [
   const STORAGE_KEY = 'tetc_rover_companion_v2';
   const defaultState = {
     path: null,           // 'beginner' | 'intermediate'
-    screen: 'landing',    // 'landing' | 'level1' | 'level2' | 'level3' | 'bonus'
-    completed: { level1: false, level2: false, level3: false, bonus: false },
-    failure: { level1: '', level2: '', level3: '', bonus: '' },
-    hints: { level1: {}, level2: {}, level3: {}, bonus: {} }
+    screen: 'landing',    // 'landing' | 'level1' | 'level2' | 'level3'
+    completed: { level1: false, level2: false, level3: false },
+    failure: { level1: '', level2: '', level3: '' },
+    hints: { level1: {}, level2: {}, level3: {} }
   };
 
   function loadState() {
@@ -2279,13 +2043,9 @@ deliveries = [
   let state = loadState();
 
   // ===================== SCREENS / NAV =====================
-  const screens = ['landing','level1','level2','level3','bonus'];
+  const screens = ['landing','level1','level2','level3'];
 
   function gotoScreen(name, anchor) {
-    if (name === 'bonus' && !state.completed.level3) {
-      showToast('Finish Level 3 first to unlock the Bonus.');
-      return;
-    }
     state.screen = name;
     saveState();
     renderScreens();
@@ -2311,13 +2071,6 @@ deliveries = [
       if (!el) return;
       el.hidden = (s !== state.screen);
     });
-    const bonusLocked  = document.getElementById('bonusLocked');
-    const bonusContent = document.getElementById('bonusContent');
-    if (bonusLocked && bonusContent) {
-      const locked = !state.completed.level3;
-      bonusLocked.hidden  = !locked;
-      bonusContent.hidden = locked;
-    }
   }
 
   function renderCrumbs() {
@@ -2325,8 +2078,7 @@ deliveries = [
       landing: 'Stadium Logistics Rover',
       level1: '<strong>Level 1</strong> &mdash; Blocks',
       level2: '<strong>Level 2</strong> &mdash; Switch',
-      level3: '<strong>Level 3</strong> &mdash; Python',
-      bonus:  '<strong>Bonus</strong> &mdash; Loops &amp; Variables'
+      level3: '<strong>Level 3</strong> &mdash; Python'
     };
     document.getElementById('crumbs').innerHTML = titles[state.screen] || titles.landing;
   }
@@ -2369,8 +2121,7 @@ deliveries = [
       { key: 'landing', label: 'Start',    sub: 'Overview' },
       { key: 'level1',  label: 'Level 1',  sub: 'Blocks',            locked: false },
       { key: 'level2',  label: 'Level 2',  sub: 'Switch',            locked: false },
-      { key: 'level3',  label: 'Level 3',  sub: 'Python',            locked: false },
-      { key: 'bonus',   label: 'Bonus',    sub: 'Loops & variables', locked: !state.completed.level3 }
+      { key: 'level3',  label: 'Level 3',  sub: 'Python',            locked: false }
     ];
     list.innerHTML = rows.map(r => {
       const done = state.completed[r.key];
@@ -2412,12 +2163,6 @@ deliveries = [
       { name: "NameError",            fix: "A name you used doesn't exist. Check spelling and capital letters. <code>Robot</code> and <code>robot</code> are different." },
       { name: "TypeError",            fix: "Wrong kind of value. <code>\"450\"</code> is a string. <code>450</code> is a number. Distance wants a number." },
       { name: "Robot doesn't move",   fix: "Did you re-download? Did you click Run on the rover after pairing?" }
-    ],
-    bonus: [
-      { name: "Loop only runs once",  fix: "Check indentation, then check your list. A loop runs once per item. One item in the list = one run." },
-      { name: "Variables in wrong slots", fix: "The names in the <code>for</code> line must match the order of values in your list. Print them on the rover screen to check." },
-      { name: "IndentationError",     fix: "Everything inside the loop has to be indented the same (4 spaces). Lines that aren't indented are outside the loop." },
-      { name: "Wrong cargo gets kicked", fix: "Check your <code>if cargo == \"...\"</code> line. The word has to match exactly &mdash; <code>\"ball\"</code> is not <code>\"soccer_ball\"</code>." }
     ],
     landing: []
   };
@@ -2563,8 +2308,7 @@ deliveries = [
     const labels = {
       level1: 'Level 1 (Blocks)',
       level2: 'Level 2 (Switch)',
-      level3: 'Level 3 (Python)',
-      bonus:  'Bonus (Loops & Variables)'
+      level3: 'Level 3 (Python)'
     };
     let body = "My engineer's log — Stadium Logistics Rover\nName: \n\n";
     Object.keys(labels).forEach(key => {
@@ -2615,30 +2359,27 @@ deliveries = [
     return ({
       level1: 'Level 1 complete.',
       level2: 'Level 2 complete.',
-      level3: 'Level 3 complete.',
-      bonus:  'Bonus complete.'
+      level3: 'Level 3 complete.'
     })[level];
   }
   function levelDoneSub(level) {
     return ({
       level1: 'All three deliveries in Blocks. Onward.',
       level2: 'You read Python and edited it. Onward.',
-      level3: 'You typed real Python from scratch. That\'s the lesson.',
-      bonus:  'You wrote a loop. That\'s why Python exists.'
+      level3: 'You typed real Python from scratch. That\'s the lesson.'
     })[level];
   }
   function nextScreenFor(level) {
-    return ({ level1: 'level2', level2: 'level3', level3: 'bonus', bonus: null })[level];
+    return ({ level1: 'level2', level2: 'level3', level3: null })[level];
   }
   function nextScreenLabel(level) {
-    return ({ level1: 'Continue to Level 2', level2: 'Continue to Level 3', level3: 'Open the Bonus' })[level];
+    return ({ level1: 'Continue to Level 2', level2: 'Continue to Level 3' })[level];
   }
   function levelToastFor(level) {
     return ({
       level1: 'Level 1 complete. Level 2 is unlocked.',
       level2: 'Level 2 complete. Level 3 is unlocked.',
-      level3: 'Level 3 complete. Bonus is unlocked.',
-      bonus:  'Bonus complete. Nice work.'
+      level3: 'Level 3 complete. Nice work.'
     })[level] || 'Marked complete.';
   }
   function restoreCompletions() {
@@ -2765,6 +2506,8 @@ deliveries = [
   // ===================== INIT =====================
   function init() {
     if (!state.path) state.screen = 'landing';
+    // a saved screen that no longer exists (e.g. the old Bonus) would hide everything
+    if (screens.indexOf(state.screen) === -1) state.screen = 'landing';
     bindFailureLogs();
     restoreHints();
     restoreCompletions();

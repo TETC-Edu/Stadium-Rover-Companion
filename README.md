@@ -39,20 +39,18 @@ wherever the last one ended — no return trips, no "supply room."
 
 One rule: each cargo starts at least 30 cm from its delivery zone.
 
-Same challenge four times, one new idea per level:
+Same challenge three times, one new idea per level:
 
 1. **Level 1 — Blocks.** Drive it by hand first, then code all three
    deliveries in VEXcode Blocks.
 2. **Level 2 — Switch.** Re-sketch the field, convert blocks to Switch, fix
-   every number by hand. Includes "How to Read Python" — the
-   WHO.WHAT(DETAILS) anatomy with a you-try decode challenge. The tedium here
-   is deliberate; it sets up the Bonus.
+   every number by hand. Re-sketch and convert come first, then "How to Read
+   Python" — the WHO.WHAT(DETAILS) anatomy with a you-try decode challenge —
+   then the block→Python decoder.
 3. **Level 3 — Python.** Re-sketch again, type sequential Python from
-   scratch. No loops, no variables.
-4. **Bonus — Loops & variables.** Same field as L3. Refactor working code:
-   spot the pattern, learn variables, learn loops, rebuild, feel the payoff.
-   Ends with "Send your engineer's log" — a mailto that emails all four
-   "What happened?" logs to taylor.eads@tetc.org.
+   scratch. No loops, no variables. Ends with "Send your engineer's log" —
+   a mailto that emails all three "What happened?" logs to
+   taylor.eads@tetc.org.
 
 Path picker on the landing page routes by experience: never coded → L1,
 used blocks → L2, coded in text → L3.
@@ -64,9 +62,9 @@ used blocks → L2, coded in text → L3.
 ```js
 {
   path: 'beginner' | 'intermediate' | 'advanced' | null,
-  screen: 'landing' | 'level1' | 'level2' | 'level3' | 'bonus',
-  completed: { level1, level2, level3, bonus : bool },
-  failure:   { level1, level2, level3, bonus : string },   // "What happened?" logs
+  screen: 'landing' | 'level1' | 'level2' | 'level3',
+  completed: { level1, level2, level3 : bool },
+  failure:   { level1, level2, level3 : string },   // "What happened?" logs
   hints:     { <level>: { <cardIdx>: { shown, opened } } }
 }
 ```
@@ -78,7 +76,7 @@ on purpose, bump to `_v3`.
 
 - **One new idea per level.** Never combine cognitive jumps.
 - **L2's manual number-fixing stays painful.** No helpers that sync values —
-  the pain is what makes loops land in the Bonus.
+  feeling the repetition is the point.
 - **Hint cards are 3 steps** (try first / then this / approach). Hint 3
   reframes; it never gives the answer.
 - **Left/right turn language only.** No compass headings, no +/- angles,
